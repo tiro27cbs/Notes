@@ -1,0 +1,275 @@
+---
+title: "Unsupervised Learning: Clustering Techniques"
+format: html
+---
+
+## What is Unsupervised Learning?
+
+Unsupervised learning is a type of machine learning where the model identifies patterns or structures in data **without labels**. Unlike supervised learning, where the model is trained with input-output pairs, unsupervised learning works solely with input features to uncover structure.
+
+### Why Use It?
+- No labels are required
+- Ideal for exploratory analysis and large unlabeled datasets
+- Helps uncover hidden groupings, relationships, and outliers
+
+### Analogy
+Think of unsupervised learning like exploring a city without a map. You don't know what's where, but you start grouping areas based on what you see—residential zones, commercial zones, parks, etc.
+
+---
+
+## K-Means Clustering
+
+### What is K-Means?
+K-Means is a popular clustering algorithm that partitions data into **k distinct clusters**, each represented by a **centroid** (the mean of the cluster points).
+
+### Use Cases
+- Customer segmentation
+- Fraud detection
+- Market segmentation
+
+### How It Works
+1. **Initialization**: Choose k initial centroids randomly.
+2. **Assignment Step**: Assign each point to the nearest centroid.
+3. **Update Step**: Recalculate centroids as the mean of assigned points.
+4. **Repeat** until convergence (no or minimal change in centroids).
+
+```{python}
+from sklearn.cluster import KMeans
+import numpy as np
+from matplotlib import pyplot as plt
+
+X = np.array([[1, 2], [1, 4], [1, 0], [10, 2], [10, 4], [10, 0]])
+kmeans = KMeans(n_clusters=2, random_state=0).fit(X)
+print(kmeans.labels_)
+print(kmeans.cluster_centers_)
+
+# plot the clusters
+plt.scatter(X[:, 0], X[:, 1], c=kmeans.labels_, cmap='viridis')
+plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], c='red', marker='x')
+plt.show()
+```
+
+### Convergence & Efficiency
+- Linear complexity: O(n * k * d)
+- Always converges, but **not necessarily to the global optimum**
+- Sensitive to **initial centroids**
+
+### Centroid Initialization Strategies
+- Random initialization
+- **K-means++** (recommended): smarter seeding for better clusters
+- Manual initialization (if prior knowledge exists)
+
+### Example: Webstore Segmentation
+Cluster customers into:
+- High spenders
+- Discount seekers
+- Infrequent shoppers
+
+### Pros
+- Simple, fast, scalable
+- Works well with large datasets
+
+### Cons
+- Needs k beforehand
+- Sensitive to outliers and initial placement
+- Assumes spherical clusters
+
+---
+
+## Mini-Batch K-Means
+
+Mini-Batch K-Means is a faster, scalable variant of K-Means.
+
+### How It Works
+- Uses small random subsets (mini-batches) to update centroids.
+- Trades off accuracy for speed.
+
+### Benefits
+- Faster convergence (3-4x faster)
+- Works better with large datasets
+
+```{python}
+from sklearn.cluster import MiniBatchKMeans
+
+mb_kmeans = MiniBatchKMeans(n_clusters=2, batch_size=10, random_state=0).fit(X)
+print(mb_kmeans.labels_)
+
+# plot the clusters
+plt.scatter(X[:, 0], X[:, 1], c=mb_kmeans.labels_, cmap='viridis')
+plt.scatter(mb_kmeans.cluster_centers_[:, 0], mb_kmeans.cluster_centers_[:, 1], c='red', marker='x')
+plt.show()
+```
+
+---
+
+## Evaluating Clustering Quality
+
+### Silhouette Score
+Measures how well a point fits its own cluster vs others.
+
+#### Formula:
+s = (b - a) / max(a, b)
+
+- **a** = distance to points in the same cluster
+- **b** = distance to points in nearest cluster
+
+```python
+from sklearn.metrics import silhouette_score
+
+score = silhouette_score(X, kmeans.labels_)
+print(score)
+```
+
+- **+1**: well-clustered
+- **0**: on boundary
+- **-1**: likely misclassified
+
+### Elbow Method
+Plots **WCSS vs. k**, looks for a point ("elbow") where further increase in k has diminishing returns.
+
+```{python}
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+
+
+wcss = []
+max_clusters = min(10, X.shape[0]) 
+for i in range(1, max_clusters + 1):
+    kmeans = KMeans(n_clusters=i, random_state=0).fit(X)
+    wcss.append(kmeans.inertia_)
+
+plt.plot(range(1, max_clusters + 1), wcss, marker='o')
+plt.xlabel("Number of Clusters")
+plt.ylabel("WCSS")
+plt.title("Elbow Method")
+plt.show()
+
+```
+
+### Elbow vs Silhouette
+| Metric | Use When |
+|-------|-----------|
+| Elbow Method | Clear elbow point exists |
+| Silhouette Score | When elbow is unclear or clusters are complex |
+
+---
+
+## DBSCAN: Density-Based Clustering
+
+### What is DBSCAN?
+DBSCAN forms clusters based on **density** of data points, identifying core, border, and noise points.
+
+### Key Terms
+- **Eps (ε)**: Neighborhood radius
+- **MinPts**: Minimum points to form a dense region
+- **Core Point**: ≥ MinPts in ε-neighborhood
+- **Border Point**: < MinPts but within ε of a core point
+- **Noise**: Not in any cluster
+
+### DBSCAN Steps
+1. Identify core points using Eps and MinPts
+2. Expand clusters from core points
+3. Label non-core/non-border points as noise
+
+```{python}
+from sklearn.cluster import DBSCAN
+
+db = DBSCAN(eps=0.5, min_samples=4).fit(X)
+print(db.labels_)
+
+# plot the clusters
+plt.scatter(X[:, 0], X[:, 1], c=db.labels_, cmap='viridis')
+plt.scatter(db.components_[:, 0], db.components_[:, 1], c='red', marker='x')
+plt.show()
+```
+
+### Pros
+- No need to specify k
+- Handles **arbitrary shaped clusters**
+- Handles **noise and outliers**
+
+### Cons
+- Sensitive to Eps and MinPts
+- Struggles with **varying densities**
+- Less effective in **high-dimensional data**
+
+### Parameter Tuning
+- Plot **k-distance graph** to choose Eps
+- MinPts: at least D+1 (D = number of dimensions)
+
+### Applications
+- Geospatial analysis
+- Anomaly detection
+- Image segmentation
+- Genomic data clustering
+
+## Clustering with Hierarchical Clustering
+
+### What is Hierarchical Clustering?
+Hierarchical clustering is a technique that builds a tree-like structure of clusters, known as a dendrogram. It doesn't require the number of clusters to be specified upfront, unlike K-means. You start with each data point as its own cluster and progressively merge the closest clusters (agglomerative) or split clusters (divisive) until you reach a stopping point.
+
+### Types of Hierarchical Clustering
+- **Agglomerative (Bottom-Up)**: Start with individual points as clusters, then merge the closest ones.
+- **Divisive (Top-Down)**: Start with all points in one cluster and split it progressively.
+
+### Distance Metrics
+To merge or split clusters, we need a way to measure distance. Common ones include:
+- **Euclidean Distance**: Think of it as measuring the straight-line distance between two points, like measuring the shortest path between two cities on a map.
+- **Manhattan Distance**: The sum of the absolute differences of coordinates, like driving along streets in a grid (no diagonals).
+- **Cosine Similarity**: Measures how similar two vectors are based on their direction, not magnitude, often used in text.
+
+### Linkage Criteria
+This defines how we calculate the distance between clusters:
+- **Single Linkage**: Distance between two clusters is the shortest distance between any two points.
+- **Complete Linkage**: Distance is the longest distance between points.
+- **Ward’s Linkage**: Minimizes variance within clusters.
+
+### Example: Agglomerative Clustering
+Imagine you have six points (A, B, C, D, E, F) and want to group them. Here's how agglomerative clustering works:
+
+1. **Start with each point as a cluster**: A, B, C, D, E, F.
+2. **Merge the closest clusters**: (D, F) at distance 0.50.
+3. **Repeat**: Merge (A, B) at distance 0.71.
+4. **Continue merging**: Eventually, you’ll have one large cluster.
+
+The merging process forms a **dendrogram**, which shows how clusters are joined at different distances.
+
+### Python Example
+```{python}
+import numpy as np
+from scipy.cluster.hierarchy import dendrogram, linkage
+import matplotlib.pyplot as plt
+
+# Example data
+data = np.array([[1, 2], [2, 3], [3, 4], [8, 9], [9, 10], [10, 11]])
+
+# Perform hierarchical clustering
+linked = linkage(data, 'ward')
+
+# Plot dendrogram
+plt.figure(figsize=(10, 7))
+dendrogram(linked)
+plt.show()
+```
+
+This code generates a dendrogram that shows how points are merged.
+
+### Advantages
+No need to predefine clusters: It can find the natural groupings in the data.
+Dendrogram visualization: Helps in deciding how many clusters to extract.
+Captures nested clusters: Useful for complex data structures.
+### Disadvantages
+Computationally expensive: O(n³), so not ideal for large datasets.
+Sensitive to outliers: Especially with single linkage, outliers can cause chain-like clusters.
+### Applications
+Gene Expression Analysis: Group genes with similar activity patterns.
+Customer Segmentation: Segment customers based on purchasing behavior.
+Document Clustering: Group similar text documents.
+---
+
+## Final Notes
+
+- **Always scale your features** before clustering (StandardScaler or MinMaxScaler).
+- **Try multiple initializations** for K-means to avoid local optima.
+- Use **Silhouette and Elbow methods** for evaluation.
+- Use **DBSCAN** when clusters are non-spherical or you expect outliers.

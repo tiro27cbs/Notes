@@ -1,0 +1,678 @@
+---
+title: "Outlier Detection and Recommendation Systems"
+---
+
+
+Outlier detection is a fundamental aspect of data analysis, helping to identify data points that significantly deviate from the overall pattern. These anomalies can indicate errors, rare events, or interesting insights that merit further investigation.
+
+::: {.callout-note}
+## Why Outlier Detection Matters
+Outliers can significantly impact statistical analyses, model performance, and business decisions. Detecting them is crucial for:
+
+- Data cleaning and preprocessing
+- Fraud detection
+- Network intrusion detection
+- Medical diagnosis (detecting abnormal test results)
+- Manufacturing quality control
+:::
+
+## Graphical Outlier Detection
+
+One of the simplest ways to detect outliers is through visualization. By plotting the data, human intuition can be leveraged to identify unusual points. Common graphical methods include:
+
+- **Boxplots**: Provide a summary of the data distribution, highlighting potential outliers
+- **Scatterplots**: Useful for detecting complex patterns in two-variable datasets
+- **Histograms**: Help identify values that fall outside the typical distribution
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+
+# Generate sample data with outliers
+np.random.seed(42)
+data = np.random.normal(0, 1, 100)
+data = np.append(data, [5, -5, 7])  # Add outliers
+
+# Create a box plot
+plt.figure(figsize=(10, 6))
+sns.boxplot(x=data)
+plt.title('Box Plot Showing Outliers')
+plt.tight_layout()
+plt.show()
+
+# Create a scatter plot
+plt.figure(figsize=(10, 6))
+plt.scatter(range(len(data)), data)
+plt.title('Scatter Plot Showing Outliers')
+plt.ylabel('Value')
+plt.axhline(y=np.mean(data) + 2*np.std(data), color='r', linestyle='--', label='2σ Threshold')
+plt.axhline(y=np.mean(data) - 2*np.std(data), color='r', linestyle='--')
+plt.legend()
+plt.tight_layout()
+plt.show()
+```
+
+### Quartiles and the Boxplot Method
+
+A boxplot divides data into quartiles, summarizing five key statistics:
+
+* **Minimum**: The smallest value excluding outliers
+* **First quartile (Q1)**: The median of the lower half (25% of data below Q1)
+* **Median**: The middle value of the dataset
+* **Third quartile (Q3)**: The median of the upper half (75% of data below Q3)
+* **Maximum**: The largest value excluding outliers
+
+A common rule for identifying outliers in boxplots is the 1.5 IQR rule:
+
+* IQR (Interquartile Range) = Q3 - Q1
+* Any value above Q3 + 1.5 × IQR or below Q1 - 1.5 × IQR is considered an outlier.
+
+This method is robust to extreme values and doesn't assume a specific distribution, making it widely applicable.
+
+```{python}
+# Find outliers using the IQR method
+def find_outliers_iqr(data):
+    q1 = np.percentile(data, 25)
+    q3 = np.percentile(data, 75)
+    iqr = q3 - q1
+    lower_bound = q1 - 1.5 * iqr
+    upper_bound = q3 + 1.5 * iqr
+    
+    outliers = [x for x in data if x < lower_bound or x > upper_bound]
+    outlier_indices = [i for i, x in enumerate(data) if x < lower_bound or x > upper_bound]
+    
+    return outliers, outlier_indices, (lower_bound, upper_bound)
+
+outliers, outlier_indices, bounds = find_outliers_iqr(data)
+print(f"Outliers: {outliers}")
+print(f"Outlier indices: {outlier_indices}")
+print(f"Bounds (lower, upper): {bounds}")
+```
+
+## Cluster-Based Outlier Detection
+
+This method involves clustering data points and identifying those that do not belong to any cluster or form small, isolated clusters. The fundamental assumption is that normal data points belong to large, dense clusters, while outliers either:
+
+1. Form small clusters far from the main clusters
+2. Do not belong to any cluster
+3. Are assigned to a cluster but are far from the cluster center
+
+Common clustering algorithms used for outlier detection include:
+
+- **K-means Clustering**: Outliers are points that are far from any cluster mean or belong to a small cluster
+- **Density-Based Clustering** (e.g., DBSCAN): Outliers are data points that remain unassigned to clusters
+- **Hierarchical Clustering**: Outliers take longer to merge with other groups, making them distinguishable
+
+```{python}
+from sklearn.cluster import KMeans
+from sklearn.datasets import make_blobs
+
+# Generate sample data with clusters and outliers
+X, _ = make_blobs(n_samples=300, centers=3, cluster_std=0.60, random_state=0)
+# Add some outliers
+X = np.vstack([X, np.array([[6, 6], [-6, -6], [6, -6], [-6, 6]])])
+
+# Apply K-means clustering
+kmeans = KMeans(n_clusters=3, random_state=0)
+cluster_labels = kmeans.fit_predict(X)
+cluster_centers = kmeans.cluster_centers_
+
+# Calculate distance of each point to its cluster center
+distances = np.zeros(X.shape[0])
+for i in range(X.shape[0]):
+    cluster_idx = cluster_labels[i]
+    distances[i] = np.linalg.norm(X[i] - cluster_centers[cluster_idx])
+
+# Identify potential outliers (points with largest distances)
+threshold = np.percentile(distances, 95)  # Top 5% as outliers
+outlier_mask = distances > threshold
+
+# Visualize the clusters and outliers
+plt.figure(figsize=(10, 8))
+plt.scatter(X[~outlier_mask, 0], X[~outlier_mask, 1], c=cluster_labels[~outlier_mask], 
+            cmap='viridis', marker='o', s=50, alpha=0.8)
+plt.scatter(X[outlier_mask, 0], X[outlier_mask, 1], c='red', marker='x', s=100, label='Outliers')
+plt.scatter(cluster_centers[:, 0], cluster_centers[:, 1], c='black', marker='*', s=200, label='Centroids')
+plt.legend()
+plt.title('K-means Clustering with Outlier Detection')
+plt.tight_layout()
+plt.show()
+```
+
+## Distance-Based Outlier Detection
+
+Rather than relying on visualization or clustering, distance-based methods use spatial relationships to detect anomalies. These approaches are particularly useful for high-dimensional data where visualization becomes challenging.
+
+### Global Distance-Based Detection (KNN)
+
+The K-Nearest Neighbors (KNN) approach for outlier detection follows these steps:
+
+1. Compute the average distance of each point to its K-nearest neighbors
+2. Sort these distances and flag the largest ones as outliers
+3. This is useful for identifying global outliers that deviate from the overall data distribution
+
+### Local Distance-Based Detection
+
+Local distance-based methods account for varying data densities by considering the locality of each point:
+
+1. An outlier's 'outlierness' is determined by comparing its distance to neighbors relative to how far those neighbors are from their own neighbors
+2. If the ratio exceeds 1, the point is flagged as an outlier
+3. This approach can detect local outliers in datasets with varying densities
+
+```{python}
+from sklearn.neighbors import NearestNeighbors
+
+# Generate sample 2D data
+np.random.seed(42)
+X_normal = np.random.normal(0, 1, (100, 2))
+X_outliers = np.random.uniform(-4, 4, (5, 2))
+X = np.vstack([X_normal, X_outliers])
+
+# Find k-nearest neighbors
+k = 5
+nbrs = NearestNeighbors(n_neighbors=k).fit(X)
+distances, indices = nbrs.kneighbors(X)
+
+# Calculate average distance to k-nearest neighbors
+avg_knn_distance = distances[:, 1:].mean(axis=1)  # Exclude self (distance=0)
+
+# Identify outliers
+threshold = np.percentile(avg_knn_distance, 95)
+outlier_mask = avg_knn_distance > threshold
+
+# Visualize results
+plt.figure(figsize=(10, 8))
+plt.scatter(X[~outlier_mask, 0], X[~outlier_mask, 1], c='blue', label='Normal points')
+plt.scatter(X[outlier_mask, 0], X[outlier_mask, 1], c='red', marker='x', s=100, label='Outliers')
+plt.title(f'KNN Distance-Based Outlier Detection (k={k})')
+plt.legend()
+plt.tight_layout()
+plt.show()
+```
+
+## Tree-Based Outlier Detection: Isolation Forests
+
+Isolation Forests provide a tree-based approach to anomaly detection, making them highly efficient for large and high-dimensional datasets. This method partitions data randomly to isolate anomalies based on the principle that outliers are "few and different" and therefore should be easier to isolate.
+
+**Key Features:**
+
+- Uses multiple decision trees to calculate anomaly scores
+- Has linear time complexity, making it scalable for large datasets
+- Does not require assumptions about feature distributions
+- Works best with large datasets but performs poorly on small datasets
+- Can detect anomalies without prior knowledge but does not explain why a point is anomalous
+
+**Steps of Isolation Forest Algorithm:**
+
+1. Randomly select a feature
+2. Randomly choose a split value within the feature's range
+3. Partition the data into two child nodes
+4. Recursively repeat the process until:
+   - Each leaf node has only one instance
+   - A predefined maximum depth is reached
+
+The anomaly score is calculated based on the path length to isolate a point. Outliers typically have shorter path lengths.
+
+```{python}
+from sklearn.ensemble import IsolationForest
+
+# Generate sample data with outliers
+np.random.seed(42)
+X_normal = np.random.normal(0, 1, (100, 2))
+X_outliers = np.random.uniform(-4, 4, (5, 2))
+X = np.vstack([X_normal, X_outliers])
+
+# Apply Isolation Forest
+iso_forest = IsolationForest(contamination=0.05, random_state=42)
+predictions = iso_forest.fit_predict(X)
+outlier_mask = predictions == -1  # -1 for outliers, 1 for inliers
+
+# Visualize results
+plt.figure(figsize=(10, 8))
+plt.scatter(X[~outlier_mask, 0], X[~outlier_mask, 1], c='blue', label='Normal points')
+plt.scatter(X[outlier_mask, 0], X[outlier_mask, 1], c='red', marker='x', s=100, label='Outliers')
+plt.title('Isolation Forest Outlier Detection')
+plt.legend()
+plt.tight_layout()
+plt.show()
+
+# Show anomaly scores
+anomaly_scores = iso_forest.decision_function(X)
+plt.figure(figsize=(10, 6))
+plt.hist(anomaly_scores, bins=20)
+plt.axvline(x=0, color='r', linestyle='--')
+plt.title('Isolation Forest Anomaly Scores (lower = more anomalous)')
+plt.xlabel('Score')
+plt.ylabel('Count')
+plt.tight_layout()
+plt.show()
+```
+
+## Challenges in Unsupervised Outlier Detection
+
+While unsupervised methods are powerful, they come with challenges:
+
+- **False positives**: Legitimate data points may be flagged as outliers
+- **Domain-specific outliers**: What constitutes an outlier varies by domain
+- **Parameter sensitivity**: Results depend on parameter choices (k in KNN, contamination in Isolation Forest)
+- **Dismissal of true anomalies**: A notable example is the delayed discovery of the ozone hole, which remained undetected for years because the anomaly was disregarded by automated systems
+
+Striking a balance between reporting genuine outliers and avoiding excessive false positives is crucial in data-driven decision-making.
+
+# Recommender Systems
+
+Recommender systems play a crucial role in online retail, content platforms, and various digital services by helping businesses suggest relevant products to customers. By analyzing user behavior, purchase history, and product similarities, recommendation algorithms improve user experience and increase sales.
+
+::: {.callout-tip}
+## Business Impact of Recommender Systems
+- 35% of Amazon's revenue comes from recommendations
+- 75% of Netflix views are driven by recommendations
+- Spotify's Discover Weekly has a 55% click-through rate
+:::
+
+## Recommendation Scenarios
+
+Recommender systems operate in different contexts:
+
+- **Item-based recommendation**: Suggest items similar to a given item (e.g., Amazon's "Customers who bought this also bought")
+- **User-based recommendation**: Suggest items to a user based on their past behavior (e.g., Netflix homepage)
+- **Hybrid recommendation**: Combines both item-based and user-based approaches for personalized recommendations
+
+A key challenge is that users rate only a small fraction of available items, leading to a sparse user-item matrix. The system must predict missing ratings to provide effective recommendations.
+
+## Types of Recommender Systems
+
+### 1. Content-Based Filtering
+
+Content-based filtering recommends items similar to those a user has liked in the past based on item features:
+
+- **Assumptions**: Access to side information about items (e.g., genre, keywords, descriptions)
+- **Approach**: Uses supervised learning to extract item and user features, then builds a model to predict ratings
+- **Advantages**: Can make recommendations for new users/items without requiring previous interactions
+- **Real-world examples**: 
+  - Pandora (music recommendations based on song attributes)
+  - Gmail's important messages (predicting which emails are important based on content)
+
+### 2. Collaborative Filtering
+
+Collaborative filtering recommends items based on similarity patterns between users and/or items:
+
+- **Assumptions**: Does not require side information about items
+- **Core idea**: Personal tastes are correlated. If Alice and Bob both like X, and Alice likes Y, then Bob is more likely to like Y
+- **Approach**: Uses an unsupervised learning approach. Have labels (ratings) but no explicit feature vectors
+- **Limitations**: Struggles with the cold start problem (poor predictions for new users or items)
+
+## User-Product Matrix
+
+The user-product matrix represents users as rows and products as columns, with entries indicating purchases or ratings. This matrix is the foundation of many recommendation algorithms.
+
+```{python}
+# Create a sample user-item matrix
+users = ['User1', 'User2', 'User3', 'User4', 'User5']
+items = ['Item1', 'Item2', 'Item3', 'Item4', 'Item5']
+np.random.seed(42)
+ratings = np.zeros((len(users), len(items)))
+# Fill with some ratings (1-5), 0 means no rating
+for i in range(len(users)):
+    for j in range(len(items)):
+        if np.random.random() > 0.3:  # 70% chance of having a rating
+            ratings[i, j] = np.random.randint(1, 6)
+
+# Create a DataFrame for better visualization
+ratings_df = pd.DataFrame(ratings, index=users, columns=items)
+print("User-Item Rating Matrix:")
+print(ratings_df)
+
+# Visualize the matrix
+plt.figure(figsize=(10, 8))
+sns.heatmap(ratings_df, annot=True, cmap='YlGnBu', cbar_kws={'label': 'Rating'})
+plt.title('User-Item Rating Matrix')
+plt.tight_layout()
+plt.show()
+```
+
+## Collaborative Filtering Methods
+
+### 1. Neighborhood Methods
+
+Neighborhood methods find users or items with similar preferences:
+
+- **User-based**: If a group of users liked the same set of movies, recommend those movies to others in the group
+- **Item-based**: If two items have similar rating patterns, recommend one to users who liked the other
+
+**Algorithm:**
+1. Identify similar users/movies based on rating patterns
+2. Recommend movies watched by similar users
+
+Amazon's Product Recommendation Method uses nearest neighbor (KNN) searches across product columns to determine similarity. The goal is to find products that minimize the difference between them:
+
+- Normalize each column by dividing by its norm: $\hat{X}_j = \frac{X_j}{\|X_j\|}$
+- This ensures that recommendations reflect the relative popularity of a product rather than absolute purchase counts
+- Products bought by similar users are considered more alike
+
+```{python}
+from sklearn.metrics.pairwise import cosine_similarity
+
+# Compute item-item similarity matrix
+item_similarity = cosine_similarity(ratings_df.T)
+item_sim_df = pd.DataFrame(item_similarity, index=items, columns=items)
+print("Item-Item Similarity Matrix:")
+print(item_sim_df)
+
+# Visualize item similarity
+plt.figure(figsize=(10, 8))
+sns.heatmap(item_sim_df, annot=True, cmap='coolwarm', vmin=-1, vmax=1)
+plt.title('Item-Item Similarity Matrix (Cosine Similarity)')
+plt.tight_layout()
+plt.show()
+
+# Function to get top N similar items
+def get_similar_items(item_name, item_sim_df, n=2):
+    similar_items = item_sim_df[item_name].sort_values(ascending=False)
+    # Exclude the item itself
+    similar_items = similar_items.drop(item_name)
+    return similar_items.head(n)
+
+# Example: Get items similar to Item1
+similar_to_item1 = get_similar_items('Item1', item_sim_df)
+print("\nItems similar to Item1:")
+print(similar_to_item1)
+```
+
+### 2. Latent Factor Methods
+
+Instead of looking at raw ratings, latent factor models assume that both users and movies exist in a lower-dimensional feature space representing hidden properties.
+
+- Each movie and user is mapped to a vector in this space
+- Recommendations are made based on proximity in this latent space
+
+**Example:**
+A user interested in action movies might have a high latent factor score for "intensity," leading to recommendations for high-action films.
+
+## Matrix Factorization (MF)
+
+Matrix Factorization is a powerful approach to collaborative filtering, decomposing the user-item matrix into lower-dimensional factors:
+
+- Defines a model with an objective function
+- Optimized using stochastic gradient descent
+
+**Types of Matrix Factorization:**
+- Unconstrained Matrix Factorization
+- Singular Value Decomposition (SVD)
+- Non-negative Matrix Factorization (NMF)
+
+**Mathematical Formulation:**
+For a user-item matrix $R$ with users $u$ and items $i$, matrix factorization finds matrices $P$ and $Q$ such that:
+
+$R \approx P \times Q^T$
+
+Where $P$ represents user vectors and $Q$ represents item vectors in the latent space.
+
+```{python}
+from sklearn.decomposition import NMF
+
+# Fill missing values with zeros for demonstration
+# In practice, you might want to use mean imputation or more sophisticated methods
+ratings_matrix = ratings_df.values
+
+# Non-negative Matrix Factorization
+n_components = 2  # Number of latent factors
+model = NMF(n_components=n_components, init='random', random_state=0)
+user_features = model.fit_transform(ratings_matrix)
+item_features = model.components_
+
+# Display latent factors
+print("User Latent Factors:")
+user_factors_df = pd.DataFrame(user_features, index=users, 
+                             columns=[f'Factor {i+1}' for i in range(n_components)])
+print(user_factors_df)
+
+print("\nItem Latent Factors:")
+item_factors_df = pd.DataFrame(item_features.T, index=items, 
+                             columns=[f'Factor {i+1}' for i in range(n_components)])
+print(item_factors_df)
+
+# Visualize user and item factors in the latent space
+plt.figure(figsize=(12, 8))
+plt.scatter(user_features[:, 0], user_features[:, 1], c='blue', marker='o', s=100, label='Users')
+plt.scatter(item_features.T[:, 0], item_features.T[:, 1], c='red', marker='^', s=100, label='Items')
+
+# Add labels
+for i, user in enumerate(users):
+    plt.annotate(user, (user_features[i, 0], user_features[i, 1]), textcoords="offset points", 
+                 xytext=(0,10), ha='center')
+for i, item in enumerate(items):
+    plt.annotate(item, (item_features.T[i, 0], item_features.T[i, 1]), textcoords="offset points", 
+                 xytext=(0,10), ha='center')
+
+plt.title('Users and Items in the Latent Factor Space')
+plt.xlabel('Factor 1')
+plt.ylabel('Factor 2')
+plt.legend()
+plt.tight_layout()
+plt.show()
+
+# Reconstruct the ratings matrix and compute the predicted ratings
+reconstructed_ratings = np.dot(user_features, item_features)
+predicted_ratings_df = pd.DataFrame(reconstructed_ratings, index=users, columns=items)
+
+print("\nPredicted Ratings:")
+print(predicted_ratings_df.round(1))
+```
+
+## Computational Challenges
+
+Finding KNNs in a dataset with n users and d products has a computational cost of O(nd), which becomes infeasible at scale. However, optimizations include:
+
+- Leveraging sparse matrices to reduce complexity
+- Using approximate nearest neighbor search to speed up calculations
+- Applying clustering techniques to limit the search space
+
+## Beyond Accuracy in Recommender Systems
+
+While accuracy is crucial, other factors influence a recommender system's effectiveness:
+
+- **Diversity**: How different are the recommendations? (Avoid showing only similar items)
+- **Serendipity**: How surprising and useful are the recommendations?
+- **Persistence**: How long should recommendations stay relevant?
+- **Trust**: Providing explanations for recommendations increases user trust
+  - Example: Quora explains why certain answers are recommended
+- **Social Recommendation**: What did your friends watch or buy?
+- **Freshness**: Users often prefer recent and surprising recommendations
+
+Recommender systems continue to evolve, incorporating hybrid models, deep learning, and reinforcement learning to enhance personalization and engagement.
+
+# Class Imbalance in Machine Learning
+
+Class imbalance occurs when one class in a dataset has significantly more samples than another. This imbalance can impact the performance of machine learning models, particularly classification algorithms.
+
+## Categorization of Class Imbalance
+
+A class imbalance problem arises when the classes in a dataset are not equally represented. Common examples include:
+
+- Fraud detection (few fraudulent transactions among many legitimate ones)
+- Medical diagnosis (rare diseases)
+- Network intrusion detection (few attacks among normal traffic)
+
+The **imbalance ratio** is calculated as:
+$\text{Imbalance Ratio} = \frac{\text{Number of Majority Class Samples}}{\text{Number of Minority Class Samples}}$
+
+A high imbalance ratio indicates a severely skewed dataset.
+
+## Sampling Techniques
+
+Sampling is a statistical process where a predetermined number of observations are taken from a larger population. It helps adjust the class distribution in a dataset to improve model performance.
+
+### Oversampling
+
+Oversampling increases the number of instances in the minority class. Two sophisticated techniques include:
+
+#### Synthetic Minority Oversampling Technique (SMOTE)
+
+SMOTE generates synthetic examples for the minority class by interpolating existing instances:
+
+1. Identifies the k-nearest neighbors of a minority class instance
+2. Randomly selects one of the k-nearest neighbors
+3. Generates a new synthetic instance along the line segment connecting the two points
+
+SMOTE avoids overfitting and helps balance datasets while maintaining diversity.
+
+#### ADASYN (Adaptive Synthetic Sampling)
+
+ADASYN extends SMOTE by focusing on difficult-to-classify instances:
+
+1. Calculates the ratio of majority class instances in the k-nearest neighbors of each minority instance
+2. Generates synthetic samples in proportion to this ratio
+3. Adjusts the decision boundary to improve classification performance
+
+### Undersampling
+
+Reduces the number of instances in the majority class, either randomly or using techniques like:
+
+- Cluster-based undersampling
+- Tomek links removal
+- Near-miss algorithm
+
+```{python}
+from sklearn.datasets import make_classification
+from imblearn.over_sampling import SMOTE, ADASYN
+from collections import Counter
+
+# Generate imbalanced dataset
+X, y = make_classification(n_samples=5000, n_features=2, n_informative=2, 
+                          n_redundant=0, n_repeated=0, n_classes=2, 
+                          n_clusters_per_class=1, 
+                          weights=[0.9, 0.1], flip_y=0, random_state=42)
+
+# Check class distribution
+print("Original class distribution:", Counter(y))
+
+# Calculate imbalance ratio
+imbalance_ratio = sum(y == 0) / sum(y == 1)
+print(f"Imbalance ratio: {imbalance_ratio:.2f}")
+
+# Apply SMOTE
+smote = SMOTE(random_state=42)
+X_smote, y_smote = smote.fit_resample(X, y)
+print("SMOTE class distribution:", Counter(y_smote))
+
+# Apply ADASYN
+adasyn = ADASYN(random_state=42)
+X_adasyn, y_adasyn = adasyn.fit_resample(X, y)
+print("ADASYN class distribution:", Counter(y_adasyn))
+
+# Visualize original and resampled data
+plt.figure(figsize=(15, 5))
+
+# Original data
+plt.subplot(1, 3, 1)
+plt.scatter(X[y == 0, 0], X[y == 0, 1], label='Class 0', alpha=0.5)
+plt.scatter(X[y == 1, 0], X[y == 1, 1], label='Class 1', alpha=0.5)
+plt.title('Original Data')
+plt.legend()
+
+# SMOTE
+plt.subplot(1, 3, 2)
+plt.scatter(X_smote[y_smote == 0, 0], X_smote[y_smote == 0, 1], label='Class 0', alpha=0.5)
+plt.scatter(X_smote[y_smote == 1, 0], X_smote[y_smote == 1, 1], label='Class 1', alpha=0.5)
+plt.title('SMOTE Oversampling')
+plt.legend()
+
+# ADASYN
+plt.subplot(1, 3, 3)
+plt.scatter(X_adasyn[y_adasyn == 0, 0], X_adasyn[y_adasyn == 0, 1], label='Class 0', alpha=0.5)
+plt.scatter(X_adasyn[y_adasyn == 1, 0], X_adasyn[y_adasyn == 1, 1], label='Class 1', alpha=0.5)
+plt.title('ADASYN Oversampling')
+plt.legend()
+
+plt.tight_layout()
+plt.show()
+```
+
+## Comparison: SMOTE vs. ADASYN
+
+- **SMOTE** generates synthetic samples uniformly, without distinguishing between easy and hard-to-classify instances
+- **ADASYN** focuses more on samples near decision boundaries, enhancing model performance for difficult cases
+
+### Disadvantages of Oversampling
+
+- Assumes that the space between any two minority class samples belongs to the minority class, which may not be true for non-linearly separable data
+- Can introduce noise if not carefully applied
+- May exacerbate the problem of overlapping class distributions
+
+```{python}
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report, confusion_matrix, roc_curve, auc
+
+# Split the original data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Train and evaluate model on original data
+clf_orig = RandomForestClassifier(random_state=42)
+clf_orig.fit(X_train, y_train)
+y_pred_orig = clf_orig.predict(X_test)
+print("Original data results:")
+print(classification_report(y_test, y_pred_orig))
+
+# Train and evaluate model on SMOTE-resampled data
+X_train_smote, y_train_smote = SMOTE(random_state=42).fit_resample(X_train, y_train)
+clf_smote = RandomForestClassifier(random_state=42)
+clf_smote.fit(X_train_smote, y_train_smote)
+y_pred_smote = clf_smote.predict(X_test)
+print("\nSMOTE results:")
+print(classification_report(y_test, y_pred_smote))
+
+# Train and evaluate model on ADASYN-resampled data
+X_train_adasyn, y_train_adasyn = ADASYN(random_state=42).fit_resample(X_train, y_train)
+clf_adasyn = RandomForestClassifier(random_state=42)
+clf_adasyn.fit(X_train_adasyn, y_train_adasyn)
+y_pred_adasyn = clf_adasyn.predict(X_test)
+print("\nADASYN results:")
+print(classification_report(y_test, y_pred_adasyn))
+
+# ROC curves
+plt.figure(figsize=(10, 8))
+
+# Original data
+y_scores_orig = clf_orig.predict_proba(X_test)[:, 1]
+fpr_orig, tpr_orig, _ = roc_curve(y_test, y_scores_orig)
+roc_auc_orig = auc(fpr_orig, tpr_orig)
+plt.plot(fpr_orig, tpr_orig, label=f'Original (AUC = {roc_auc_orig:.2f})')
+
+# SMOTE
+y_scores_smote = clf_smote.predict_proba(X_test)[:, 1]
+fpr_smote, tpr_smote, _ = roc_curve(y_test, y_scores_smote)
+roc_auc_smote = auc(fpr_smote, tpr_smote)
+plt.plot(fpr_smote, tpr_smote, label=f'SMOTE (AUC = {roc_auc_smote:.2f})')
+
+# ADASYN
+y_scores_adasyn = clf_adasyn.predict_proba(X_test)[:, 1]
+fpr_adasyn, tpr_adasyn, _ = roc_curve(y_test, y_scores_adasyn)
+roc_auc_adasyn = auc(fpr_adasyn, tpr_adasyn)
+plt.plot(fpr_adasyn, tpr_adasyn, label=f'ADASYN (AUC = {roc_auc_adasyn:.2f})')
+
+plt.plot([0, 1], [0, 1], 'k--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('ROC Curve Comparison')
+plt.legend(loc="lower right")
+plt.tight_layout()
+plt.show()
+```
+
+## Evaluation of Classifiers with Imbalanced Data
+
+When evaluating classifiers on imbalanced datasets, standard accuracy can be misleading. More appropriate metrics include:
+
+- **Precision & Recall**: Measures how well the model identifies the minority class
+- **F1-score**: Harmonic mean of precision and recall
+- **ROC-AUC**: Evaluates the ability to distinguish between classes across thresholds
+- **Precision-Recall AUC**: Often more informative than ROC-AUC for imbalanced datasets
+- **Geometric Mean**: Balance between sensitivity and specificity
+
+:

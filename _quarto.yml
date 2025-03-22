@@ -1,0 +1,37 @@
+project:
+  type: book
+  output-dir: docs
+book:
+  title: "Machine Learning and Deep Learning Notes"
+  author: "Tim Rößling"
+  date: "18.3.2025"
+  chapters:
+    - index.qmd
+    - intro.qmd
+    - chapter1.qmd
+    - chapter2.qmd
+    - chapter3.qmd
+    - chapter4.qmd
+    - chapter5.qmd
+    - chapter6.qmd
+    - chapter6v2.qmd
+    - chapter7.qmd
+    - chapter8.qmd
+    - chapter9.qmd
+    - chapter10.qmd
+    - summary.qmd
+    - references.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme:
+      - cosmo
+      - brand
+  pdf:
+    documentclass: scrreprt
+
+
+
+

@@ -1,0 +1,1643 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>9&nbsp; Outlier Detection and Recommendation Systems – Machine Learning and Deep Learning Notes</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./chapter8.html" rel="next">
+<link href="./chapter6v2.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-8da5b4427184b79ecddefad3d342027e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapter7.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Outlier Detection and Recommendation Systems</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Machine Learning and Deep Learning Notes</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">🚀 Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Fundamentals of Machine Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Building an End-to-End Machine Learning Pipeline</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Unsupervised Learning: Clustering Techniques</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Supervised Learning: Regression and Classification</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Dimensionality Reduction Methods</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Tree-Based Models and Ensemble Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter6v2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Support Vector Machines and Model Evaluation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter7.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Outlier Detection and Recommendation Systems</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter8.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Gradient Descent: Optimization in Machine Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Neural Networks and Deep Learning Foundations</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Batch Normalization, RNN, Distributed Deep Learning and Tensorflow</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#graphical-outlier-detection" id="toc-graphical-outlier-detection" class="nav-link active" data-scroll-target="#graphical-outlier-detection"><span class="header-section-number">9.1</span> Graphical Outlier Detection</a>
+  <ul class="collapse">
+  <li><a href="#quartiles-and-the-boxplot-method" id="toc-quartiles-and-the-boxplot-method" class="nav-link" data-scroll-target="#quartiles-and-the-boxplot-method"><span class="header-section-number">9.1.1</span> Quartiles and the Boxplot Method</a></li>
+  </ul></li>
+  <li><a href="#cluster-based-outlier-detection" id="toc-cluster-based-outlier-detection" class="nav-link" data-scroll-target="#cluster-based-outlier-detection"><span class="header-section-number">9.2</span> Cluster-Based Outlier Detection</a></li>
+  <li><a href="#distance-based-outlier-detection" id="toc-distance-based-outlier-detection" class="nav-link" data-scroll-target="#distance-based-outlier-detection"><span class="header-section-number">9.3</span> Distance-Based Outlier Detection</a>
+  <ul class="collapse">
+  <li><a href="#global-distance-based-detection-knn" id="toc-global-distance-based-detection-knn" class="nav-link" data-scroll-target="#global-distance-based-detection-knn"><span class="header-section-number">9.3.1</span> Global Distance-Based Detection (KNN)</a></li>
+  <li><a href="#local-distance-based-detection" id="toc-local-distance-based-detection" class="nav-link" data-scroll-target="#local-distance-based-detection"><span class="header-section-number">9.3.2</span> Local Distance-Based Detection</a></li>
+  </ul></li>
+  <li><a href="#tree-based-outlier-detection-isolation-forests" id="toc-tree-based-outlier-detection-isolation-forests" class="nav-link" data-scroll-target="#tree-based-outlier-detection-isolation-forests"><span class="header-section-number">9.4</span> Tree-Based Outlier Detection: Isolation Forests</a></li>
+  <li><a href="#challenges-in-unsupervised-outlier-detection" id="toc-challenges-in-unsupervised-outlier-detection" class="nav-link" data-scroll-target="#challenges-in-unsupervised-outlier-detection"><span class="header-section-number">9.5</span> Challenges in Unsupervised Outlier Detection</a></li>
+  <li><a href="#recommender-systems" id="toc-recommender-systems" class="nav-link" data-scroll-target="#recommender-systems"><span class="header-section-number">10</span> Recommender Systems</a>
+  <ul class="collapse">
+  <li><a href="#recommendation-scenarios" id="toc-recommendation-scenarios" class="nav-link" data-scroll-target="#recommendation-scenarios"><span class="header-section-number">10.1</span> Recommendation Scenarios</a></li>
+  <li><a href="#types-of-recommender-systems" id="toc-types-of-recommender-systems" class="nav-link" data-scroll-target="#types-of-recommender-systems"><span class="header-section-number">10.2</span> Types of Recommender Systems</a>
+  <ul class="collapse">
+  <li><a href="#content-based-filtering" id="toc-content-based-filtering" class="nav-link" data-scroll-target="#content-based-filtering"><span class="header-section-number">10.2.1</span> 1. Content-Based Filtering</a></li>
+  <li><a href="#collaborative-filtering" id="toc-collaborative-filtering" class="nav-link" data-scroll-target="#collaborative-filtering"><span class="header-section-number">10.2.2</span> 2. Collaborative Filtering</a></li>
+  </ul></li>
+  <li><a href="#user-product-matrix" id="toc-user-product-matrix" class="nav-link" data-scroll-target="#user-product-matrix"><span class="header-section-number">10.3</span> User-Product Matrix</a></li>
+  <li><a href="#collaborative-filtering-methods" id="toc-collaborative-filtering-methods" class="nav-link" data-scroll-target="#collaborative-filtering-methods"><span class="header-section-number">10.4</span> Collaborative Filtering Methods</a>
+  <ul class="collapse">
+  <li><a href="#neighborhood-methods" id="toc-neighborhood-methods" class="nav-link" data-scroll-target="#neighborhood-methods"><span class="header-section-number">10.4.1</span> 1. Neighborhood Methods</a></li>
+  <li><a href="#latent-factor-methods" id="toc-latent-factor-methods" class="nav-link" data-scroll-target="#latent-factor-methods"><span class="header-section-number">10.4.2</span> 2. Latent Factor Methods</a></li>
+  </ul></li>
+  <li><a href="#matrix-factorization-mf" id="toc-matrix-factorization-mf" class="nav-link" data-scroll-target="#matrix-factorization-mf"><span class="header-section-number">10.5</span> Matrix Factorization (MF)</a></li>
+  <li><a href="#computational-challenges" id="toc-computational-challenges" class="nav-link" data-scroll-target="#computational-challenges"><span class="header-section-number">10.6</span> Computational Challenges</a></li>
+  <li><a href="#beyond-accuracy-in-recommender-systems" id="toc-beyond-accuracy-in-recommender-systems" class="nav-link" data-scroll-target="#beyond-accuracy-in-recommender-systems"><span class="header-section-number">10.7</span> Beyond Accuracy in Recommender Systems</a></li>
+  </ul></li>
+  <li><a href="#class-imbalance-in-machine-learning" id="toc-class-imbalance-in-machine-learning" class="nav-link" data-scroll-target="#class-imbalance-in-machine-learning"><span class="header-section-number">11</span> Class Imbalance in Machine Learning</a>
+  <ul class="collapse">
+  <li><a href="#categorization-of-class-imbalance" id="toc-categorization-of-class-imbalance" class="nav-link" data-scroll-target="#categorization-of-class-imbalance"><span class="header-section-number">11.1</span> Categorization of Class Imbalance</a></li>
+  <li><a href="#sampling-techniques" id="toc-sampling-techniques" class="nav-link" data-scroll-target="#sampling-techniques"><span class="header-section-number">11.2</span> Sampling Techniques</a>
+  <ul class="collapse">
+  <li><a href="#oversampling" id="toc-oversampling" class="nav-link" data-scroll-target="#oversampling"><span class="header-section-number">11.2.1</span> Oversampling</a></li>
+  <li><a href="#undersampling" id="toc-undersampling" class="nav-link" data-scroll-target="#undersampling"><span class="header-section-number">11.2.2</span> Undersampling</a></li>
+  </ul></li>
+  <li><a href="#comparison-smote-vs.-adasyn" id="toc-comparison-smote-vs.-adasyn" class="nav-link" data-scroll-target="#comparison-smote-vs.-adasyn"><span class="header-section-number">11.3</span> Comparison: SMOTE vs.&nbsp;ADASYN</a>
+  <ul class="collapse">
+  <li><a href="#disadvantages-of-oversampling" id="toc-disadvantages-of-oversampling" class="nav-link" data-scroll-target="#disadvantages-of-oversampling"><span class="header-section-number">11.3.1</span> Disadvantages of Oversampling</a></li>
+  </ul></li>
+  <li><a href="#evaluation-of-classifiers-with-imbalanced-data" id="toc-evaluation-of-classifiers-with-imbalanced-data" class="nav-link" data-scroll-target="#evaluation-of-classifiers-with-imbalanced-data"><span class="header-section-number">11.4</span> Evaluation of Classifiers with Imbalanced Data</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Outlier Detection and Recommendation Systems</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Outlier detection is a fundamental aspect of data analysis, helping to identify data points that significantly deviate from the overall pattern. These anomalies can indicate errors, rare events, or interesting insights that merit further investigation.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Why Outlier Detection Matters
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Outliers can significantly impact statistical analyses, model performance, and business decisions. Detecting them is crucial for:</p>
+<ul>
+<li>Data cleaning and preprocessing</li>
+<li>Fraud detection</li>
+<li>Network intrusion detection</li>
+<li>Medical diagnosis (detecting abnormal test results)</li>
+<li>Manufacturing quality control</li>
+</ul>
+</div>
+</div>
+<section id="graphical-outlier-detection" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="graphical-outlier-detection"><span class="header-section-number">9.1</span> Graphical Outlier Detection</h2>
+<p>One of the simplest ways to detect outliers is through visualization. By plotting the data, human intuition can be leveraged to identify unusual points. Common graphical methods include:</p>
+<ul>
+<li><strong>Boxplots</strong>: Provide a summary of the data distribution, highlighting potential outliers</li>
+<li><strong>Scatterplots</strong>: Useful for detecting complex patterns in two-variable datasets</li>
+<li><strong>Histograms</strong>: Help identify values that fall outside the typical distribution</li>
+</ul>
+<div id="31584cd0" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate sample data with outliers</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> np.random.normal(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">100</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> np.append(data, [<span class="dv">5</span>, <span class="op">-</span><span class="dv">5</span>, <span class="dv">7</span>])  <span class="co"># Add outliers</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a box plot</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>sns.boxplot(x<span class="op">=</span>data)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Box Plot Showing Outliers'</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a scatter plot</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>plt.scatter(<span class="bu">range</span>(<span class="bu">len</span>(data)), data)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Scatter Plot Showing Outliers'</span>)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Value'</span>)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>plt.axhline(y<span class="op">=</span>np.mean(data) <span class="op">+</span> <span class="dv">2</span><span class="op">*</span>np.std(data), color<span class="op">=</span><span class="st">'r'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, label<span class="op">=</span><span class="st">'2σ Threshold'</span>)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>plt.axhline(y<span class="op">=</span>np.mean(data) <span class="op">-</span> <span class="dv">2</span><span class="op">*</span>np.std(data), color<span class="op">=</span><span class="st">'r'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter7_files/figure-html/cell-2-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter7_files/figure-html/cell-2-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="quartiles-and-the-boxplot-method" class="level3" data-number="9.1.1">
+<h3 data-number="9.1.1" class="anchored" data-anchor-id="quartiles-and-the-boxplot-method"><span class="header-section-number">9.1.1</span> Quartiles and the Boxplot Method</h3>
+<p>A boxplot divides data into quartiles, summarizing five key statistics:</p>
+<ul>
+<li><strong>Minimum</strong>: The smallest value excluding outliers</li>
+<li><strong>First quartile (Q1)</strong>: The median of the lower half (25% of data below Q1)</li>
+<li><strong>Median</strong>: The middle value of the dataset</li>
+<li><strong>Third quartile (Q3)</strong>: The median of the upper half (75% of data below Q3)</li>
+<li><strong>Maximum</strong>: The largest value excluding outliers</li>
+</ul>
+<p>A common rule for identifying outliers in boxplots is the 1.5 IQR rule:</p>
+<ul>
+<li>IQR (Interquartile Range) = Q3 - Q1</li>
+<li>Any value above Q3 + 1.5 × IQR or below Q1 - 1.5 × IQR is considered an outlier.</li>
+</ul>
+<p>This method is robust to extreme values and doesn’t assume a specific distribution, making it widely applicable.</p>
+<div id="f209f750" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Find outliers using the IQR method</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> find_outliers_iqr(data):</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    q1 <span class="op">=</span> np.percentile(data, <span class="dv">25</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    q3 <span class="op">=</span> np.percentile(data, <span class="dv">75</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    iqr <span class="op">=</span> q3 <span class="op">-</span> q1</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    lower_bound <span class="op">=</span> q1 <span class="op">-</span> <span class="fl">1.5</span> <span class="op">*</span> iqr</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    upper_bound <span class="op">=</span> q3 <span class="op">+</span> <span class="fl">1.5</span> <span class="op">*</span> iqr</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    outliers <span class="op">=</span> [x <span class="cf">for</span> x <span class="kw">in</span> data <span class="cf">if</span> x <span class="op">&lt;</span> lower_bound <span class="kw">or</span> x <span class="op">&gt;</span> upper_bound]</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    outlier_indices <span class="op">=</span> [i <span class="cf">for</span> i, x <span class="kw">in</span> <span class="bu">enumerate</span>(data) <span class="cf">if</span> x <span class="op">&lt;</span> lower_bound <span class="kw">or</span> x <span class="op">&gt;</span> upper_bound]</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> outliers, outlier_indices, (lower_bound, upper_bound)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>outliers, outlier_indices, bounds <span class="op">=</span> find_outliers_iqr(data)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Outliers: </span><span class="sc">{</span>outliers<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Outlier indices: </span><span class="sc">{</span>outlier_indices<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Bounds (lower, upper): </span><span class="sc">{</span>bounds<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Outliers: [np.float64(-2.6197451040897444), np.float64(5.0), np.float64(-5.0), np.float64(7.0)]
+Outlier indices: [74, 100, 101, 102]
+Bounds (lower, upper): (np.float64(-2.260417817278694), np.float64(2.164235959266887))</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="cluster-based-outlier-detection" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="cluster-based-outlier-detection"><span class="header-section-number">9.2</span> Cluster-Based Outlier Detection</h2>
+<p>This method involves clustering data points and identifying those that do not belong to any cluster or form small, isolated clusters. The fundamental assumption is that normal data points belong to large, dense clusters, while outliers either:</p>
+<ol type="1">
+<li>Form small clusters far from the main clusters</li>
+<li>Do not belong to any cluster</li>
+<li>Are assigned to a cluster but are far from the cluster center</li>
+</ol>
+<p>Common clustering algorithms used for outlier detection include:</p>
+<ul>
+<li><strong>K-means Clustering</strong>: Outliers are points that are far from any cluster mean or belong to a small cluster</li>
+<li><strong>Density-Based Clustering</strong> (e.g., DBSCAN): Outliers are data points that remain unassigned to clusters</li>
+<li><strong>Hierarchical Clustering</strong>: Outliers take longer to merge with other groups, making them distinguishable</li>
+</ul>
+<div id="c08ecbe3" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.cluster <span class="im">import</span> KMeans</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> make_blobs</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate sample data with clusters and outliers</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>X, _ <span class="op">=</span> make_blobs(n_samples<span class="op">=</span><span class="dv">300</span>, centers<span class="op">=</span><span class="dv">3</span>, cluster_std<span class="op">=</span><span class="fl">0.60</span>, random_state<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Add some outliers</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.vstack([X, np.array([[<span class="dv">6</span>, <span class="dv">6</span>], [<span class="op">-</span><span class="dv">6</span>, <span class="op">-</span><span class="dv">6</span>], [<span class="dv">6</span>, <span class="op">-</span><span class="dv">6</span>], [<span class="op">-</span><span class="dv">6</span>, <span class="dv">6</span>]])])</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply K-means clustering</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>kmeans <span class="op">=</span> KMeans(n_clusters<span class="op">=</span><span class="dv">3</span>, random_state<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>cluster_labels <span class="op">=</span> kmeans.fit_predict(X)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>cluster_centers <span class="op">=</span> kmeans.cluster_centers_</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate distance of each point to its cluster center</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>distances <span class="op">=</span> np.zeros(X.shape[<span class="dv">0</span>])</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(X.shape[<span class="dv">0</span>]):</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    cluster_idx <span class="op">=</span> cluster_labels[i]</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    distances[i] <span class="op">=</span> np.linalg.norm(X[i] <span class="op">-</span> cluster_centers[cluster_idx])</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify potential outliers (points with largest distances)</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>threshold <span class="op">=</span> np.percentile(distances, <span class="dv">95</span>)  <span class="co"># Top 5% as outliers</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>outlier_mask <span class="op">=</span> distances <span class="op">&gt;</span> threshold</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize the clusters and outliers</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>plt.scatter(X[<span class="op">~</span>outlier_mask, <span class="dv">0</span>], X[<span class="op">~</span>outlier_mask, <span class="dv">1</span>], c<span class="op">=</span>cluster_labels[<span class="op">~</span>outlier_mask], </span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>            cmap<span class="op">=</span><span class="st">'viridis'</span>, marker<span class="op">=</span><span class="st">'o'</span>, s<span class="op">=</span><span class="dv">50</span>, alpha<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>plt.scatter(X[outlier_mask, <span class="dv">0</span>], X[outlier_mask, <span class="dv">1</span>], c<span class="op">=</span><span class="st">'red'</span>, marker<span class="op">=</span><span class="st">'x'</span>, s<span class="op">=</span><span class="dv">100</span>, label<span class="op">=</span><span class="st">'Outliers'</span>)</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>plt.scatter(cluster_centers[:, <span class="dv">0</span>], cluster_centers[:, <span class="dv">1</span>], c<span class="op">=</span><span class="st">'black'</span>, marker<span class="op">=</span><span class="st">'*'</span>, s<span class="op">=</span><span class="dv">200</span>, label<span class="op">=</span><span class="st">'Centroids'</span>)</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'K-means Clustering with Outlier Detection'</span>)</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter7_files/figure-html/cell-4-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="distance-based-outlier-detection" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="distance-based-outlier-detection"><span class="header-section-number">9.3</span> Distance-Based Outlier Detection</h2>
+<p>Rather than relying on visualization or clustering, distance-based methods use spatial relationships to detect anomalies. These approaches are particularly useful for high-dimensional data where visualization becomes challenging.</p>
+<section id="global-distance-based-detection-knn" class="level3" data-number="9.3.1">
+<h3 data-number="9.3.1" class="anchored" data-anchor-id="global-distance-based-detection-knn"><span class="header-section-number">9.3.1</span> Global Distance-Based Detection (KNN)</h3>
+<p>The K-Nearest Neighbors (KNN) approach for outlier detection follows these steps:</p>
+<ol type="1">
+<li>Compute the average distance of each point to its K-nearest neighbors</li>
+<li>Sort these distances and flag the largest ones as outliers</li>
+<li>This is useful for identifying global outliers that deviate from the overall data distribution</li>
+</ol>
+</section>
+<section id="local-distance-based-detection" class="level3" data-number="9.3.2">
+<h3 data-number="9.3.2" class="anchored" data-anchor-id="local-distance-based-detection"><span class="header-section-number">9.3.2</span> Local Distance-Based Detection</h3>
+<p>Local distance-based methods account for varying data densities by considering the locality of each point:</p>
+<ol type="1">
+<li>An outlier’s ‘outlierness’ is determined by comparing its distance to neighbors relative to how far those neighbors are from their own neighbors</li>
+<li>If the ratio exceeds 1, the point is flagged as an outlier</li>
+<li>This approach can detect local outliers in datasets with varying densities</li>
+</ol>
+<div id="7b62da3c" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.neighbors <span class="im">import</span> NearestNeighbors</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate sample 2D data</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>X_normal <span class="op">=</span> np.random.normal(<span class="dv">0</span>, <span class="dv">1</span>, (<span class="dv">100</span>, <span class="dv">2</span>))</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>X_outliers <span class="op">=</span> np.random.uniform(<span class="op">-</span><span class="dv">4</span>, <span class="dv">4</span>, (<span class="dv">5</span>, <span class="dv">2</span>))</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.vstack([X_normal, X_outliers])</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Find k-nearest neighbors</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>k <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>nbrs <span class="op">=</span> NearestNeighbors(n_neighbors<span class="op">=</span>k).fit(X)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>distances, indices <span class="op">=</span> nbrs.kneighbors(X)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate average distance to k-nearest neighbors</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>avg_knn_distance <span class="op">=</span> distances[:, <span class="dv">1</span>:].mean(axis<span class="op">=</span><span class="dv">1</span>)  <span class="co"># Exclude self (distance=0)</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify outliers</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>threshold <span class="op">=</span> np.percentile(avg_knn_distance, <span class="dv">95</span>)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>outlier_mask <span class="op">=</span> avg_knn_distance <span class="op">&gt;</span> threshold</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize results</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>plt.scatter(X[<span class="op">~</span>outlier_mask, <span class="dv">0</span>], X[<span class="op">~</span>outlier_mask, <span class="dv">1</span>], c<span class="op">=</span><span class="st">'blue'</span>, label<span class="op">=</span><span class="st">'Normal points'</span>)</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>plt.scatter(X[outlier_mask, <span class="dv">0</span>], X[outlier_mask, <span class="dv">1</span>], c<span class="op">=</span><span class="st">'red'</span>, marker<span class="op">=</span><span class="st">'x'</span>, s<span class="op">=</span><span class="dv">100</span>, label<span class="op">=</span><span class="st">'Outliers'</span>)</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="ss">f'KNN Distance-Based Outlier Detection (k=</span><span class="sc">{</span>k<span class="sc">}</span><span class="ss">)'</span>)</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter7_files/figure-html/cell-5-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="tree-based-outlier-detection-isolation-forests" class="level2" data-number="9.4">
+<h2 data-number="9.4" class="anchored" data-anchor-id="tree-based-outlier-detection-isolation-forests"><span class="header-section-number">9.4</span> Tree-Based Outlier Detection: Isolation Forests</h2>
+<p>Isolation Forests provide a tree-based approach to anomaly detection, making them highly efficient for large and high-dimensional datasets. This method partitions data randomly to isolate anomalies based on the principle that outliers are “few and different” and therefore should be easier to isolate.</p>
+<p><strong>Key Features:</strong></p>
+<ul>
+<li>Uses multiple decision trees to calculate anomaly scores</li>
+<li>Has linear time complexity, making it scalable for large datasets</li>
+<li>Does not require assumptions about feature distributions</li>
+<li>Works best with large datasets but performs poorly on small datasets</li>
+<li>Can detect anomalies without prior knowledge but does not explain why a point is anomalous</li>
+</ul>
+<p><strong>Steps of Isolation Forest Algorithm:</strong></p>
+<ol type="1">
+<li>Randomly select a feature</li>
+<li>Randomly choose a split value within the feature’s range</li>
+<li>Partition the data into two child nodes</li>
+<li>Recursively repeat the process until:
+<ul>
+<li>Each leaf node has only one instance</li>
+<li>A predefined maximum depth is reached</li>
+</ul></li>
+</ol>
+<p>The anomaly score is calculated based on the path length to isolate a point. Outliers typically have shorter path lengths.</p>
+<div id="50ae5836" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> IsolationForest</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate sample data with outliers</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>X_normal <span class="op">=</span> np.random.normal(<span class="dv">0</span>, <span class="dv">1</span>, (<span class="dv">100</span>, <span class="dv">2</span>))</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>X_outliers <span class="op">=</span> np.random.uniform(<span class="op">-</span><span class="dv">4</span>, <span class="dv">4</span>, (<span class="dv">5</span>, <span class="dv">2</span>))</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.vstack([X_normal, X_outliers])</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply Isolation Forest</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>iso_forest <span class="op">=</span> IsolationForest(contamination<span class="op">=</span><span class="fl">0.05</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>predictions <span class="op">=</span> iso_forest.fit_predict(X)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>outlier_mask <span class="op">=</span> predictions <span class="op">==</span> <span class="op">-</span><span class="dv">1</span>  <span class="co"># -1 for outliers, 1 for inliers</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize results</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>plt.scatter(X[<span class="op">~</span>outlier_mask, <span class="dv">0</span>], X[<span class="op">~</span>outlier_mask, <span class="dv">1</span>], c<span class="op">=</span><span class="st">'blue'</span>, label<span class="op">=</span><span class="st">'Normal points'</span>)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>plt.scatter(X[outlier_mask, <span class="dv">0</span>], X[outlier_mask, <span class="dv">1</span>], c<span class="op">=</span><span class="st">'red'</span>, marker<span class="op">=</span><span class="st">'x'</span>, s<span class="op">=</span><span class="dv">100</span>, label<span class="op">=</span><span class="st">'Outliers'</span>)</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Isolation Forest Outlier Detection'</span>)</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Show anomaly scores</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>anomaly_scores <span class="op">=</span> iso_forest.decision_function(X)</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>plt.hist(anomaly_scores, bins<span class="op">=</span><span class="dv">20</span>)</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>plt.axvline(x<span class="op">=</span><span class="dv">0</span>, color<span class="op">=</span><span class="st">'r'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>)</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Isolation Forest Anomaly Scores (lower = more anomalous)'</span>)</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Score'</span>)</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Count'</span>)</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter7_files/figure-html/cell-6-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter7_files/figure-html/cell-6-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="challenges-in-unsupervised-outlier-detection" class="level2" data-number="9.5">
+<h2 data-number="9.5" class="anchored" data-anchor-id="challenges-in-unsupervised-outlier-detection"><span class="header-section-number">9.5</span> Challenges in Unsupervised Outlier Detection</h2>
+<p>While unsupervised methods are powerful, they come with challenges:</p>
+<ul>
+<li><strong>False positives</strong>: Legitimate data points may be flagged as outliers</li>
+<li><strong>Domain-specific outliers</strong>: What constitutes an outlier varies by domain</li>
+<li><strong>Parameter sensitivity</strong>: Results depend on parameter choices (k in KNN, contamination in Isolation Forest)</li>
+<li><strong>Dismissal of true anomalies</strong>: A notable example is the delayed discovery of the ozone hole, which remained undetected for years because the anomaly was disregarded by automated systems</li>
+</ul>
+<p>Striking a balance between reporting genuine outliers and avoiding excessive false positives is crucial in data-driven decision-making.</p>
+</section>
+<section id="recommender-systems" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> Recommender Systems</h1>
+<p>Recommender systems play a crucial role in online retail, content platforms, and various digital services by helping businesses suggest relevant products to customers. By analyzing user behavior, purchase history, and product similarities, recommendation algorithms improve user experience and increase sales.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Business Impact of Recommender Systems
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>35% of Amazon’s revenue comes from recommendations</li>
+<li>75% of Netflix views are driven by recommendations</li>
+<li>Spotify’s Discover Weekly has a 55% click-through rate</li>
+</ul>
+</div>
+</div>
+<section id="recommendation-scenarios" class="level2" data-number="10.1">
+<h2 data-number="10.1" class="anchored" data-anchor-id="recommendation-scenarios"><span class="header-section-number">10.1</span> Recommendation Scenarios</h2>
+<p>Recommender systems operate in different contexts:</p>
+<ul>
+<li><strong>Item-based recommendation</strong>: Suggest items similar to a given item (e.g., Amazon’s “Customers who bought this also bought”)</li>
+<li><strong>User-based recommendation</strong>: Suggest items to a user based on their past behavior (e.g., Netflix homepage)</li>
+<li><strong>Hybrid recommendation</strong>: Combines both item-based and user-based approaches for personalized recommendations</li>
+</ul>
+<p>A key challenge is that users rate only a small fraction of available items, leading to a sparse user-item matrix. The system must predict missing ratings to provide effective recommendations.</p>
+</section>
+<section id="types-of-recommender-systems" class="level2" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="types-of-recommender-systems"><span class="header-section-number">10.2</span> Types of Recommender Systems</h2>
+<section id="content-based-filtering" class="level3" data-number="10.2.1">
+<h3 data-number="10.2.1" class="anchored" data-anchor-id="content-based-filtering"><span class="header-section-number">10.2.1</span> 1. Content-Based Filtering</h3>
+<p>Content-based filtering recommends items similar to those a user has liked in the past based on item features:</p>
+<ul>
+<li><strong>Assumptions</strong>: Access to side information about items (e.g., genre, keywords, descriptions)</li>
+<li><strong>Approach</strong>: Uses supervised learning to extract item and user features, then builds a model to predict ratings</li>
+<li><strong>Advantages</strong>: Can make recommendations for new users/items without requiring previous interactions</li>
+<li><strong>Real-world examples</strong>:
+<ul>
+<li>Pandora (music recommendations based on song attributes)</li>
+<li>Gmail’s important messages (predicting which emails are important based on content)</li>
+</ul></li>
+</ul>
+</section>
+<section id="collaborative-filtering" class="level3" data-number="10.2.2">
+<h3 data-number="10.2.2" class="anchored" data-anchor-id="collaborative-filtering"><span class="header-section-number">10.2.2</span> 2. Collaborative Filtering</h3>
+<p>Collaborative filtering recommends items based on similarity patterns between users and/or items:</p>
+<ul>
+<li><strong>Assumptions</strong>: Does not require side information about items</li>
+<li><strong>Core idea</strong>: Personal tastes are correlated. If Alice and Bob both like X, and Alice likes Y, then Bob is more likely to like Y</li>
+<li><strong>Approach</strong>: Uses an unsupervised learning approach. Have labels (ratings) but no explicit feature vectors</li>
+<li><strong>Limitations</strong>: Struggles with the cold start problem (poor predictions for new users or items)</li>
+</ul>
+</section>
+</section>
+<section id="user-product-matrix" class="level2" data-number="10.3">
+<h2 data-number="10.3" class="anchored" data-anchor-id="user-product-matrix"><span class="header-section-number">10.3</span> User-Product Matrix</h2>
+<p>The user-product matrix represents users as rows and products as columns, with entries indicating purchases or ratings. This matrix is the foundation of many recommendation algorithms.</p>
+<div id="bccf1fd3" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a sample user-item matrix</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>users <span class="op">=</span> [<span class="st">'User1'</span>, <span class="st">'User2'</span>, <span class="st">'User3'</span>, <span class="st">'User4'</span>, <span class="st">'User5'</span>]</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>items <span class="op">=</span> [<span class="st">'Item1'</span>, <span class="st">'Item2'</span>, <span class="st">'Item3'</span>, <span class="st">'Item4'</span>, <span class="st">'Item5'</span>]</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>ratings <span class="op">=</span> np.zeros((<span class="bu">len</span>(users), <span class="bu">len</span>(items)))</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Fill with some ratings (1-5), 0 means no rating</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(users)):</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(items)):</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> np.random.random() <span class="op">&gt;</span> <span class="fl">0.3</span>:  <span class="co"># 70% chance of having a rating</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>            ratings[i, j] <span class="op">=</span> np.random.randint(<span class="dv">1</span>, <span class="dv">6</span>)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a DataFrame for better visualization</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>ratings_df <span class="op">=</span> pd.DataFrame(ratings, index<span class="op">=</span>users, columns<span class="op">=</span>items)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"User-Item Rating Matrix:"</span>)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ratings_df)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize the matrix</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>sns.heatmap(ratings_df, annot<span class="op">=</span><span class="va">True</span>, cmap<span class="op">=</span><span class="st">'YlGnBu'</span>, cbar_kws<span class="op">=</span>{<span class="st">'label'</span>: <span class="st">'Rating'</span>})</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'User-Item Rating Matrix'</span>)</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>User-Item Rating Matrix:
+       Item1  Item2  Item3  Item4  Item5
+User1    5.0    0.0    5.0    0.0    0.0
+User2    0.0    4.0    0.0    5.0    4.0
+User3    2.0    0.0    0.0    5.0    1.0
+User4    2.0    0.0    3.0    4.0    3.0
+User5    5.0    2.0    4.0    2.0    5.0</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter7_files/figure-html/cell-7-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="collaborative-filtering-methods" class="level2" data-number="10.4">
+<h2 data-number="10.4" class="anchored" data-anchor-id="collaborative-filtering-methods"><span class="header-section-number">10.4</span> Collaborative Filtering Methods</h2>
+<section id="neighborhood-methods" class="level3" data-number="10.4.1">
+<h3 data-number="10.4.1" class="anchored" data-anchor-id="neighborhood-methods"><span class="header-section-number">10.4.1</span> 1. Neighborhood Methods</h3>
+<p>Neighborhood methods find users or items with similar preferences:</p>
+<ul>
+<li><strong>User-based</strong>: If a group of users liked the same set of movies, recommend those movies to others in the group</li>
+<li><strong>Item-based</strong>: If two items have similar rating patterns, recommend one to users who liked the other</li>
+</ul>
+<p><strong>Algorithm:</strong> 1. Identify similar users/movies based on rating patterns 2. Recommend movies watched by similar users</p>
+<p>Amazon’s Product Recommendation Method uses nearest neighbor (KNN) searches across product columns to determine similarity. The goal is to find products that minimize the difference between them:</p>
+<ul>
+<li>Normalize each column by dividing by its norm: <span class="math inline">\(\hat{X}_j = \frac{X_j}{\|X_j\|}\)</span></li>
+<li>This ensures that recommendations reflect the relative popularity of a product rather than absolute purchase counts</li>
+<li>Products bought by similar users are considered more alike</li>
+</ul>
+<div id="ca12e135" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics.pairwise <span class="im">import</span> cosine_similarity</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute item-item similarity matrix</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>item_similarity <span class="op">=</span> cosine_similarity(ratings_df.T)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>item_sim_df <span class="op">=</span> pd.DataFrame(item_similarity, index<span class="op">=</span>items, columns<span class="op">=</span>items)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Item-Item Similarity Matrix:"</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(item_sim_df)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize item similarity</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>sns.heatmap(item_sim_df, annot<span class="op">=</span><span class="va">True</span>, cmap<span class="op">=</span><span class="st">'coolwarm'</span>, vmin<span class="op">=-</span><span class="dv">1</span>, vmax<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Item-Item Similarity Matrix (Cosine Similarity)'</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to get top N similar items</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_similar_items(item_name, item_sim_df, n<span class="op">=</span><span class="dv">2</span>):</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    similar_items <span class="op">=</span> item_sim_df[item_name].sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Exclude the item itself</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    similar_items <span class="op">=</span> similar_items.drop(item_name)</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> similar_items.head(n)</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Example: Get items similar to Item1</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>similar_to_item1 <span class="op">=</span> get_similar_items(<span class="st">'Item1'</span>, item_sim_df)</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Items similar to Item1:"</span>)</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(similar_to_item1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Item-Item Similarity Matrix:
+          Item1     Item2     Item3     Item4     Item5
+Item1  1.000000  0.293610  0.947046  0.439435  0.606757
+Item2  0.293610  1.000000  0.252982  0.641427  0.814092
+Item3  0.947046  0.252982  1.000000  0.338062  0.574286
+Item4  0.439435  0.641427  0.338062  1.000000  0.786618
+Item5  0.606757  0.814092  0.574286  0.786618  1.000000</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter7_files/figure-html/cell-8-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Items similar to Item1:
+Item3    0.947046
+Item5    0.606757
+Name: Item1, dtype: float64</code></pre>
+</div>
+</div>
+</section>
+<section id="latent-factor-methods" class="level3" data-number="10.4.2">
+<h3 data-number="10.4.2" class="anchored" data-anchor-id="latent-factor-methods"><span class="header-section-number">10.4.2</span> 2. Latent Factor Methods</h3>
+<p>Instead of looking at raw ratings, latent factor models assume that both users and movies exist in a lower-dimensional feature space representing hidden properties.</p>
+<ul>
+<li>Each movie and user is mapped to a vector in this space</li>
+<li>Recommendations are made based on proximity in this latent space</li>
+</ul>
+<p><strong>Example:</strong> A user interested in action movies might have a high latent factor score for “intensity,” leading to recommendations for high-action films.</p>
+</section>
+</section>
+<section id="matrix-factorization-mf" class="level2" data-number="10.5">
+<h2 data-number="10.5" class="anchored" data-anchor-id="matrix-factorization-mf"><span class="header-section-number">10.5</span> Matrix Factorization (MF)</h2>
+<p>Matrix Factorization is a powerful approach to collaborative filtering, decomposing the user-item matrix into lower-dimensional factors:</p>
+<ul>
+<li>Defines a model with an objective function</li>
+<li>Optimized using stochastic gradient descent</li>
+</ul>
+<p><strong>Types of Matrix Factorization:</strong> - Unconstrained Matrix Factorization - Singular Value Decomposition (SVD) - Non-negative Matrix Factorization (NMF)</p>
+<p><strong>Mathematical Formulation:</strong> For a user-item matrix <span class="math inline">\(R\)</span> with users <span class="math inline">\(u\)</span> and items <span class="math inline">\(i\)</span>, matrix factorization finds matrices <span class="math inline">\(P\)</span> and <span class="math inline">\(Q\)</span> such that:</p>
+<p><span class="math inline">\(R \approx P \times Q^T\)</span></p>
+<p>Where <span class="math inline">\(P\)</span> represents user vectors and <span class="math inline">\(Q\)</span> represents item vectors in the latent space.</p>
+<div id="f82f17f8" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> NMF</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Fill missing values with zeros for demonstration</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># In practice, you might want to use mean imputation or more sophisticated methods</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>ratings_matrix <span class="op">=</span> ratings_df.values</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Non-negative Matrix Factorization</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>n_components <span class="op">=</span> <span class="dv">2</span>  <span class="co"># Number of latent factors</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> NMF(n_components<span class="op">=</span>n_components, init<span class="op">=</span><span class="st">'random'</span>, random_state<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>user_features <span class="op">=</span> model.fit_transform(ratings_matrix)</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>item_features <span class="op">=</span> model.components_</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Display latent factors</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"User Latent Factors:"</span>)</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>user_factors_df <span class="op">=</span> pd.DataFrame(user_features, index<span class="op">=</span>users, </span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>                             columns<span class="op">=</span>[<span class="ss">f'Factor </span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">'</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n_components)])</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(user_factors_df)</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Item Latent Factors:"</span>)</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>item_factors_df <span class="op">=</span> pd.DataFrame(item_features.T, index<span class="op">=</span>items, </span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>                             columns<span class="op">=</span>[<span class="ss">f'Factor </span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">'</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n_components)])</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(item_factors_df)</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize user and item factors in the latent space</span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">8</span>))</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>plt.scatter(user_features[:, <span class="dv">0</span>], user_features[:, <span class="dv">1</span>], c<span class="op">=</span><span class="st">'blue'</span>, marker<span class="op">=</span><span class="st">'o'</span>, s<span class="op">=</span><span class="dv">100</span>, label<span class="op">=</span><span class="st">'Users'</span>)</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>plt.scatter(item_features.T[:, <span class="dv">0</span>], item_features.T[:, <span class="dv">1</span>], c<span class="op">=</span><span class="st">'red'</span>, marker<span class="op">=</span><span class="st">'^'</span>, s<span class="op">=</span><span class="dv">100</span>, label<span class="op">=</span><span class="st">'Items'</span>)</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Add labels</span></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, user <span class="kw">in</span> <span class="bu">enumerate</span>(users):</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>    plt.annotate(user, (user_features[i, <span class="dv">0</span>], user_features[i, <span class="dv">1</span>]), textcoords<span class="op">=</span><span class="st">"offset points"</span>, </span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>                 xytext<span class="op">=</span>(<span class="dv">0</span>,<span class="dv">10</span>), ha<span class="op">=</span><span class="st">'center'</span>)</span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, item <span class="kw">in</span> <span class="bu">enumerate</span>(items):</span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>    plt.annotate(item, (item_features.T[i, <span class="dv">0</span>], item_features.T[i, <span class="dv">1</span>]), textcoords<span class="op">=</span><span class="st">"offset points"</span>, </span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>                 xytext<span class="op">=</span>(<span class="dv">0</span>,<span class="dv">10</span>), ha<span class="op">=</span><span class="st">'center'</span>)</span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Users and Items in the Latent Factor Space'</span>)</span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Factor 1'</span>)</span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Factor 2'</span>)</span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Reconstruct the ratings matrix and compute the predicted ratings</span></span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a>reconstructed_ratings <span class="op">=</span> np.dot(user_features, item_features)</span>
+<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a>predicted_ratings_df <span class="op">=</span> pd.DataFrame(reconstructed_ratings, index<span class="op">=</span>users, columns<span class="op">=</span>items)</span>
+<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Predicted Ratings:"</span>)</span>
+<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(predicted_ratings_df.<span class="bu">round</span>(<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>User Latent Factors:
+       Factor 1  Factor 2
+User1  0.000000  2.150735
+User2  1.895195  0.000000
+User3  1.109400  0.326875
+User4  1.115771  1.064441
+User5  1.110953  2.042516
+
+Item Latent Factors:
+       Factor 1  Factor 2
+Item1  0.165554  2.303040
+Item2  1.342522  0.000000
+Item3  0.000000  2.203462
+Item4  2.973004  0.000000
+Item5  2.114626  0.563500</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter7_files/figure-html/cell-9-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Predicted Ratings:
+       Item1  Item2  Item3  Item4  Item5
+User1    5.0    0.0    4.7    0.0    1.2
+User2    0.3    2.5    0.0    5.6    4.0
+User3    0.9    1.5    0.7    3.3    2.5
+User4    2.6    1.5    2.3    3.3    3.0
+User5    4.9    1.5    4.5    3.3    3.5</code></pre>
+</div>
+</div>
+</section>
+<section id="computational-challenges" class="level2" data-number="10.6">
+<h2 data-number="10.6" class="anchored" data-anchor-id="computational-challenges"><span class="header-section-number">10.6</span> Computational Challenges</h2>
+<p>Finding KNNs in a dataset with n users and d products has a computational cost of O(nd), which becomes infeasible at scale. However, optimizations include:</p>
+<ul>
+<li>Leveraging sparse matrices to reduce complexity</li>
+<li>Using approximate nearest neighbor search to speed up calculations</li>
+<li>Applying clustering techniques to limit the search space</li>
+</ul>
+</section>
+<section id="beyond-accuracy-in-recommender-systems" class="level2" data-number="10.7">
+<h2 data-number="10.7" class="anchored" data-anchor-id="beyond-accuracy-in-recommender-systems"><span class="header-section-number">10.7</span> Beyond Accuracy in Recommender Systems</h2>
+<p>While accuracy is crucial, other factors influence a recommender system’s effectiveness:</p>
+<ul>
+<li><strong>Diversity</strong>: How different are the recommendations? (Avoid showing only similar items)</li>
+<li><strong>Serendipity</strong>: How surprising and useful are the recommendations?</li>
+<li><strong>Persistence</strong>: How long should recommendations stay relevant?</li>
+<li><strong>Trust</strong>: Providing explanations for recommendations increases user trust
+<ul>
+<li>Example: Quora explains why certain answers are recommended</li>
+</ul></li>
+<li><strong>Social Recommendation</strong>: What did your friends watch or buy?</li>
+<li><strong>Freshness</strong>: Users often prefer recent and surprising recommendations</li>
+</ul>
+<p>Recommender systems continue to evolve, incorporating hybrid models, deep learning, and reinforcement learning to enhance personalization and engagement.</p>
+</section>
+</section>
+<section id="class-imbalance-in-machine-learning" class="level1" data-number="11">
+<h1 data-number="11"><span class="header-section-number">11</span> Class Imbalance in Machine Learning</h1>
+<p>Class imbalance occurs when one class in a dataset has significantly more samples than another. This imbalance can impact the performance of machine learning models, particularly classification algorithms.</p>
+<section id="categorization-of-class-imbalance" class="level2" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="categorization-of-class-imbalance"><span class="header-section-number">11.1</span> Categorization of Class Imbalance</h2>
+<p>A class imbalance problem arises when the classes in a dataset are not equally represented. Common examples include:</p>
+<ul>
+<li>Fraud detection (few fraudulent transactions among many legitimate ones)</li>
+<li>Medical diagnosis (rare diseases)</li>
+<li>Network intrusion detection (few attacks among normal traffic)</li>
+</ul>
+<p>The <strong>imbalance ratio</strong> is calculated as: <span class="math inline">\(\text{Imbalance Ratio} = \frac{\text{Number of Majority Class Samples}}{\text{Number of Minority Class Samples}}\)</span></p>
+<p>A high imbalance ratio indicates a severely skewed dataset.</p>
+</section>
+<section id="sampling-techniques" class="level2" data-number="11.2">
+<h2 data-number="11.2" class="anchored" data-anchor-id="sampling-techniques"><span class="header-section-number">11.2</span> Sampling Techniques</h2>
+<p>Sampling is a statistical process where a predetermined number of observations are taken from a larger population. It helps adjust the class distribution in a dataset to improve model performance.</p>
+<section id="oversampling" class="level3" data-number="11.2.1">
+<h3 data-number="11.2.1" class="anchored" data-anchor-id="oversampling"><span class="header-section-number">11.2.1</span> Oversampling</h3>
+<p>Oversampling increases the number of instances in the minority class. Two sophisticated techniques include:</p>
+<section id="synthetic-minority-oversampling-technique-smote" class="level4" data-number="11.2.1.1">
+<h4 data-number="11.2.1.1" class="anchored" data-anchor-id="synthetic-minority-oversampling-technique-smote"><span class="header-section-number">11.2.1.1</span> Synthetic Minority Oversampling Technique (SMOTE)</h4>
+<p>SMOTE generates synthetic examples for the minority class by interpolating existing instances:</p>
+<ol type="1">
+<li>Identifies the k-nearest neighbors of a minority class instance</li>
+<li>Randomly selects one of the k-nearest neighbors</li>
+<li>Generates a new synthetic instance along the line segment connecting the two points</li>
+</ol>
+<p>SMOTE avoids overfitting and helps balance datasets while maintaining diversity.</p>
+</section>
+<section id="adasyn-adaptive-synthetic-sampling" class="level4" data-number="11.2.1.2">
+<h4 data-number="11.2.1.2" class="anchored" data-anchor-id="adasyn-adaptive-synthetic-sampling"><span class="header-section-number">11.2.1.2</span> ADASYN (Adaptive Synthetic Sampling)</h4>
+<p>ADASYN extends SMOTE by focusing on difficult-to-classify instances:</p>
+<ol type="1">
+<li>Calculates the ratio of majority class instances in the k-nearest neighbors of each minority instance</li>
+<li>Generates synthetic samples in proportion to this ratio</li>
+<li>Adjusts the decision boundary to improve classification performance</li>
+</ol>
+</section>
+</section>
+<section id="undersampling" class="level3" data-number="11.2.2">
+<h3 data-number="11.2.2" class="anchored" data-anchor-id="undersampling"><span class="header-section-number">11.2.2</span> Undersampling</h3>
+<p>Reduces the number of instances in the majority class, either randomly or using techniques like:</p>
+<ul>
+<li>Cluster-based undersampling</li>
+<li>Tomek links removal</li>
+<li>Near-miss algorithm</li>
+</ul>
+<div id="48d32ebc" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> make_classification</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> imblearn.over_sampling <span class="im">import</span> SMOTE, ADASYN</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> Counter</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate imbalanced dataset</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>X, y <span class="op">=</span> make_classification(n_samples<span class="op">=</span><span class="dv">5000</span>, n_features<span class="op">=</span><span class="dv">2</span>, n_informative<span class="op">=</span><span class="dv">2</span>, </span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>                          n_redundant<span class="op">=</span><span class="dv">0</span>, n_repeated<span class="op">=</span><span class="dv">0</span>, n_classes<span class="op">=</span><span class="dv">2</span>, </span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>                          n_clusters_per_class<span class="op">=</span><span class="dv">1</span>, </span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>                          weights<span class="op">=</span>[<span class="fl">0.9</span>, <span class="fl">0.1</span>], flip_y<span class="op">=</span><span class="dv">0</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Check class distribution</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Original class distribution:"</span>, Counter(y))</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate imbalance ratio</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>imbalance_ratio <span class="op">=</span> <span class="bu">sum</span>(y <span class="op">==</span> <span class="dv">0</span>) <span class="op">/</span> <span class="bu">sum</span>(y <span class="op">==</span> <span class="dv">1</span>)</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Imbalance ratio: </span><span class="sc">{</span>imbalance_ratio<span class="sc">:.2f}</span><span class="ss">"</span>)</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply SMOTE</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>smote <span class="op">=</span> SMOTE(random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>X_smote, y_smote <span class="op">=</span> smote.fit_resample(X, y)</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"SMOTE class distribution:"</span>, Counter(y_smote))</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply ADASYN</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>adasyn <span class="op">=</span> ADASYN(random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>X_adasyn, y_adasyn <span class="op">=</span> adasyn.fit_resample(X, y)</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"ADASYN class distribution:"</span>, Counter(y_adasyn))</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize original and resampled data</span></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">5</span>))</span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Original data</span></span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">1</span>)</span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>plt.scatter(X[y <span class="op">==</span> <span class="dv">0</span>, <span class="dv">0</span>], X[y <span class="op">==</span> <span class="dv">0</span>, <span class="dv">1</span>], label<span class="op">=</span><span class="st">'Class 0'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>plt.scatter(X[y <span class="op">==</span> <span class="dv">1</span>, <span class="dv">0</span>], X[y <span class="op">==</span> <span class="dv">1</span>, <span class="dv">1</span>], label<span class="op">=</span><span class="st">'Class 1'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Original Data'</span>)</span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a><span class="co"># SMOTE</span></span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">2</span>)</span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a>plt.scatter(X_smote[y_smote <span class="op">==</span> <span class="dv">0</span>, <span class="dv">0</span>], X_smote[y_smote <span class="op">==</span> <span class="dv">0</span>, <span class="dv">1</span>], label<span class="op">=</span><span class="st">'Class 0'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a>plt.scatter(X_smote[y_smote <span class="op">==</span> <span class="dv">1</span>, <span class="dv">0</span>], X_smote[y_smote <span class="op">==</span> <span class="dv">1</span>, <span class="dv">1</span>], label<span class="op">=</span><span class="st">'Class 1'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'SMOTE Oversampling'</span>)</span>
+<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-45"><a href="#cb15-45" aria-hidden="true" tabindex="-1"></a><span class="co"># ADASYN</span></span>
+<span id="cb15-46"><a href="#cb15-46" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">3</span>)</span>
+<span id="cb15-47"><a href="#cb15-47" aria-hidden="true" tabindex="-1"></a>plt.scatter(X_adasyn[y_adasyn <span class="op">==</span> <span class="dv">0</span>, <span class="dv">0</span>], X_adasyn[y_adasyn <span class="op">==</span> <span class="dv">0</span>, <span class="dv">1</span>], label<span class="op">=</span><span class="st">'Class 0'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb15-48"><a href="#cb15-48" aria-hidden="true" tabindex="-1"></a>plt.scatter(X_adasyn[y_adasyn <span class="op">==</span> <span class="dv">1</span>, <span class="dv">0</span>], X_adasyn[y_adasyn <span class="op">==</span> <span class="dv">1</span>, <span class="dv">1</span>], label<span class="op">=</span><span class="st">'Class 1'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb15-49"><a href="#cb15-49" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'ADASYN Oversampling'</span>)</span>
+<span id="cb15-50"><a href="#cb15-50" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb15-51"><a href="#cb15-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-52"><a href="#cb15-52" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb15-53"><a href="#cb15-53" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Original class distribution: Counter({np.int64(0): 4500, np.int64(1): 500})
+Imbalance ratio: 9.00
+SMOTE class distribution: Counter({np.int64(0): 4500, np.int64(1): 4500})
+ADASYN class distribution: Counter({np.int64(1): 4519, np.int64(0): 4500})</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter7_files/figure-html/cell-10-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="comparison-smote-vs.-adasyn" class="level2" data-number="11.3">
+<h2 data-number="11.3" class="anchored" data-anchor-id="comparison-smote-vs.-adasyn"><span class="header-section-number">11.3</span> Comparison: SMOTE vs.&nbsp;ADASYN</h2>
+<ul>
+<li><strong>SMOTE</strong> generates synthetic samples uniformly, without distinguishing between easy and hard-to-classify instances</li>
+<li><strong>ADASYN</strong> focuses more on samples near decision boundaries, enhancing model performance for difficult cases</li>
+</ul>
+<section id="disadvantages-of-oversampling" class="level3" data-number="11.3.1">
+<h3 data-number="11.3.1" class="anchored" data-anchor-id="disadvantages-of-oversampling"><span class="header-section-number">11.3.1</span> Disadvantages of Oversampling</h3>
+<ul>
+<li>Assumes that the space between any two minority class samples belongs to the minority class, which may not be true for non-linearly separable data</li>
+<li>Can introduce noise if not carefully applied</li>
+<li>May exacerbate the problem of overlapping class distributions</li>
+</ul>
+<div id="ffc25fa8" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestClassifier</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> classification_report, confusion_matrix, roc_curve, auc</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Split the original data</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X, y, test_size<span class="op">=</span><span class="fl">0.3</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Train and evaluate model on original data</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>clf_orig <span class="op">=</span> RandomForestClassifier(random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>clf_orig.fit(X_train, y_train)</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>y_pred_orig <span class="op">=</span> clf_orig.predict(X_test)</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Original data results:"</span>)</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classification_report(y_test, y_pred_orig))</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Train and evaluate model on SMOTE-resampled data</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>X_train_smote, y_train_smote <span class="op">=</span> SMOTE(random_state<span class="op">=</span><span class="dv">42</span>).fit_resample(X_train, y_train)</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>clf_smote <span class="op">=</span> RandomForestClassifier(random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>clf_smote.fit(X_train_smote, y_train_smote)</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>y_pred_smote <span class="op">=</span> clf_smote.predict(X_test)</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">SMOTE results:"</span>)</span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classification_report(y_test, y_pred_smote))</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Train and evaluate model on ADASYN-resampled data</span></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>X_train_adasyn, y_train_adasyn <span class="op">=</span> ADASYN(random_state<span class="op">=</span><span class="dv">42</span>).fit_resample(X_train, y_train)</span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>clf_adasyn <span class="op">=</span> RandomForestClassifier(random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>clf_adasyn.fit(X_train_adasyn, y_train_adasyn)</span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>y_pred_adasyn <span class="op">=</span> clf_adasyn.predict(X_test)</span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">ADASYN results:"</span>)</span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classification_report(y_test, y_pred_adasyn))</span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a><span class="co"># ROC curves</span></span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Original data</span></span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a>y_scores_orig <span class="op">=</span> clf_orig.predict_proba(X_test)[:, <span class="dv">1</span>]</span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a>fpr_orig, tpr_orig, _ <span class="op">=</span> roc_curve(y_test, y_scores_orig)</span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a>roc_auc_orig <span class="op">=</span> auc(fpr_orig, tpr_orig)</span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a>plt.plot(fpr_orig, tpr_orig, label<span class="op">=</span><span class="ss">f'Original (AUC = </span><span class="sc">{</span>roc_auc_orig<span class="sc">:.2f}</span><span class="ss">)'</span>)</span>
+<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a><span class="co"># SMOTE</span></span>
+<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a>y_scores_smote <span class="op">=</span> clf_smote.predict_proba(X_test)[:, <span class="dv">1</span>]</span>
+<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a>fpr_smote, tpr_smote, _ <span class="op">=</span> roc_curve(y_test, y_scores_smote)</span>
+<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a>roc_auc_smote <span class="op">=</span> auc(fpr_smote, tpr_smote)</span>
+<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a>plt.plot(fpr_smote, tpr_smote, label<span class="op">=</span><span class="ss">f'SMOTE (AUC = </span><span class="sc">{</span>roc_auc_smote<span class="sc">:.2f}</span><span class="ss">)'</span>)</span>
+<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a><span class="co"># ADASYN</span></span>
+<span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a>y_scores_adasyn <span class="op">=</span> clf_adasyn.predict_proba(X_test)[:, <span class="dv">1</span>]</span>
+<span id="cb17-48"><a href="#cb17-48" aria-hidden="true" tabindex="-1"></a>fpr_adasyn, tpr_adasyn, _ <span class="op">=</span> roc_curve(y_test, y_scores_adasyn)</span>
+<span id="cb17-49"><a href="#cb17-49" aria-hidden="true" tabindex="-1"></a>roc_auc_adasyn <span class="op">=</span> auc(fpr_adasyn, tpr_adasyn)</span>
+<span id="cb17-50"><a href="#cb17-50" aria-hidden="true" tabindex="-1"></a>plt.plot(fpr_adasyn, tpr_adasyn, label<span class="op">=</span><span class="ss">f'ADASYN (AUC = </span><span class="sc">{</span>roc_auc_adasyn<span class="sc">:.2f}</span><span class="ss">)'</span>)</span>
+<span id="cb17-51"><a href="#cb17-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-52"><a href="#cb17-52" aria-hidden="true" tabindex="-1"></a>plt.plot([<span class="dv">0</span>, <span class="dv">1</span>], [<span class="dv">0</span>, <span class="dv">1</span>], <span class="st">'k--'</span>)</span>
+<span id="cb17-53"><a href="#cb17-53" aria-hidden="true" tabindex="-1"></a>plt.xlim([<span class="fl">0.0</span>, <span class="fl">1.0</span>])</span>
+<span id="cb17-54"><a href="#cb17-54" aria-hidden="true" tabindex="-1"></a>plt.ylim([<span class="fl">0.0</span>, <span class="fl">1.05</span>])</span>
+<span id="cb17-55"><a href="#cb17-55" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'False Positive Rate'</span>)</span>
+<span id="cb17-56"><a href="#cb17-56" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'True Positive Rate'</span>)</span>
+<span id="cb17-57"><a href="#cb17-57" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'ROC Curve Comparison'</span>)</span>
+<span id="cb17-58"><a href="#cb17-58" aria-hidden="true" tabindex="-1"></a>plt.legend(loc<span class="op">=</span><span class="st">"lower right"</span>)</span>
+<span id="cb17-59"><a href="#cb17-59" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb17-60"><a href="#cb17-60" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Original data results:
+              precision    recall  f1-score   support
+
+           0       0.99      0.99      0.99      1346
+           1       0.93      0.94      0.93       154
+
+    accuracy                           0.99      1500
+   macro avg       0.96      0.96      0.96      1500
+weighted avg       0.99      0.99      0.99      1500
+
+
+SMOTE results:
+              precision    recall  f1-score   support
+
+           0       1.00      0.98      0.99      1346
+           1       0.87      0.97      0.92       154
+
+    accuracy                           0.98      1500
+   macro avg       0.93      0.98      0.95      1500
+weighted avg       0.98      0.98      0.98      1500
+
+
+ADASYN results:
+              precision    recall  f1-score   support
+
+           0       1.00      0.98      0.99      1346
+           1       0.84      0.99      0.91       154
+
+    accuracy                           0.98      1500
+   macro avg       0.92      0.98      0.95      1500
+weighted avg       0.98      0.98      0.98      1500
+</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter7_files/figure-html/cell-11-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="evaluation-of-classifiers-with-imbalanced-data" class="level2" data-number="11.4">
+<h2 data-number="11.4" class="anchored" data-anchor-id="evaluation-of-classifiers-with-imbalanced-data"><span class="header-section-number">11.4</span> Evaluation of Classifiers with Imbalanced Data</h2>
+<p>When evaluating classifiers on imbalanced datasets, standard accuracy can be misleading. More appropriate metrics include:</p>
+<ul>
+<li><strong>Precision &amp; Recall</strong>: Measures how well the model identifies the minority class</li>
+<li><strong>F1-score</strong>: Harmonic mean of precision and recall</li>
+<li><strong>ROC-AUC</strong>: Evaluates the ability to distinguish between classes across thresholds</li>
+<li><strong>Precision-Recall AUC</strong>: Often more informative than ROC-AUC for imbalanced datasets</li>
+<li><strong>Geometric Mean</strong>: Balance between sensitivity and specificity</li>
+</ul>
+<p>:</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./chapter6v2.html" class="pagination-link" aria-label="Support Vector Machines and Model Evaluation">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Support Vector Machines and Model Evaluation</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./chapter8.html" class="pagination-link" aria-label="Gradient Descent: Optimization in Machine Learning">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Gradient Descent: Optimization in Machine Learning</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

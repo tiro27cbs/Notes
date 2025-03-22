@@ -1,0 +1,1943 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>6&nbsp; Dimensionality Reduction Methods – Machine Learning and Deep Learning Notes</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./chapter6.html" rel="next">
+<link href="./chapter4.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-8da5b4427184b79ecddefad3d342027e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapter5.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Dimensionality Reduction Methods</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Machine Learning and Deep Learning Notes</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">🚀 Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Fundamentals of Machine Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Building an End-to-End Machine Learning Pipeline</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Unsupervised Learning: Clustering Techniques</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Supervised Learning: Regression and Classification</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter5.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Dimensionality Reduction Methods</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Tree-Based Models and Ensemble Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter6v2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Support Vector Machines and Model Evaluation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Outlier Detection and Recommendation Systems</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter8.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Gradient Descent: Optimization in Machine Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Neural Networks and Deep Learning Foundations</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Batch Normalization, RNN, Distributed Deep Learning and Tensorflow</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#why-reduce-dimensionality" id="toc-why-reduce-dimensionality" class="nav-link active" data-scroll-target="#why-reduce-dimensionality"><span class="header-section-number">6.1</span> Why Reduce Dimensionality?</a></li>
+  <li><a href="#dataset-example-iris" id="toc-dataset-example-iris" class="nav-link" data-scroll-target="#dataset-example-iris"><span class="header-section-number">6.2</span> Dataset Example: Iris</a></li>
+  <li><a href="#approaches-to-dimensionality-reduction" id="toc-approaches-to-dimensionality-reduction" class="nav-link" data-scroll-target="#approaches-to-dimensionality-reduction"><span class="header-section-number">6.3</span> Approaches to Dimensionality Reduction</a>
+  <ul class="collapse">
+  <li><a href="#unsupervised-methods" id="toc-unsupervised-methods" class="nav-link" data-scroll-target="#unsupervised-methods"><span class="header-section-number">6.3.1</span> Unsupervised Methods</a></li>
+  <li><a href="#supervised-methods" id="toc-supervised-methods" class="nav-link" data-scroll-target="#supervised-methods"><span class="header-section-number">6.3.2</span> Supervised Methods</a></li>
+  </ul></li>
+  <li><a href="#advanced-pca-implementations" id="toc-advanced-pca-implementations" class="nav-link" data-scroll-target="#advanced-pca-implementations"><span class="header-section-number">6.4</span> Advanced PCA Implementations</a>
+  <ul class="collapse">
+  <li><a href="#kernel-pca" id="toc-kernel-pca" class="nav-link" data-scroll-target="#kernel-pca"><span class="header-section-number">6.4.1</span> Kernel PCA</a></li>
+  <li><a href="#incremental-pca" id="toc-incremental-pca" class="nav-link" data-scroll-target="#incremental-pca"><span class="header-section-number">6.4.2</span> Incremental PCA</a></li>
+  </ul></li>
+  <li><a href="#visualizing-high-dimensional-data-with-t-sne" id="toc-visualizing-high-dimensional-data-with-t-sne" class="nav-link" data-scroll-target="#visualizing-high-dimensional-data-with-t-sne"><span class="header-section-number">6.5</span> Visualizing High-Dimensional Data with t-SNE</a></li>
+  <li><a href="#real-world-application-mnist-dataset" id="toc-real-world-application-mnist-dataset" class="nav-link" data-scroll-target="#real-world-application-mnist-dataset"><span class="header-section-number">6.6</span> Real-World Application: MNIST Dataset</a></li>
+  <li><a href="#interactive-3d-visualization-with-plotly" id="toc-interactive-3d-visualization-with-plotly" class="nav-link" data-scroll-target="#interactive-3d-visualization-with-plotly"><span class="header-section-number">6.7</span> Interactive 3D Visualization with Plotly</a></li>
+  <li><a href="#choosing-the-right-dimensionality-reduction-technique" id="toc-choosing-the-right-dimensionality-reduction-technique" class="nav-link" data-scroll-target="#choosing-the-right-dimensionality-reduction-technique"><span class="header-section-number">6.8</span> Choosing the Right Dimensionality Reduction Technique</a></li>
+  <li><a href="#singular-value-decomposition-svd" id="toc-singular-value-decomposition-svd" class="nav-link" data-scroll-target="#singular-value-decomposition-svd"><span class="header-section-number">6.9</span> Singular Value Decomposition (SVD)</a>
+  <ul class="collapse">
+  <li><a href="#mathematical-foundation" id="toc-mathematical-foundation" class="nav-link" data-scroll-target="#mathematical-foundation"><span class="header-section-number">6.9.1</span> Mathematical Foundation</a></li>
+  <li><a href="#basic-svd-example" id="toc-basic-svd-example" class="nav-link" data-scroll-target="#basic-svd-example"><span class="header-section-number">6.9.2</span> Basic SVD Example</a></li>
+  <li><a href="#relationship-between-svd-and-pca" id="toc-relationship-between-svd-and-pca" class="nav-link" data-scroll-target="#relationship-between-svd-and-pca"><span class="header-section-number">6.9.3</span> Relationship Between SVD and PCA</a></li>
+  <li><a href="#low-rank-approximation" id="toc-low-rank-approximation" class="nav-link" data-scroll-target="#low-rank-approximation"><span class="header-section-number">6.9.4</span> Low-Rank Approximation</a></li>
+  <li><a href="#svd-for-image-compression" id="toc-svd-for-image-compression" class="nav-link" data-scroll-target="#svd-for-image-compression"><span class="header-section-number">6.9.5</span> SVD for Image Compression</a></li>
+  <li><a href="#applications-of-svd" id="toc-applications-of-svd" class="nav-link" data-scroll-target="#applications-of-svd"><span class="header-section-number">6.9.6</span> Applications of SVD</a></li>
+  <li><a href="#truncated-svd-vs.-pca" id="toc-truncated-svd-vs.-pca" class="nav-link" data-scroll-target="#truncated-svd-vs.-pca"><span class="header-section-number">6.9.7</span> Truncated SVD vs.&nbsp;PCA</a></li>
+  </ul></li>
+  <li><a href="#no-advantages-and-limitations-of-svd" id="toc-no-advantages-and-limitations-of-svd" class="nav-link" data-scroll-target="#no-advantages-and-limitations-of-svd"><span class="header-section-number">6.10</span> No# Advantages and Limitations of SVD</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">6.11</span> Conclusion</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">6.12</span> References</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Dimensionality Reduction Methods</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Dimensionality reduction is a critical technique in data analysis and machine learning that reduces the number of input variables (features) while preserving essential information. High-dimensional datasets often contain redundancy or noise that can be eliminated through these methods.</p>
+<div id="fig-libraries" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="1">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-libraries-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="sourceCode cell-code" id="fig-libraries" data-execution_count="1"><pre class="sourceCode python cell code-with-copy"><code class="sourceCode python"><span id="fig-libraries-1"><a href="#fig-libraries-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="fig-libraries-2"><a href="#fig-libraries-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="fig-libraries-3"><a href="#fig-libraries-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="fig-libraries-4"><a href="#fig-libraries-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="fig-libraries-5"><a href="#fig-libraries-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_iris, fetch_openml</span>
+<span id="fig-libraries-6"><a href="#fig-libraries-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="fig-libraries-7"><a href="#fig-libraries-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> PCA, KernelPCA, IncrementalPCA</span>
+<span id="fig-libraries-8"><a href="#fig-libraries-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.discriminant_analysis <span class="im">import</span> LinearDiscriminantAnalysis</span>
+<span id="fig-libraries-9"><a href="#fig-libraries-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.manifold <span class="im">import</span> TSNE</span>
+<span id="fig-libraries-10"><a href="#fig-libraries-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.express <span class="im">as</span> px</span>
+<span id="fig-libraries-11"><a href="#fig-libraries-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fig-libraries-12"><a href="#fig-libraries-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Set plotting styles</span></span>
+<span id="fig-libraries-13"><a href="#fig-libraries-13" aria-hidden="true" tabindex="-1"></a>sns.set_style(<span class="st">"whitegrid"</span>)</span>
+<span id="fig-libraries-14"><a href="#fig-libraries-14" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">'figure.figsize'</span>] <span class="op">=</span> (<span class="dv">10</span>, <span class="dv">6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-libraries-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.1
+</figcaption>
+</figure>
+</div>
+<section id="why-reduce-dimensionality" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="why-reduce-dimensionality"><span class="header-section-number">6.1</span> Why Reduce Dimensionality?</h2>
+<p>The primary goals of dimensionality reduction include:</p>
+<ol type="1">
+<li><strong>Reducing overfitting</strong> by eliminating noise and redundant features</li>
+<li><strong>Improving computational efficiency</strong> for faster, less expensive algorithms</li>
+<li><strong>Enabling data visualization</strong> by mapping to 2D or 3D spaces</li>
+<li><strong>Removing noise</strong> to focus on meaningful patterns</li>
+</ol>
+</section>
+<section id="dataset-example-iris" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="dataset-example-iris"><span class="header-section-number">6.2</span> Dataset Example: Iris</h2>
+<p>Let’s load and examine the Iris dataset, which we’ll use throughout this document:</p>
+<div id="cell-fig-iris-data" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the Iris dataset</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>iris <span class="op">=</span> load_iris()</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> iris.data</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> iris.target</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>feature_names <span class="op">=</span> iris.feature_names</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>target_names <span class="op">=</span> iris.target_names</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a DataFrame for easier manipulation</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>iris_df <span class="op">=</span> pd.DataFrame(X, columns<span class="op">=</span>feature_names)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>iris_df[<span class="st">'species'</span>] <span class="op">=</span> [target_names[i] <span class="cf">for</span> i <span class="kw">in</span> y]</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Display dataset information</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Dataset shape: </span><span class="sc">{</span>X<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Features: </span><span class="sc">{</span>feature_names<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Number of samples per class: </span><span class="sc">{</span>np<span class="sc">.</span>bincount(y)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Preview the dataset</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>iris_df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Dataset shape: (150, 4)
+Features: ['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)']
+Number of samples per class: [50 50 50]</code></pre>
+</div>
+<div id="fig-iris-data" class="cell-output cell-output-display" data-execution_count="2">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">sepal length (cm)</th>
+<th data-quarto-table-cell-role="th">sepal width (cm)</th>
+<th data-quarto-table-cell-role="th">petal length (cm)</th>
+<th data-quarto-table-cell-role="th">petal width (cm)</th>
+<th data-quarto-table-cell-role="th">species</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>5.1</td>
+<td>3.5</td>
+<td>1.4</td>
+<td>0.2</td>
+<td>setosa</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>4.9</td>
+<td>3.0</td>
+<td>1.4</td>
+<td>0.2</td>
+<td>setosa</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>4.7</td>
+<td>3.2</td>
+<td>1.3</td>
+<td>0.2</td>
+<td>setosa</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>4.6</td>
+<td>3.1</td>
+<td>1.5</td>
+<td>0.2</td>
+<td>setosa</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>5.0</td>
+<td>3.6</td>
+<td>1.4</td>
+<td>0.2</td>
+<td>setosa</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="approaches-to-dimensionality-reduction" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="approaches-to-dimensionality-reduction"><span class="header-section-number">6.3</span> Approaches to Dimensionality Reduction</h2>
+<p>Dimensionality reduction methods fall into two main categories:</p>
+<section id="unsupervised-methods" class="level3" data-number="6.3.1">
+<h3 data-number="6.3.1" class="anchored" data-anchor-id="unsupervised-methods"><span class="header-section-number">6.3.1</span> Unsupervised Methods</h3>
+<p>These techniques don’t require labeled data and find lower-dimensional representations based solely on the intrinsic structure of features.</p>
+<section id="principal-component-analysis-pca" class="level4" data-number="6.3.1.1">
+<h4 data-number="6.3.1.1" class="anchored" data-anchor-id="principal-component-analysis-pca"><span class="header-section-number">6.3.1.1</span> Principal Component Analysis (PCA)</h4>
+<p>PCA identifies directions (principal components) where data varies the most and projects data onto this lower-dimensional space.</p>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Standardize the data</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>X_scaled <span class="op">=</span> scaler.fit_transform(X)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply PCA</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>pca <span class="op">=</span> PCA()</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>X_pca <span class="op">=</span> pca.fit_transform(X_scaled)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot explained variance</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>plt.bar(<span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(pca.explained_variance_ratio_) <span class="op">+</span> <span class="dv">1</span>), pca.explained_variance_ratio_)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>plt.plot(<span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(pca.explained_variance_ratio_) <span class="op">+</span> <span class="dv">1</span>), </span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>         np.cumsum(pca.explained_variance_ratio_), <span class="st">'r-o'</span>)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Principal Component'</span>)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Explained Variance Ratio / Cumulative'</span>)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>plt.xticks(<span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(pca.explained_variance_ratio_) <span class="op">+</span> <span class="dv">1</span>))</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Explained Variance by Principal Components'</span>)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Print variance explained</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Variance explained by each component: </span><span class="sc">{</span>pca<span class="sc">.</span>explained_variance_ratio_<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Cumulative variance explained: </span><span class="sc">{</span>np<span class="sc">.</span>cumsum(pca.explained_variance_ratio_)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualization in 2D</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> [<span class="st">'navy'</span>, <span class="st">'turquoise'</span>, <span class="st">'darkorange'</span>]</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, c, label <span class="kw">in</span> <span class="bu">zip</span>(<span class="bu">range</span>(<span class="dv">3</span>), colors, target_names):</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    plt.scatter(X_pca[y <span class="op">==</span> i, <span class="dv">0</span>], X_pca[y <span class="op">==</span> i, <span class="dv">1</span>], c<span class="op">=</span>c, label<span class="op">=</span>label)</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'First Principal Component'</span>)</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Second Principal Component'</span>)</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'PCA of Iris Dataset'</span>)</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Variance explained by each component: [0.72962445 0.22850762 0.03668922 0.00517871]
+Cumulative variance explained: [0.72962445 0.95813207 0.99482129 1.        ]</code></pre>
+</div>
+<div id="fig-pca-iris" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="3">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-pca-iris-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-display">
+<div id="fig-pca-iris-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-pca-iris-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="chapter5_files/figure-html/fig-pca-iris-output-1.png" class="img-fluid figure-img" data-ref-parent="fig-pca-iris">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-pca-iris-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) PCA visualization of the Iris dataset
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div id="fig-pca-iris-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-pca-iris-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="chapter5_files/figure-html/fig-pca-iris-output-3.png" id="fig-pca-iris-2" class="img-fluid figure-img" data-ref-parent="fig-pca-iris">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-pca-iris-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-pca-iris-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.2
+</figcaption>
+</figure>
+</div>
+</div>
+<section id="key-concepts-of-pca" class="level5" data-number="6.3.1.1.1">
+<h5 data-number="6.3.1.1.1" class="anchored" data-anchor-id="key-concepts-of-pca"><span class="header-section-number">6.3.1.1.1</span> Key Concepts of PCA</h5>
+<ol type="1">
+<li><strong>Variance Maximization</strong>: Captures directions with maximum variance</li>
+<li><strong>Linear Combinations</strong>: Each PC is a weighted sum of original features</li>
+<li><strong>Uncorrelated Components</strong>: PCs are orthogonal to each other</li>
+<li><strong>Coordinate Transformation</strong>: Rotates data into a new coordinate system</li>
+</ol>
+<p>Let’s explore the relationship between original features and principal components:</p>
+<div id="cell-fig-pca-components" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the component loadings</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>loadings <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    pca.components_.T,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>[<span class="ss">f'PC</span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">'</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(pca.components_.shape[<span class="dv">0</span>])],</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span>feature_names</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize the loadings</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>sns.heatmap(loadings, annot<span class="op">=</span><span class="va">True</span>, cmap<span class="op">=</span><span class="st">'coolwarm'</span>, fmt<span class="op">=</span><span class="st">'.3f'</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'PCA Component Loadings'</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Determine optimal number of components for 95% variance</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>cumsum <span class="op">=</span> np.cumsum(pca.explained_variance_ratio_)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> np.argmax(cumsum <span class="op">&gt;=</span> <span class="fl">0.95</span>) <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Number of components needed for 95% variance: </span><span class="sc">{</span>d<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="fig-pca-components" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-pca-components-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="chapter5_files/figure-html/fig-pca-components-output-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pca-components-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.3: PCA components and their relationship to original features
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of components needed for 95% variance: 2</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="other-unsupervised-methods" class="level4" data-number="6.3.1.2">
+<h4 data-number="6.3.1.2" class="anchored" data-anchor-id="other-unsupervised-methods"><span class="header-section-number">6.3.1.2</span> Other Unsupervised Methods</h4>
+<ul>
+<li><strong>Independent Component Analysis (ICA)</strong>: Focuses on statistical independence of components</li>
+<li><strong>Non-negative Matrix Factorization (NMF)</strong>: Factorizes data into non-negative matrices</li>
+</ul>
+</section>
+</section>
+<section id="supervised-methods" class="level3" data-number="6.3.2">
+<h3 data-number="6.3.2" class="anchored" data-anchor-id="supervised-methods"><span class="header-section-number">6.3.2</span> Supervised Methods</h3>
+<p>These techniques consider class labels during dimensionality reduction to better preserve class separability.</p>
+<section id="linear-discriminant-analysis-lda" class="level4" data-number="6.3.2.1">
+<h4 data-number="6.3.2.1" class="anchored" data-anchor-id="linear-discriminant-analysis-lda"><span class="header-section-number">6.3.2.1</span> Linear Discriminant Analysis (LDA)</h4>
+<p>LDA maximizes class separation by projecting data onto a lower-dimensional space:</p>
+<div id="cell-fig-lda-iris" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply LDA</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>lda <span class="op">=</span> LinearDiscriminantAnalysis(n_components<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>X_lda <span class="op">=</span> lda.fit_transform(X_scaled, y)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualization in 2D</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, c, label <span class="kw">in</span> <span class="bu">zip</span>(<span class="bu">range</span>(<span class="dv">3</span>), colors, target_names):</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    plt.scatter(X_lda[y <span class="op">==</span> i, <span class="dv">0</span>], X_lda[y <span class="op">==</span> i, <span class="dv">1</span>], c<span class="op">=</span>c, label<span class="op">=</span>label)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'First LDA Component'</span>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Second LDA Component'</span>)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'LDA of Iris Dataset'</span>)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Check explained variance ratio</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Explained variance ratio: </span><span class="sc">{</span>lda<span class="sc">.</span>explained_variance_ratio_<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="fig-lda-iris" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-lda-iris-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="chapter5_files/figure-html/fig-lda-iris-output-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lda-iris-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.4: LDA visualization of the Iris dataset
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Explained variance ratio: [0.9912126 0.0087874]</code></pre>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="advanced-pca-implementations" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="advanced-pca-implementations"><span class="header-section-number">6.4</span> Advanced PCA Implementations</h2>
+<section id="kernel-pca" class="level3" data-number="6.4.1">
+<h3 data-number="6.4.1" class="anchored" data-anchor-id="kernel-pca"><span class="header-section-number">6.4.1</span> Kernel PCA</h3>
+<p>When data is not linearly separable, Kernel PCA can be more effective:</p>
+<div id="cell-fig-kernel-pca" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply Kernel PCA with different kernels</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>kernels <span class="op">=</span> [<span class="st">'linear'</span>, <span class="st">'poly'</span>, <span class="st">'rbf'</span>]</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="bu">len</span>(kernels), figsize<span class="op">=</span>(<span class="dv">18</span>, <span class="dv">5</span>))</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, kernel <span class="kw">in</span> <span class="bu">enumerate</span>(kernels):</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    kpca <span class="op">=</span> KernelPCA(n_components<span class="op">=</span><span class="dv">2</span>, kernel<span class="op">=</span>kernel)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    X_kpca <span class="op">=</span> kpca.fit_transform(X_scaled)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> j, c, label <span class="kw">in</span> <span class="bu">zip</span>(<span class="bu">range</span>(<span class="dv">3</span>), colors, target_names):</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>        axes[i].scatter(X_kpca[y <span class="op">==</span> j, <span class="dv">0</span>], X_kpca[y <span class="op">==</span> j, <span class="dv">1</span>], c<span class="op">=</span>c, label<span class="op">=</span>label)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    axes[i].set_xlabel(<span class="st">'First Component'</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    axes[i].set_ylabel(<span class="st">'Second Component'</span>)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    axes[i].set_title(<span class="ss">f'Kernel PCA (</span><span class="sc">{</span>kernel<span class="sc">}</span><span class="ss">)'</span>)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    axes[i].legend()</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    axes[i].grid(<span class="va">True</span>)</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="fig-kernel-pca" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-kernel-pca-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="chapter5_files/figure-html/fig-kernel-pca-output-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-kernel-pca-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.5: Comparison of PCA and Kernel PCA
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="incremental-pca" class="level3" data-number="6.4.2">
+<h3 data-number="6.4.2" class="anchored" data-anchor-id="incremental-pca"><span class="header-section-number">6.4.2</span> Incremental PCA</h3>
+<p>For larger datasets, Incremental PCA processes data in batches:</p>
+<div id="cell-fig-incremental-pca" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate a larger dataset by repeating Iris</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>X_large <span class="op">=</span> np.vstack([X_scaled] <span class="op">*</span> <span class="dv">10</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>y_large <span class="op">=</span> np.hstack([y] <span class="op">*</span> <span class="dv">10</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply Incremental PCA</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>n_batches <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>batch_size <span class="op">=</span> X_large.shape[<span class="dv">0</span>] <span class="op">//</span> n_batches</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>ipca <span class="op">=</span> IncrementalPCA(n_components<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n_batches):</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    start <span class="op">=</span> i <span class="op">*</span> batch_size</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    end <span class="op">=</span> <span class="bu">min</span>((i <span class="op">+</span> <span class="dv">1</span>) <span class="op">*</span> batch_size, X_large.shape[<span class="dv">0</span>])</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    ipca.partial_fit(X_large[start:end])</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>X_ipca <span class="op">=</span> ipca.transform(X_large)</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare with standard PCA</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>pca <span class="op">=</span> PCA(n_components<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>X_pca_large <span class="op">=</span> pca.fit_transform(X_large)</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize both</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">6</span>))</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot IPCA</span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, c, label <span class="kw">in</span> <span class="bu">zip</span>(<span class="bu">range</span>(<span class="dv">3</span>), colors, target_names):</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">0</span>].scatter(X_ipca[y_large <span class="op">==</span> i, <span class="dv">0</span>], X_ipca[y_large <span class="op">==</span> i, <span class="dv">1</span>], c<span class="op">=</span>c, label<span class="op">=</span>label, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">'Incremental PCA'</span>)</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].legend()</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].grid(<span class="va">True</span>)</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot standard PCA</span></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, c, label <span class="kw">in</span> <span class="bu">zip</span>(<span class="bu">range</span>(<span class="dv">3</span>), colors, target_names):</span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">1</span>].scatter(X_pca_large[y_large <span class="op">==</span> i, <span class="dv">0</span>], X_pca_large[y_large <span class="op">==</span> i, <span class="dv">1</span>], c<span class="op">=</span>c, label<span class="op">=</span>label, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">'Standard PCA'</span>)</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].legend()</span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].grid(<span class="va">True</span>)</span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare explained variance</span></span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"IPCA explained variance: </span><span class="sc">{</span>ipca<span class="sc">.</span>explained_variance_ratio_<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"PCA explained variance: </span><span class="sc">{</span>pca<span class="sc">.</span>explained_variance_ratio_<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="fig-incremental-pca" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-incremental-pca-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="chapter5_files/figure-html/fig-incremental-pca-output-1.png" id="fig-incremental-pca" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-incremental-pca-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.6
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>IPCA explained variance: [0.72962445 0.22850762]
+PCA explained variance: [0.72962445 0.22850762]</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="visualizing-high-dimensional-data-with-t-sne" class="level2" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="visualizing-high-dimensional-data-with-t-sne"><span class="header-section-number">6.5</span> Visualizing High-Dimensional Data with t-SNE</h2>
+<p>t-SNE is particularly effective for visualizing high-dimensional data:</p>
+<div id="cell-fig-tsne" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply t-SNE</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>tsne <span class="op">=</span> TSNE(n_components<span class="op">=</span><span class="dv">2</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>X_tsne <span class="op">=</span> tsne.fit_transform(X_scaled)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Create visualization</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, c, label <span class="kw">in</span> <span class="bu">zip</span>(<span class="bu">range</span>(<span class="dv">3</span>), colors, target_names):</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    plt.scatter(X_tsne[y <span class="op">==</span> i, <span class="dv">0</span>], X_tsne[y <span class="op">==</span> i, <span class="dv">1</span>], c<span class="op">=</span>c, label<span class="op">=</span>label)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'t-SNE of Iris Dataset'</span>)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="fig-tsne" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-tsne-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="chapter5_files/figure-html/fig-tsne-output-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tsne-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.7: t-SNE visualization of the Iris dataset
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="real-world-application-mnist-dataset" class="level2" data-number="6.6">
+<h2 data-number="6.6" class="anchored" data-anchor-id="real-world-application-mnist-dataset"><span class="header-section-number">6.6</span> Real-World Application: MNIST Dataset</h2>
+<p>Let’s apply dimensionality reduction to a larger, more complex dataset:</p>
+<div id="fig-mnist" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="9">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mnist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="sourceCode cell-code" id="fig-mnist" data-execution_count="9"><pre class="sourceCode python cell code-with-copy"><code class="sourceCode python"><span id="fig-mnist-1"><a href="#fig-mnist-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load a subset of MNIST for demonstration</span></span>
+<span id="fig-mnist-2"><a href="#fig-mnist-2" aria-hidden="true" tabindex="-1"></a>mnist <span class="op">=</span> fetch_openml(<span class="st">'mnist_784'</span>, version<span class="op">=</span><span class="dv">1</span>, as_frame<span class="op">=</span><span class="va">False</span>, parser<span class="op">=</span><span class="st">'auto'</span>)</span>
+<span id="fig-mnist-3"><a href="#fig-mnist-3" aria-hidden="true" tabindex="-1"></a>X_mnist <span class="op">=</span> mnist.data[:<span class="dv">2000</span>]</span>
+<span id="fig-mnist-4"><a href="#fig-mnist-4" aria-hidden="true" tabindex="-1"></a>y_mnist <span class="op">=</span> mnist.target[:<span class="dv">2000</span>].astype(<span class="bu">int</span>)</span>
+<span id="fig-mnist-5"><a href="#fig-mnist-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fig-mnist-6"><a href="#fig-mnist-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Standardize the data</span></span>
+<span id="fig-mnist-7"><a href="#fig-mnist-7" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
+<span id="fig-mnist-8"><a href="#fig-mnist-8" aria-hidden="true" tabindex="-1"></a>X_mnist_scaled <span class="op">=</span> scaler.fit_transform(X_mnist)</span>
+<span id="fig-mnist-9"><a href="#fig-mnist-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fig-mnist-10"><a href="#fig-mnist-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply PCA</span></span>
+<span id="fig-mnist-11"><a href="#fig-mnist-11" aria-hidden="true" tabindex="-1"></a>pca_mnist <span class="op">=</span> PCA(n_components<span class="op">=</span><span class="dv">50</span>)  <span class="co"># Reduce from 784 to 50 dimensions</span></span>
+<span id="fig-mnist-12"><a href="#fig-mnist-12" aria-hidden="true" tabindex="-1"></a>X_mnist_pca <span class="op">=</span> pca_mnist.fit_transform(X_mnist_scaled)</span>
+<span id="fig-mnist-13"><a href="#fig-mnist-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fig-mnist-14"><a href="#fig-mnist-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot explained variance</span></span>
+<span id="fig-mnist-15"><a href="#fig-mnist-15" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="fig-mnist-16"><a href="#fig-mnist-16" aria-hidden="true" tabindex="-1"></a>plt.plot(np.cumsum(pca_mnist.explained_variance_ratio_))</span>
+<span id="fig-mnist-17"><a href="#fig-mnist-17" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Number of Components'</span>)</span>
+<span id="fig-mnist-18"><a href="#fig-mnist-18" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Cumulative Explained Variance'</span>)</span>
+<span id="fig-mnist-19"><a href="#fig-mnist-19" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Explained Variance vs. Number of PCA Components (MNIST)'</span>)</span>
+<span id="fig-mnist-20"><a href="#fig-mnist-20" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="fig-mnist-21"><a href="#fig-mnist-21" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="fig-mnist-22"><a href="#fig-mnist-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fig-mnist-23"><a href="#fig-mnist-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Check how many components needed for 95% variance</span></span>
+<span id="fig-mnist-24"><a href="#fig-mnist-24" aria-hidden="true" tabindex="-1"></a>cumsum <span class="op">=</span> np.cumsum(pca_mnist.explained_variance_ratio_)</span>
+<span id="fig-mnist-25"><a href="#fig-mnist-25" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> np.argmax(cumsum <span class="op">&gt;=</span> <span class="fl">0.95</span>) <span class="op">+</span> <span class="dv">1</span></span>
+<span id="fig-mnist-26"><a href="#fig-mnist-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Number of components needed for 95% variance: </span><span class="sc">{</span>d<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="fig-mnist-27"><a href="#fig-mnist-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fig-mnist-28"><a href="#fig-mnist-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize first two components</span></span>
+<span id="fig-mnist-29"><a href="#fig-mnist-29" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="fig-mnist-30"><a href="#fig-mnist-30" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>):</span>
+<span id="fig-mnist-31"><a href="#fig-mnist-31" aria-hidden="true" tabindex="-1"></a>    plt.scatter(X_mnist_pca[y_mnist <span class="op">==</span> i, <span class="dv">0</span>], X_mnist_pca[y_mnist <span class="op">==</span> i, <span class="dv">1</span>], label<span class="op">=</span><span class="bu">str</span>(i), alpha<span class="op">=</span><span class="fl">0.6</span>)</span>
+<span id="fig-mnist-32"><a href="#fig-mnist-32" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="fig-mnist-33"><a href="#fig-mnist-33" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'PCA of MNIST Dataset (First 2 Components)'</span>)</span>
+<span id="fig-mnist-34"><a href="#fig-mnist-34" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="fig-mnist-35"><a href="#fig-mnist-35" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="fig-mnist-36"><a href="#fig-mnist-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fig-mnist-37"><a href="#fig-mnist-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize some original vs. reconstructed images</span></span>
+<span id="fig-mnist-38"><a href="#fig-mnist-38" aria-hidden="true" tabindex="-1"></a>n_row, n_col <span class="op">=</span> <span class="dv">2</span>, <span class="dv">5</span></span>
+<span id="fig-mnist-39"><a href="#fig-mnist-39" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(n_row, n_col, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">6</span>))</span>
+<span id="fig-mnist-40"><a href="#fig-mnist-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fig-mnist-41"><a href="#fig-mnist-41" aria-hidden="true" tabindex="-1"></a><span class="co"># Reconstruct images from PCA components</span></span>
+<span id="fig-mnist-42"><a href="#fig-mnist-42" aria-hidden="true" tabindex="-1"></a>X_mnist_reconstructed <span class="op">=</span> pca_mnist.inverse_transform(X_mnist_pca)</span>
+<span id="fig-mnist-43"><a href="#fig-mnist-43" aria-hidden="true" tabindex="-1"></a>X_mnist_reconstructed <span class="op">=</span> scaler.inverse_transform(X_mnist_reconstructed)</span>
+<span id="fig-mnist-44"><a href="#fig-mnist-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fig-mnist-45"><a href="#fig-mnist-45" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n_row):</span>
+<span id="fig-mnist-46"><a href="#fig-mnist-46" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(n_col):</span>
+<span id="fig-mnist-47"><a href="#fig-mnist-47" aria-hidden="true" tabindex="-1"></a>        idx <span class="op">=</span> i <span class="op">*</span> n_col <span class="op">+</span> j</span>
+<span id="fig-mnist-48"><a href="#fig-mnist-48" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> i <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="fig-mnist-49"><a href="#fig-mnist-49" aria-hidden="true" tabindex="-1"></a>            axes[i, j].imshow(X_mnist[idx].reshape(<span class="dv">28</span>, <span class="dv">28</span>), cmap<span class="op">=</span><span class="st">'gray'</span>)</span>
+<span id="fig-mnist-50"><a href="#fig-mnist-50" aria-hidden="true" tabindex="-1"></a>            axes[i, j].set_title(<span class="ss">f"Original: </span><span class="sc">{</span>y_mnist[idx]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="fig-mnist-51"><a href="#fig-mnist-51" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="fig-mnist-52"><a href="#fig-mnist-52" aria-hidden="true" tabindex="-1"></a>            axes[i, j].imshow(X_mnist_reconstructed[idx].reshape(<span class="dv">28</span>, <span class="dv">28</span>), cmap<span class="op">=</span><span class="st">'gray'</span>)</span>
+<span id="fig-mnist-53"><a href="#fig-mnist-53" aria-hidden="true" tabindex="-1"></a>            axes[i, j].set_title(<span class="ss">f"Reconstructed: </span><span class="sc">{</span>y_mnist[idx]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="fig-mnist-54"><a href="#fig-mnist-54" aria-hidden="true" tabindex="-1"></a>        axes[i, j].axis(<span class="st">'off'</span>)</span>
+<span id="fig-mnist-55"><a href="#fig-mnist-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fig-mnist-56"><a href="#fig-mnist-56" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="fig-mnist-57"><a href="#fig-mnist-57" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-mnist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.8
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="interactive-3d-visualization-with-plotly" class="level2" data-number="6.7">
+<h2 data-number="6.7" class="anchored" data-anchor-id="interactive-3d-visualization-with-plotly"><span class="header-section-number">6.7</span> Interactive 3D Visualization with Plotly</h2>
+<p>Plotly enables interactive exploration of dimensionality reduction results:</p>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply PCA with 3 components</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>pca_3d <span class="op">=</span> PCA(n_components<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>components <span class="op">=</span> pca_3d.fit_transform(X_scaled)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a DataFrame for plotting</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'PC1'</span>: components[:, <span class="dv">0</span>],</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'PC2'</span>: components[:, <span class="dv">1</span>],</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'PC3'</span>: components[:, <span class="dv">2</span>],</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Species'</span>: [target_names[i] <span class="cf">for</span> i <span class="kw">in</span> y]</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Create 3D scatter plot</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> px.scatter_3d(</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>    df, x<span class="op">=</span><span class="st">'PC1'</span>, y<span class="op">=</span><span class="st">'PC2'</span>, z<span class="op">=</span><span class="st">'PC3'</span>,</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span><span class="st">'Species'</span>,</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'3D PCA of Iris Dataset'</span>,</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>    labels<span class="op">=</span>{<span class="st">'PC1'</span>: <span class="st">'Principal Component 1'</span>, </span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>            <span class="st">'PC2'</span>: <span class="st">'Principal Component 2'</span>,</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>            <span class="st">'PC3'</span>: <span class="st">'Principal Component 3'</span>}</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>fig.update_layout(</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>    legend_title_text<span class="op">=</span><span class="st">'Species'</span>,</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>    scene<span class="op">=</span><span class="bu">dict</span>(</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>        xaxis_title<span class="op">=</span><span class="st">'PC1'</span>,</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>        yaxis_title<span class="op">=</span><span class="st">'PC2'</span>,</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>        zaxis_title<span class="op">=</span><span class="st">'PC3'</span></span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="fig-3d-pca" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="10">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-3d-pca-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="fig-3d-pca-1" class="cell-output cell-output-display quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-3d-pca-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+        <script type="text/javascript">
+        window.PlotlyConfig = {MathJaxConfig: 'local'};
+        if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}
+        </script>
+        <script type="module">import "https://cdn.plot.ly/plotly-3.0.1.min"</script>
+        
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-3d-pca-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) 3D PCA visualization of the Iris dataset
+</figcaption>
+</figure>
+</div>
+<div id="fig-3d-pca-2" class="cell-output cell-output-display quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-3d-pca-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script type="text/javascript">if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.0.1.min.js"></script>                <div id="46170c32-fd0f-4a63-86ef-e9c8b74ad595" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("46170c32-fd0f-4a63-86ef-e9c8b74ad595")) {                    Plotly.newPlot(                        "46170c32-fd0f-4a63-86ef-e9c8b74ad595",                        [{"hovertemplate":"Species=setosa\u003cbr\u003ePrincipal Component 1=%{x}\u003cbr\u003ePrincipal Component 2=%{y}\u003cbr\u003ePrincipal Component 3=%{z}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"setosa","marker":{"color":"#636efa","symbol":"circle"},"mode":"markers","name":"setosa","scene":"scene","showlegend":true,"x":{"dtype":"f8","bdata":"SueXgRweAsAChN\u002f1zqUAwOWxFezw6QLAkRhpjSNlAsCqW9eRZR4DwGbeB2bkmgDAqw5r\u002fV6NA8AXk6L43twBwJM\u002fpPxXrQLAyJTYDIF5AcCeDdxjmlQBwEWz7H\u002fqmwLA3MpRL2O\u002fAcCNF\u002fsYlxAFwI1XO1AFlwHATBmu7gMZAsDx8uS8I6kBwBpTpvbVhQHAzjFxB41g\u002fr8fUytGOL8CwGF8YiYRof6\u002fNv16WfanAcDWOrei2zEGwL+vPzhFGf2\u002f3uPG\u002fjrRAcAqjuA3wzr\u002fv5MlCA3CaADAf+9f\u002fT5ZAcDpclhx0x0BwH3i72pBHwLAHW6wWvgeAcAoQHlRNk79v\u002f8NytJp6wTAsWjMc8WRA8CXAOeBOuEAwA\u002ffSraXqQHAy2FMnXVcAMCDoknL+TcEwG1GGjTjbwPAcOAhSpFbAcDkSt56s0oCwBpn4Zzeuv2\u002f3smX99ltBMDSfcexYG7\u002fv2OqXGSyGAHAeqJuGdaOAMAtomX77hMDwGwf38SuJwPAR8BcEujVAcCCFptsc6EBwA=="},"y":{"dtype":"f8","bdata":"RyRRecG43j9rMliJgJLlv2THNDHS4dW\u002fYrooFtsd478Rt+4d4LLkP6Kkic+r0\u002fc\u002fiYRU\u002fdFkqD9kAS+1HZDMP6rnJtVh2PG\u002f3aLmdFEE3r+NHWD49LLwP9xN1Py1CME\u002fexltrVBR57\u002fUbpXCqcTuvz2iZD\u002fLwv0\u002f6GpauIJ9BUBlruwr3bz3P2PKlYEgSd8\u002fpfzH\u002fPR69j+FxSHLqwvyPywNZiGxKto\u002fNCUtGWeS7T8v9dStgFXdP4tWTOAp57U\u002fSROC0o2RwT8vqMhFEQXkv0+Gex03\u002f84\u002fRKFprmje4D902sS2wgvUP63kXUZmndW\u002fRBd1hDIl4L\u002frbLXq0R3bP9TRzZh8svw\u002fI\u002fw\u002f0bA0AUDB\u002fKFs8nPdv0WLRCq6Ycq\u002fBmek6nsr5T8F0Nn5D\u002fTiP4eR4\u002foK7+y\u002frah8GlA10T8trBOeEEXcPznu1rcGswLAYD\u002fk8JWp3r84gbihmTreP0nlzzCSRvI\u002fX3MopfHA5r+O2fexR+3xPyn5fM1EuNi\u002fF6fNUEnv7z+ZEyORBuCCPw=="},"z":{"dtype":"f8","bdata":"5QSkwqtYwD\u002f1nZu1qQfOP95ToreToaa\u002fYH8Y1clet79dC+lurB2Qv41Pl5qTnZu\u002fIeJr2Fh41b846PyGv7S2P9MTXfDgkcK\u002f7eEZ77E90D\u002fwk8Q4EjLRP0iGUBibALi\u002fn2YK2n+OzT9d1eB6UyTHv4YUB4wCRN4\u002fDQXQEV5Cn7\u002fIq69UsON1P+i1g9Rjo6Y\u002fmPhsfj311z9as6P+CPrAv529aTZ19to\u002fIfO5JHd2xL9w+hoebELVvxF+Fz59qKG\u002fQCFFCdM0vr963Nkxn4\u002fTPySpC6rzG7a\u002f1Tk6bvR4yj+qlZKJhlrRP+jExcwBhbG\u002fuIc81MAzsz8FwGRmVk\u002fRP\u002fTyPsNSLqi\u002fALT2pbsptT9xrLAQkcvFP+lw0gpF28w\u002fwqw5MqkC3z9JxXJL++aTv6\u002fRS5qRvMi\u002fvcKSbFyDxj9IHdXZvt2hv0JLP9VYJMo\u002fhMCSdK2R07+KbbwLgtDTvxkyH8KrzM+\u002fk28IfrRdsD8O13q6qEutv4v9epQV2sG\u002fHdl0yCc7xz+dZWloeJbDPw=="},"type":"scatter3d"},{"hovertemplate":"Species=versicolor\u003cbr\u003ePrincipal Component 1=%{x}\u003cbr\u003ePrincipal Component 2=%{y}\u003cbr\u003ePrincipal Component 3=%{z}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"versicolor","marker":{"color":"#EF553B","symbol":"circle"},"mode":"markers","name":"versicolor","scene":"scene","showlegend":true,"x":{"dtype":"f8","bdata":"OPhITuWg8T9cWI2+HWfnP0ZThSEN2\u002fM\u002frtzS0jMU2j+Dqaz1JDXxP9uPstlA4Ng\u002ftAAQV5Lj5z\u002fGtAG6SzDfvz111MZese0\u002fscqLF51mhz+DWb7K0jW8v7JmvEtSNNw\u002fDngfj8r84T9n5WmnpgbnPzUnpB7eE6G\u002f0Vnt8FUD7D8gItr4hWrWP81TPzzjU8Q\u002f7QMryPuZ8z+I1DGcBxzFPyKTaaQYm+c\u002feBcmRX173j8BCG6IMb\u002fzP8BK2NZfQOQ\u002fYaI3TjN85j8NluW9DPrrP53Fqk2pGvQ\u002fHec0Age89T93QnNrC0blP3mgZtLGnKS\u002fZnOedOW9wD9p8YZQ+wOYP581ieO56s4\u002fHA4vVz768D9H750hVqvMP7fhpOgDd9s\u002fGnSlEJfH8D\u002fFCnqKZrbwP+\u002fqYEuK0LE\u002fK8Hmtn0k0j81tkwIadzRP\u002frJkcl5\u002fOM\u002fpdF0rbaJ1T\u002fHEQY4Ay7XvxKNdGoyeNI\u002fSV4tdGljtz+6DRyF0yXNPx4NMtrFceI\u002fv3GOkZOm3L+G68kiRm7QPw=="},"y":{"dtype":"f8","bdata":"+SY5VXid6z\u002fPCw92FQfjP1sjzdu1uOM\u002fEtvh6gkS\u002fL8NI0t0iq3Kv\u002fuJuvYt\u002fOK\u002f+nkU\u002f5K86D8bZqOujKP9v6bgPb3vf6A\u002fQ1syv1aL8L9niaaHijsFwBPbVQwdNLC\u002fGkLToU88\u002fL8e3+A3NdbHv0ZybeugGNy\u002ftEC9fkBK4D8lGNwvviDJv4OUoSvZWOm\u002fq6oG67X0+b\u002fFaLnGfNf0v6wkSbBtYdk\u002fLEPxH2C12r8iqjbrzd3tv54t664Yptq\u002faNrly8E7sL+P5yO7\u002fwzQP7NMA+4Mx7O\u002fVMeE6TU01T\u002fSu5U1NOvMvxHi0duC8PC\u002fyUw2wBD\u002f+L\u002ffsy4r3Cj5v6Tk+cZI3+i\u002f\u002f6rdoHFI5L8LXLiX4WrSv6uA2HwCD+s\u002fHgVL+KW04D\u002fWlHrHuCD2v31i1m2vGMy\u002fJiKp6elE9b\u002f6+IAHo+vxv7bAQC5shZk\u002fcSJkdgGh779IPKMvZicAwDtIUY0kYuu\u002fM3Jbt00xx7\u002fUhNrVh6LYvzaNh+Xl0sO\u002fzAS5Rl+z+L91dvQ9yynjvw=="},"z":{"dtype":"f8","bdata":"ZH2BPSHo5T9ncwpaXBi4P+DM94psuuE\u002f7tP1ZP2nlz+dZie7BH3ZPzO\u002fnnMEy7+\u002fyTf7620Rw78t+kua7OfPv8Mcv8TRE+M\u002fdaMV76k+4b\u002fg\u002ff3F6vSnP+dSDNnbP8q\u002fd5h+AjOB6D+0cCv1oZOxP5Cd4aCP88i\u002frAus5sMc4D9HxmHmdmrfvyS6mbqTVNM\u002ffYSOshHe3j90ol2fjB\u002fGP+D4WGCVuuO\u002fHi78Lvr00D+nNPkQEZTXP25fhJ5trtI\u002fnRGn3LSL3D\u002fNW4TMuz7eP0KnBJHaROc\u002fj5JP9GGx0D8n9AoCLfu1vyVMQLLjc9Q\u002fUkU0m6gywz+VdjVmL+vOPxl5KdXpWsM\u002fVPpG4a\u002f1ur91CrvHuUnlv+1j1Ekw19y\u002f4WRZapBU2T8qMtI\u002fhQbmPzF74h08qdK\u002fu+l1RJPjtr\u002fcODrkVjC4vxPUN4UC+ZQ\u002f8TYYf5qFyT+0p5WTFhe7vzqJ\u002fEL+wMC\u002fCKqrwlyCwL\u002fJ6cHoyv7Dv+rCkjO4YtE\u002fh\u002f6YxA5fyL+N8K2HZIW3vw=="},"type":"scatter3d"},{"hovertemplate":"Species=virginica\u003cbr\u003ePrincipal Component 1=%{x}\u003cbr\u003ePrincipal Component 2=%{y}\u003cbr\u003ePrincipal Component 3=%{z}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"virginica","marker":{"color":"#00cc96","symbol":"circle"},"mode":"markers","name":"virginica","scene":"scene","showlegend":true,"x":{"dtype":"f8","bdata":"T3EhpVqD\u002fT+gvNXerobyPyv9VOpipAFATDsnbNsK9z+QOBYRj+L9P2Ze2yrWAwZAKZWawTd91z8qfB1fZWsCQGz5f6KxDQBAjACSJQYUAkAGGU+uqdP1Pw8xu2OSpPk\u002fT6HrD3Uk\u002fj9O\u002fENzbin0PxsDyIh5e\u002fc\u002faEHU6fRw+T84+D23+4r3P6PcDiwfaQNAuQ9g9018CkCl7FBnYzj0P4iySjQ+TQBA0QS3QJ5L7z9xRZ\u002fnYy4HQEh6HEPrVPU\u002fO8ZOvzQ2+z\u002fmaXUU7ET\u002fP0MHL3c5zfI\u002fVyWhPtBV8D80nU\u002fOFJ38P3gLzRiA0f0\u002fd\u002frfTtV8A0AqSgfyfXACQJfFMuShzf0\u002fO5LSlIzT8T9xWRClVD3zP8PfqsLhYwZAZ5wGHlg4+T94D7+WaYr1P4JrYmwqmO0\u002f7fgA\u002fvmh\u002fT\u002f9XULuVB4AQOGqeye1bf4\u002foLzV3q6G8j8kijgxEFMAQMNn2xZp+P8\u002f9e1k3JTt\u002fT\u002fOM2mLhQj5Py2quOC2Vvg\u002fLPpEVPD29T+B3va2sb3uPw=="},"y":{"dtype":"f8","bdata":"BabFy33a6z\u002fU2VtUJF3mv\u002fFTWGX9++E\u002fz\u002fd21MEOqL\u002fJZ\u002fmvA+LSP8aVusHznOk\u002fPAS4dOr7+L+rbK+9WuLaP+YMw\u002f4axOa\u002f879iYHW8\u002fj\u002fKIYSVDyvmPyzXHuIj\u002fdq\u002f8laNfPzU2j\u002fdAzZinpjyv1UD73wtTty\u002fM32VJcyj5T+g7A+kG1zQP9DvWNAKdARA77JLTys1kj\u002ffCnU+1E77v6tNjIyMIu0\u002fIOyCsuRL4r\u002f9v89ZGHnaP0B+vLj+1d6\u002fOZzNIgY58D\u002ff7ZFm2x\u002fwP7QqzZnOP9S\u002fyxw2O\u002ft4sD\u002fwbJrIc\u002fvHv43N0B5J\u002fuE\u002fetwtvB2Y0D\u002fyM+bgtQIFQLcgEbi12sa\u002fVhLfhz6\u002f0r9wDmBxS\u002fbpv0lo6dDuaus\u002ftA\u002fRgOgY8T98NpxmGgnbP5iPtrTuopE\u002fSH2jjdei5T+uRMJ986TjPwmyfKAAEeY\u002f1NlbVCRd5r\u002fmrzaQusLrP1VCEitlyfA\u002fd5haYg3E2D\u002fK4t6IqLHsvyJWwsltONE\u002fDyH4HBku8D\u002fGxC2cZuqYvw=="},"z":{"dtype":"f8","bdata":"TcufYB8W8L80WNVqEvfgv5wZdW0X+ck\u002fbPC80tTxxL8K3oSs+VHZv5L7GbNGouI\u002f8+qNMKGU779r22Z2x9rkP7G6JTokN9k\u002fgBuGg31x2b\u002fgQzWPFTfSvyXivX4tvpe\u002f\u002flh7vnT4mr9uP2X1ZpHiv7M1yorZD\u002fC\u002fFBTBCgJu5L9wQwyqMCqjv2lOFG9rXsA\u002f2MfrH3qB5j839b4PUx\u002fRPy8ul9PoDc6\u002faW7cnQSA6r9+uhbl\u002f2\u002frPzp27lENPHY\u002fNDoTmdAZ07+9cl2ZB+HaP8KYc+jMocC\u002fWtjvbiOd1b8jiGL1dVLRv9W95YV55uY\u002fFmzlFUVK5z8UtF4qE5XfP9sTJFxfqta\u002frK6vMIx8xz\u002fgVm0HqxXFP9Qje3N9X+E\u002f0+w7Om9E7r8wNwR77SbHv8HyusRHrdq\u002fglxiddbziT\u002fC+Csnzmnbv4e7NTtMpsC\u002fNFjVahL34L9O2NO7JqTVv4W0DBq7POS\u002fiM23ccpm0L9bjj9zFwGbPzryDs0VEMe\u002fty1hsl\u002fe7b9pIMEKaufgvw=="},"type":"scatter3d"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"},"margin":{"b":0,"l":0,"r":0,"t":30}}},"scene":{"domain":{"x":[0.0,1.0],"y":[0.0,1.0]},"xaxis":{"title":{"text":"PC1"}},"yaxis":{"title":{"text":"PC2"}},"zaxis":{"title":{"text":"PC3"}}},"legend":{"title":{"text":"Species"},"tracegroupgap":0},"title":{"text":"3D PCA of Iris Dataset"}},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('46170c32-fd0f-4a63-86ef-e9c8b74ad595');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-3d-pca-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b)
+</figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-3d-pca-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.9
+</figcaption>
+</figure>
+</div>
+</div>
+</section>
+<section id="choosing-the-right-dimensionality-reduction-technique" class="level2" data-number="6.8">
+<h2 data-number="6.8" class="anchored" data-anchor-id="choosing-the-right-dimensionality-reduction-technique"><span class="header-section-number">6.8</span> Choosing the Right Dimensionality Reduction Technique</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 24%">
+<col style="width: 26%">
+<col style="width: 24%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Technique</th>
+<th>Strengths</th>
+<th>Weaknesses</th>
+<th>Best For</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>PCA</td>
+<td>Fast, easy to interpret</td>
+<td>Linear transformations only</td>
+<td>Large datasets, initial exploration</td>
+</tr>
+<tr class="even">
+<td>Kernel PCA</td>
+<td>Handles nonlinear relationships</td>
+<td>More parameters to tune</td>
+<td>Complex, nonlinear data</td>
+</tr>
+<tr class="odd">
+<td>LDA</td>
+<td>Maximizes class separation</td>
+<td>Requires labeled data</td>
+<td>Classification tasks</td>
+</tr>
+<tr class="even">
+<td>t-SNE</td>
+<td>Excellent for visualization</td>
+<td>Slow on large datasets</td>
+<td>Visualizing high-dimensional data</td>
+</tr>
+<tr class="odd">
+<td>UMAP</td>
+<td>Preserves local and global structure</td>
+<td>Complex implementation</td>
+<td>Alternative to t-SNE for larger datasets</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="singular-value-decomposition-svd" class="level2" data-number="6.9">
+<h2 data-number="6.9" class="anchored" data-anchor-id="singular-value-decomposition-svd"><span class="header-section-number">6.9</span> Singular Value Decomposition (SVD)</h2>
+<p>Singular Value Decomposition (SVD) is a powerful linear algebra technique that decomposes a matrix into three component matrices, revealing the underlying structure of the data. SVD forms the mathematical foundation for many dimensionality reduction techniques, including PCA.</p>
+<div id="fig-svd-libraries" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="11">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-svd-libraries-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="sourceCode cell-code" id="fig-svd-libraries" data-execution_count="11"><pre class="sourceCode python cell code-with-copy"><code class="sourceCode python"><span id="fig-svd-libraries-1"><a href="#fig-svd-libraries-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="fig-svd-libraries-2"><a href="#fig-svd-libraries-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="fig-svd-libraries-3"><a href="#fig-svd-libraries-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="fig-svd-libraries-4"><a href="#fig-svd-libraries-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="fig-svd-libraries-5"><a href="#fig-svd-libraries-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_iris</span>
+<span id="fig-svd-libraries-6"><a href="#fig-svd-libraries-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.linalg <span class="im">import</span> svd</span>
+<span id="fig-svd-libraries-7"><a href="#fig-svd-libraries-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="fig-svd-libraries-8"><a href="#fig-svd-libraries-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-svd-libraries-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.10
+</figcaption>
+</figure>
+</div>
+<section id="mathematical-foundation" class="level3" data-number="6.9.1">
+<h3 data-number="6.9.1" class="anchored" data-anchor-id="mathematical-foundation"><span class="header-section-number">6.9.1</span> Mathematical Foundation</h3>
+<p>SVD decomposes a matrix <span class="math inline">\(A\)</span> (of size <span class="math inline">\(m \times n\)</span>) into three matrices:</p>
+<p><span class="math display">\[A = U\Sigma V^T\]</span></p>
+<p>Where: - <span class="math inline">\(U\)</span> is an <span class="math inline">\(m \times m\)</span> orthogonal matrix containing the left singular vectors - <span class="math inline">\(\Sigma\)</span> is an <span class="math inline">\(m \times n\)</span> diagonal matrix containing the singular values - <span class="math inline">\(V^T\)</span> is the transpose of an <span class="math inline">\(n \times n\)</span> orthogonal matrix containing the right singular vectors</p>
+<p>The singular values in <span class="math inline">\(\Sigma\)</span> are ordered in descending order, with the largest values representing the most important dimensions of the data.</p>
+</section>
+<section id="basic-svd-example" class="level3" data-number="6.9.2">
+<h3 data-number="6.9.2" class="anchored" data-anchor-id="basic-svd-example"><span class="header-section-number">6.9.2</span> Basic SVD Example</h3>
+<p>Let’s implement SVD on the Iris dataset to understand its mechanics:</p>
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load and scale the Iris dataset</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>iris <span class="op">=</span> load_iris()</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> iris.data</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> iris.target</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>feature_names <span class="op">=</span> iris.feature_names</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Standardize the data</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>X_scaled <span class="op">=</span> scaler.fit_transform(X)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply SVD</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>U, sigma, Vt <span class="op">=</span> svd(X_scaled)</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Print dimensions of decomposed matrices</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Original matrix shape: </span><span class="sc">{</span>X_scaled<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"U matrix shape: </span><span class="sc">{</span>U<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Sigma shape: </span><span class="sc">{</span>sigma<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"V^T matrix shape: </span><span class="sc">{</span>Vt<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the singular values</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>plt.plot(sigma, <span class="st">'bo-'</span>)</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Component Index'</span>)</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Singular Value'</span>)</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Singular Values (in descending order)'</span>)</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate and plot the explained variance ratio</span></span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>explained_variance <span class="op">=</span> (sigma <span class="op">**</span> <span class="dv">2</span>) <span class="op">/</span> (<span class="bu">len</span>(X_scaled) <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>total_var <span class="op">=</span> explained_variance.<span class="bu">sum</span>()</span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>explained_variance_ratio <span class="op">=</span> explained_variance <span class="op">/</span> total_var</span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>plt.bar(<span class="bu">range</span>(<span class="bu">len</span>(explained_variance_ratio)), explained_variance_ratio)</span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>plt.plot(<span class="bu">range</span>(<span class="bu">len</span>(explained_variance_ratio)), </span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>         np.cumsum(explained_variance_ratio), <span class="st">'r-o'</span>)</span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Component Index'</span>)</span>
+<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Explained Variance Ratio / Cumulative'</span>)</span>
+<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Explained Variance by Component'</span>)</span>
+<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Original matrix shape: (150, 4)
+U matrix shape: (150, 150)
+Sigma shape: (4,)
+V^T matrix shape: (4, 4)</code></pre>
+</div>
+<div id="fig-svd-iris" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="12">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-svd-iris-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-display">
+<div id="fig-svd-iris-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-svd-iris-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="chapter5_files/figure-html/fig-svd-iris-output-2.png" class="img-fluid figure-img" data-ref-parent="fig-svd-iris">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-svd-iris-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) SVD applied to the Iris dataset
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div id="fig-svd-iris-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-svd-iris-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="chapter5_files/figure-html/fig-svd-iris-output-3.png" id="fig-svd-iris-2" class="img-fluid figure-img" data-ref-parent="fig-svd-iris">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-svd-iris-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-svd-iris-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.11
+</figcaption>
+</figure>
+</div>
+</div>
+</section>
+<section id="relationship-between-svd-and-pca" class="level3" data-number="6.9.3">
+<h3 data-number="6.9.3" class="anchored" data-anchor-id="relationship-between-svd-and-pca"><span class="header-section-number">6.9.3</span> Relationship Between SVD and PCA</h3>
+<p>PCA can be implemented using SVD, which is often more numerically stable. The principal components in PCA are equivalent to the right singular vectors in SVD.</p>
+<div id="cell-fig-svd-pca-comparison" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Project data onto first two singular vectors (equivalent to first two PCs)</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>svd_projection <span class="op">=</span> X_scaled <span class="op">@</span> Vt.T[:, :<span class="dv">2</span>]</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize the projection</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> [<span class="st">'navy'</span>, <span class="st">'turquoise'</span>, <span class="st">'darkorange'</span>]</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>target_names <span class="op">=</span> iris.target_names</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, c, label <span class="kw">in</span> <span class="bu">zip</span>(<span class="bu">range</span>(<span class="dv">3</span>), colors, target_names):</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    plt.scatter(svd_projection[y <span class="op">==</span> i, <span class="dv">0</span>], svd_projection[y <span class="op">==</span> i, <span class="dv">1</span>], </span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>                c<span class="op">=</span>c, label<span class="op">=</span>label)</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'First Component'</span>)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Second Component'</span>)</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'SVD Projection of Iris Dataset'</span>)</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare first two singular values with corresponding eigenvectors</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"First two singular values: </span><span class="sc">{</span>sigma[:<span class="dv">2</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"First two singular values squared: </span><span class="sc">{</span>sigma[:<span class="dv">2</span>]<span class="op">**</span><span class="dv">2</span><span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="fig-svd-pca-comparison" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-svd-pca-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="chapter5_files/figure-html/fig-svd-pca-comparison-output-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-svd-pca-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.12: Comparison of SVD and PCA projections
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>First two singular values: [20.92306556 11.7091661 ]
+First two singular values squared: [437.77467248 137.10457072]</code></pre>
+</div>
+</div>
+</section>
+<section id="low-rank-approximation" class="level3" data-number="6.9.4">
+<h3 data-number="6.9.4" class="anchored" data-anchor-id="low-rank-approximation"><span class="header-section-number">6.9.4</span> Low-Rank Approximation</h3>
+<p>One of the key applications of SVD is low-rank matrix approximation, which enables data compression:</p>
+<div id="cell-fig-svd-low-rank" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a simple matrix for demonstration</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> np.array([</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>],</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">6</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">10</span>],</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">11</span>, <span class="dv">12</span>, <span class="dv">13</span>, <span class="dv">14</span>, <span class="dv">15</span>]</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply SVD</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>U, sigma, Vt <span class="op">=</span> svd(A)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Create diagonal matrix Sigma</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>Sigma <span class="op">=</span> np.zeros((A.shape[<span class="dv">0</span>], A.shape[<span class="dv">1</span>]))</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">min</span>(A.shape)):</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    Sigma[i, i] <span class="op">=</span> sigma[i]</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to reconstruct with k components</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> reconstruct_svd(u, sigma, vt, k):</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create truncated sigma matrix</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>    sigma_k <span class="op">=</span> np.zeros((u.shape[<span class="dv">0</span>], vt.shape[<span class="dv">0</span>]))</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">min</span>(k, <span class="bu">len</span>(sigma))):</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>        sigma_k[i, i] <span class="op">=</span> sigma[i]</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Reconstruct</span></span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> u <span class="op">@</span> sigma_k <span class="op">@</span> vt</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Reconstruct with different ranks</span></span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>ranks <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>]</span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="bu">len</span>(ranks) <span class="op">+</span> <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">4</span>))</span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Original matrix</span></span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].imshow(A, cmap<span class="op">=</span><span class="st">'viridis'</span>)</span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">'Original Matrix'</span>)</span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].axis(<span class="st">'off'</span>)</span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Reconstructions</span></span>
+<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, k <span class="kw">in</span> <span class="bu">enumerate</span>(ranks):</span>
+<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>    A_k <span class="op">=</span> reconstruct_svd(U, sigma, Vt, k)</span>
+<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a>    axes[i<span class="op">+</span><span class="dv">1</span>].imshow(A_k, cmap<span class="op">=</span><span class="st">'viridis'</span>)</span>
+<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a>    axes[i<span class="op">+</span><span class="dv">1</span>].set_title(<span class="ss">f'Rank </span><span class="sc">{</span>k<span class="sc">}</span><span class="ss"> Approximation'</span>)</span>
+<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a>    axes[i<span class="op">+</span><span class="dv">1</span>].axis(<span class="st">'off'</span>)</span>
+<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate and display approximation errors</span></span>
+<span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> k <span class="kw">in</span> ranks:</span>
+<span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a>    A_k <span class="op">=</span> reconstruct_svd(U, sigma, Vt, k)</span>
+<span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a>    error <span class="op">=</span> np.linalg.norm(A <span class="op">-</span> A_k, <span class="st">'fro'</span>)</span>
+<span id="cb18-49"><a href="#cb18-49" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Rank </span><span class="sc">{</span>k<span class="sc">}</span><span class="ss"> approximation error: </span><span class="sc">{</span>error<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="fig-svd-low-rank" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-svd-low-rank-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="chapter5_files/figure-html/fig-svd-low-rank-output-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-svd-low-rank-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.13: Low-rank approximation of a matrix
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rank 1 approximation error: 2.4654
+Rank 2 approximation error: 0.0000
+Rank 3 approximation error: 0.0000</code></pre>
+</div>
+</div>
+</section>
+<section id="svd-for-image-compression" class="level3" data-number="6.9.5">
+<h3 data-number="6.9.5" class="anchored" data-anchor-id="svd-for-image-compression"><span class="header-section-number">6.9.5</span> SVD for Image Compression</h3>
+<p>A common application of SVD is image compression. Let’s demonstrate this with a grayscale image:</p>
+<div id="fig-image-compression" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="15">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-image-compression-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="sourceCode cell-code" id="fig-image-compression" data-execution_count="15"><pre class="sourceCode python cell code-with-copy"><code class="sourceCode python"><span id="fig-image-compression-1"><a href="#fig-image-compression-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load a sample image</span></span>
+<span id="fig-image-compression-2"><a href="#fig-image-compression-2" aria-hidden="true" tabindex="-1"></a><span class="co"># For demonstration, let's create a simple gradient image</span></span>
+<span id="fig-image-compression-3"><a href="#fig-image-compression-3" aria-hidden="true" tabindex="-1"></a>img_size <span class="op">=</span> <span class="dv">512</span></span>
+<span id="fig-image-compression-4"><a href="#fig-image-compression-4" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> np.zeros((img_size, img_size))</span>
+<span id="fig-image-compression-5"><a href="#fig-image-compression-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(img_size):</span>
+<span id="fig-image-compression-6"><a href="#fig-image-compression-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(img_size):</span>
+<span id="fig-image-compression-7"><a href="#fig-image-compression-7" aria-hidden="true" tabindex="-1"></a>        img[i, j] <span class="op">=</span> (i <span class="op">+</span> j) <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> img_size)</span>
+<span id="fig-image-compression-8"><a href="#fig-image-compression-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fig-image-compression-9"><a href="#fig-image-compression-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply SVD</span></span>
+<span id="fig-image-compression-10"><a href="#fig-image-compression-10" aria-hidden="true" tabindex="-1"></a>U, sigma, Vt <span class="op">=</span> svd(img, full_matrices<span class="op">=</span><span class="va">False</span>)</span>
+<span id="fig-image-compression-11"><a href="#fig-image-compression-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fig-image-compression-12"><a href="#fig-image-compression-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Compress image with different numbers of singular values</span></span>
+<span id="fig-image-compression-13"><a href="#fig-image-compression-13" aria-hidden="true" tabindex="-1"></a>k_values <span class="op">=</span> [<span class="dv">5</span>, <span class="dv">20</span>, <span class="dv">50</span>, <span class="dv">100</span>]</span>
+<span id="fig-image-compression-14"><a href="#fig-image-compression-14" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="bu">len</span>(k_values) <span class="op">+</span> <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">18</span>, <span class="dv">4</span>))</span>
+<span id="fig-image-compression-15"><a href="#fig-image-compression-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fig-image-compression-16"><a href="#fig-image-compression-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Original image</span></span>
+<span id="fig-image-compression-17"><a href="#fig-image-compression-17" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].imshow(img, cmap<span class="op">=</span><span class="st">'gray'</span>)</span>
+<span id="fig-image-compression-18"><a href="#fig-image-compression-18" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">'Original Image'</span>)</span>
+<span id="fig-image-compression-19"><a href="#fig-image-compression-19" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].axis(<span class="st">'off'</span>)</span>
+<span id="fig-image-compression-20"><a href="#fig-image-compression-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fig-image-compression-21"><a href="#fig-image-compression-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Compressed images</span></span>
+<span id="fig-image-compression-22"><a href="#fig-image-compression-22" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, k <span class="kw">in</span> <span class="bu">enumerate</span>(k_values):</span>
+<span id="fig-image-compression-23"><a href="#fig-image-compression-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Reconstruct image with k singular values</span></span>
+<span id="fig-image-compression-24"><a href="#fig-image-compression-24" aria-hidden="true" tabindex="-1"></a>    compressed_img <span class="op">=</span> U[:, :k] <span class="op">@</span> np.diag(sigma[:k]) <span class="op">@</span> Vt[:k, :]</span>
+<span id="fig-image-compression-25"><a href="#fig-image-compression-25" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="fig-image-compression-26"><a href="#fig-image-compression-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Display</span></span>
+<span id="fig-image-compression-27"><a href="#fig-image-compression-27" aria-hidden="true" tabindex="-1"></a>    axes[i<span class="op">+</span><span class="dv">1</span>].imshow(compressed_img, cmap<span class="op">=</span><span class="st">'gray'</span>)</span>
+<span id="fig-image-compression-28"><a href="#fig-image-compression-28" aria-hidden="true" tabindex="-1"></a>    axes[i<span class="op">+</span><span class="dv">1</span>].set_title(<span class="ss">f'k=</span><span class="sc">{</span>k<span class="sc">}</span><span class="ss">, CR=</span><span class="sc">{</span>img<span class="sc">.</span>size<span class="op">/</span>(k<span class="op">*</span>(img.shape[<span class="dv">0</span>] <span class="op">+</span> img.shape[<span class="dv">1</span>] <span class="op">+</span> <span class="dv">1</span>))<span class="sc">:.1f}</span><span class="ss">'</span>)</span>
+<span id="fig-image-compression-29"><a href="#fig-image-compression-29" aria-hidden="true" tabindex="-1"></a>    axes[i<span class="op">+</span><span class="dv">1</span>].axis(<span class="st">'off'</span>)</span>
+<span id="fig-image-compression-30"><a href="#fig-image-compression-30" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="fig-image-compression-31"><a href="#fig-image-compression-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Print compression ratio</span></span>
+<span id="fig-image-compression-32"><a href="#fig-image-compression-32" aria-hidden="true" tabindex="-1"></a>    original_size <span class="op">=</span> img.size <span class="op">*</span> <span class="dv">8</span>  <span class="co"># Assuming 8 bits per pixel</span></span>
+<span id="fig-image-compression-33"><a href="#fig-image-compression-33" aria-hidden="true" tabindex="-1"></a>    compressed_size <span class="op">=</span> k <span class="op">*</span> (img.shape[<span class="dv">0</span>] <span class="op">+</span> img.shape[<span class="dv">1</span>] <span class="op">+</span> <span class="dv">1</span>) <span class="op">*</span> <span class="dv">8</span>  <span class="co"># k(m+n+1) values stored</span></span>
+<span id="fig-image-compression-34"><a href="#fig-image-compression-34" aria-hidden="true" tabindex="-1"></a>    compression_ratio <span class="op">=</span> original_size <span class="op">/</span> compressed_size</span>
+<span id="fig-image-compression-35"><a href="#fig-image-compression-35" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"k=</span><span class="sc">{</span>k<span class="sc">}</span><span class="ss">, Compression ratio: </span><span class="sc">{</span>compression_ratio<span class="sc">:.2f}</span><span class="ss">"</span>)</span>
+<span id="fig-image-compression-36"><a href="#fig-image-compression-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fig-image-compression-37"><a href="#fig-image-compression-37" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="fig-image-compression-38"><a href="#fig-image-compression-38" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-image-compression-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.14
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="applications-of-svd" class="level3" data-number="6.9.6">
+<h3 data-number="6.9.6" class="anchored" data-anchor-id="applications-of-svd"><span class="header-section-number">6.9.6</span> Applications of SVD</h3>
+<p>SVD has numerous applications across various domains:</p>
+<section id="recommendation-systems" class="level4" data-number="6.9.6.1">
+<h4 data-number="6.9.6.1" class="anchored" data-anchor-id="recommendation-systems"><span class="header-section-number">6.9.6.1</span> 1. Recommendation Systems</h4>
+<div id="fig-recommendation" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="16">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-recommendation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="sourceCode cell-code" id="fig-recommendation" data-execution_count="16"><pre class="sourceCode python cell code-with-copy"><code class="sourceCode python"><span id="fig-recommendation-1"><a href="#fig-recommendation-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a user-item ratings matrix (movies example)</span></span>
+<span id="fig-recommendation-2"><a href="#fig-recommendation-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Rows: users, Columns: movies, Values: ratings</span></span>
+<span id="fig-recommendation-3"><a href="#fig-recommendation-3" aria-hidden="true" tabindex="-1"></a>ratings <span class="op">=</span> np.array([</span>
+<span id="fig-recommendation-4"><a href="#fig-recommendation-4" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>],</span>
+<span id="fig-recommendation-5"><a href="#fig-recommendation-5" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">4</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">3</span>, <span class="dv">1</span>],</span>
+<span id="fig-recommendation-6"><a href="#fig-recommendation-6" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">5</span>, <span class="dv">0</span>],</span>
+<span id="fig-recommendation-7"><a href="#fig-recommendation-7" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">4</span>, <span class="dv">0</span>, <span class="dv">3</span>],</span>
+<span id="fig-recommendation-8"><a href="#fig-recommendation-8" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">5</span>, <span class="dv">0</span>, <span class="dv">0</span>]</span>
+<span id="fig-recommendation-9"><a href="#fig-recommendation-9" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="fig-recommendation-10"><a href="#fig-recommendation-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fig-recommendation-11"><a href="#fig-recommendation-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply SVD</span></span>
+<span id="fig-recommendation-12"><a href="#fig-recommendation-12" aria-hidden="true" tabindex="-1"></a>U, sigma, Vt <span class="op">=</span> svd(ratings)</span>
+<span id="fig-recommendation-13"><a href="#fig-recommendation-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fig-recommendation-14"><a href="#fig-recommendation-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Use a low-rank approximation (k=2)</span></span>
+<span id="fig-recommendation-15"><a href="#fig-recommendation-15" aria-hidden="true" tabindex="-1"></a>k <span class="op">=</span> <span class="dv">2</span></span>
+<span id="fig-recommendation-16"><a href="#fig-recommendation-16" aria-hidden="true" tabindex="-1"></a>ratings_approx <span class="op">=</span> U[:, :k] <span class="op">@</span> np.diag(sigma[:k]) <span class="op">@</span> Vt[:k, :]</span>
+<span id="fig-recommendation-17"><a href="#fig-recommendation-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fig-recommendation-18"><a href="#fig-recommendation-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Fill in missing ratings</span></span>
+<span id="fig-recommendation-19"><a href="#fig-recommendation-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Original ratings matrix:"</span>)</span>
+<span id="fig-recommendation-20"><a href="#fig-recommendation-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ratings)</span>
+<span id="fig-recommendation-21"><a href="#fig-recommendation-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Reconstructed ratings matrix:"</span>)</span>
+<span id="fig-recommendation-22"><a href="#fig-recommendation-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.<span class="bu">round</span>(ratings_approx, <span class="dv">1</span>))</span>
+<span id="fig-recommendation-23"><a href="#fig-recommendation-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fig-recommendation-24"><a href="#fig-recommendation-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Find recommendations for a user</span></span>
+<span id="fig-recommendation-25"><a href="#fig-recommendation-25" aria-hidden="true" tabindex="-1"></a>user_id <span class="op">=</span> <span class="dv">0</span></span>
+<span id="fig-recommendation-26"><a href="#fig-recommendation-26" aria-hidden="true" tabindex="-1"></a>missing_ratings <span class="op">=</span> np.where(ratings[user_id] <span class="op">==</span> <span class="dv">0</span>)[<span class="dv">0</span>]</span>
+<span id="fig-recommendation-27"><a href="#fig-recommendation-27" aria-hidden="true" tabindex="-1"></a>recommendations <span class="op">=</span> [(item, ratings_approx[user_id, item]) <span class="cf">for</span> item <span class="kw">in</span> missing_ratings]</span>
+<span id="fig-recommendation-28"><a href="#fig-recommendation-28" aria-hidden="true" tabindex="-1"></a>recommendations.sort(key<span class="op">=</span><span class="kw">lambda</span> x: x[<span class="dv">1</span>], reverse<span class="op">=</span><span class="va">True</span>)</span>
+<span id="fig-recommendation-29"><a href="#fig-recommendation-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fig-recommendation-30"><a href="#fig-recommendation-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Top recommendations for User </span><span class="sc">{</span>user_id<span class="sc">}</span><span class="ss">:"</span>)</span>
+<span id="fig-recommendation-31"><a href="#fig-recommendation-31" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> item, score <span class="kw">in</span> recommendations:</span>
+<span id="fig-recommendation-32"><a href="#fig-recommendation-32" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Item </span><span class="sc">{</span>item<span class="sc">}</span><span class="ss">: Predicted rating </span><span class="sc">{</span>score<span class="sc">:.1f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-recommendation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.15
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="latent-semantic-analysis-lsa-for-text-mining" class="level4" data-number="6.9.6.2">
+<h4 data-number="6.9.6.2" class="anchored" data-anchor-id="latent-semantic-analysis-lsa-for-text-mining"><span class="header-section-number">6.9.6.2</span> 2. Latent Semantic Analysis (LSA) for Text Mining</h4>
+<div id="fig-lsa" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="17">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-lsa-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="sourceCode cell-code" id="fig-lsa" data-execution_count="17"><pre class="sourceCode python cell code-with-copy"><code class="sourceCode python"><span id="fig-lsa-1"><a href="#fig-lsa-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.feature_extraction.text <span class="im">import</span> TfidfVectorizer</span>
+<span id="fig-lsa-2"><a href="#fig-lsa-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> TruncatedSVD</span>
+<span id="fig-lsa-3"><a href="#fig-lsa-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fig-lsa-4"><a href="#fig-lsa-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Sample documents</span></span>
+<span id="fig-lsa-5"><a href="#fig-lsa-5" aria-hidden="true" tabindex="-1"></a>documents <span class="op">=</span> [</span>
+<span id="fig-lsa-6"><a href="#fig-lsa-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Machine learning is a field of artificial intelligence"</span>,</span>
+<span id="fig-lsa-7"><a href="#fig-lsa-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Deep learning is a subset of machine learning"</span>,</span>
+<span id="fig-lsa-8"><a href="#fig-lsa-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Neural networks are used in deep learning"</span>,</span>
+<span id="fig-lsa-9"><a href="#fig-lsa-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SVD is used for dimensionality reduction"</span>,</span>
+<span id="fig-lsa-10"><a href="#fig-lsa-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"PCA and SVD are related techniques"</span>,</span>
+<span id="fig-lsa-11"><a href="#fig-lsa-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Dimensionality reduction helps with visualizing data"</span></span>
+<span id="fig-lsa-12"><a href="#fig-lsa-12" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="fig-lsa-13"><a href="#fig-lsa-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fig-lsa-14"><a href="#fig-lsa-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Create TF-IDF matrix</span></span>
+<span id="fig-lsa-15"><a href="#fig-lsa-15" aria-hidden="true" tabindex="-1"></a>vectorizer <span class="op">=</span> TfidfVectorizer(stop_words<span class="op">=</span><span class="st">'english'</span>)</span>
+<span id="fig-lsa-16"><a href="#fig-lsa-16" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> vectorizer.fit_transform(documents)</span>
+<span id="fig-lsa-17"><a href="#fig-lsa-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fig-lsa-18"><a href="#fig-lsa-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Get feature names</span></span>
+<span id="fig-lsa-19"><a href="#fig-lsa-19" aria-hidden="true" tabindex="-1"></a>feature_names <span class="op">=</span> vectorizer.get_feature_names_out()</span>
+<span id="fig-lsa-20"><a href="#fig-lsa-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fig-lsa-21"><a href="#fig-lsa-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the document-term matrix</span></span>
+<span id="fig-lsa-22"><a href="#fig-lsa-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Document-Term Matrix (TF-IDF):"</span>)</span>
+<span id="fig-lsa-23"><a href="#fig-lsa-23" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(X.toarray(), columns<span class="op">=</span>feature_names)</span>
+<span id="fig-lsa-24"><a href="#fig-lsa-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df)</span>
+<span id="fig-lsa-25"><a href="#fig-lsa-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fig-lsa-26"><a href="#fig-lsa-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply LSA (truncated SVD)</span></span>
+<span id="fig-lsa-27"><a href="#fig-lsa-27" aria-hidden="true" tabindex="-1"></a>n_components <span class="op">=</span> <span class="dv">2</span></span>
+<span id="fig-lsa-28"><a href="#fig-lsa-28" aria-hidden="true" tabindex="-1"></a>lsa <span class="op">=</span> TruncatedSVD(n_components<span class="op">=</span>n_components)</span>
+<span id="fig-lsa-29"><a href="#fig-lsa-29" aria-hidden="true" tabindex="-1"></a>X_lsa <span class="op">=</span> lsa.fit_transform(X)</span>
+<span id="fig-lsa-30"><a href="#fig-lsa-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fig-lsa-31"><a href="#fig-lsa-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Print explained variance</span></span>
+<span id="fig-lsa-32"><a href="#fig-lsa-32" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Explained variance ratio: </span><span class="sc">{</span>lsa<span class="sc">.</span>explained_variance_ratio_<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="fig-lsa-33"><a href="#fig-lsa-33" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Total explained variance: </span><span class="sc">{</span><span class="bu">sum</span>(lsa.explained_variance_ratio_)<span class="sc">:.2f}</span><span class="ss">"</span>)</span>
+<span id="fig-lsa-34"><a href="#fig-lsa-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fig-lsa-35"><a href="#fig-lsa-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot documents in the reduced space</span></span>
+<span id="fig-lsa-36"><a href="#fig-lsa-36" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="fig-lsa-37"><a href="#fig-lsa-37" aria-hidden="true" tabindex="-1"></a>plt.scatter(X_lsa[:, <span class="dv">0</span>], X_lsa[:, <span class="dv">1</span>], alpha<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="fig-lsa-38"><a href="#fig-lsa-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fig-lsa-39"><a href="#fig-lsa-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Label each point</span></span>
+<span id="fig-lsa-40"><a href="#fig-lsa-40" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, doc <span class="kw">in</span> <span class="bu">enumerate</span>(documents):</span>
+<span id="fig-lsa-41"><a href="#fig-lsa-41" aria-hidden="true" tabindex="-1"></a>    plt.annotate(<span class="ss">f"Doc </span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">"</span>, (X_lsa[i, <span class="dv">0</span>], X_lsa[i, <span class="dv">1</span>]), </span>
+<span id="fig-lsa-42"><a href="#fig-lsa-42" aria-hidden="true" tabindex="-1"></a>                 xytext<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">5</span>), textcoords<span class="op">=</span><span class="st">'offset points'</span>)</span>
+<span id="fig-lsa-43"><a href="#fig-lsa-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fig-lsa-44"><a href="#fig-lsa-44" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Component 1"</span>)</span>
+<span id="fig-lsa-45"><a href="#fig-lsa-45" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Component 2"</span>)</span>
+<span id="fig-lsa-46"><a href="#fig-lsa-46" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Documents in LSA Space"</span>)</span>
+<span id="fig-lsa-47"><a href="#fig-lsa-47" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="fig-lsa-48"><a href="#fig-lsa-48" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="fig-lsa-49"><a href="#fig-lsa-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fig-lsa-50"><a href="#fig-lsa-50" aria-hidden="true" tabindex="-1"></a><span class="co"># Examine term weights in components</span></span>
+<span id="fig-lsa-51"><a href="#fig-lsa-51" aria-hidden="true" tabindex="-1"></a>component_terms <span class="op">=</span> {}</span>
+<span id="fig-lsa-52"><a href="#fig-lsa-52" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, component <span class="kw">in</span> <span class="bu">enumerate</span>(lsa.components_):</span>
+<span id="fig-lsa-53"><a href="#fig-lsa-53" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get the top terms for this component</span></span>
+<span id="fig-lsa-54"><a href="#fig-lsa-54" aria-hidden="true" tabindex="-1"></a>    terms <span class="op">=</span> <span class="bu">zip</span>(feature_names, component)</span>
+<span id="fig-lsa-55"><a href="#fig-lsa-55" aria-hidden="true" tabindex="-1"></a>    sorted_terms <span class="op">=</span> <span class="bu">sorted</span>(terms, key<span class="op">=</span><span class="kw">lambda</span> x: <span class="bu">abs</span>(x[<span class="dv">1</span>]), reverse<span class="op">=</span><span class="va">True</span>)[:<span class="dv">5</span>]</span>
+<span id="fig-lsa-56"><a href="#fig-lsa-56" aria-hidden="true" tabindex="-1"></a>    component_terms[<span class="ss">f"Component </span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">"</span>] <span class="op">=</span> sorted_terms</span>
+<span id="fig-lsa-57"><a href="#fig-lsa-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="fig-lsa-58"><a href="#fig-lsa-58" aria-hidden="true" tabindex="-1"></a><span class="co"># Display top terms for each component</span></span>
+<span id="fig-lsa-59"><a href="#fig-lsa-59" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> component, terms <span class="kw">in</span> component_terms.items():</span>
+<span id="fig-lsa-60"><a href="#fig-lsa-60" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="sc">{</span>component<span class="sc">}</span><span class="ss"> top terms:"</span>)</span>
+<span id="fig-lsa-61"><a href="#fig-lsa-61" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> term, weight <span class="kw">in</span> terms:</span>
+<span id="fig-lsa-62"><a href="#fig-lsa-62" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"  </span><span class="sc">{</span>term<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>weight<span class="sc">:.3f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-lsa-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.16
+</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="truncated-svd-vs.-pca" class="level3" data-number="6.9.7">
+<h3 data-number="6.9.7" class="anchored" data-anchor-id="truncated-svd-vs.-pca"><span class="header-section-number">6.9.7</span> Truncated SVD vs.&nbsp;PCA</h3>
+<p>Truncated SVD can be applied directly to sparse matrices, while PCA typically requires dense matrices. This makes Truncated SVD particularly useful for text analysis and high-dimensional sparse data:</p>
+<div id="cell-fig-truncated-svd" class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> TruncatedSVD, PCA</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.sparse <span class="im">import</span> csr_matrix</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a sparse matrix</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>rows <span class="op">=</span> np.random.randint(<span class="dv">0</span>, <span class="dv">100</span>, <span class="dv">1000</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>cols <span class="op">=</span> np.random.randint(<span class="dv">0</span>, <span class="dv">50</span>, <span class="dv">1000</span>)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> np.random.randn(<span class="dv">1000</span>)</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>sparse_matrix <span class="op">=</span> csr_matrix((data, (rows, cols)), shape<span class="op">=</span>(<span class="dv">100</span>, <span class="dv">50</span>))</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply Truncated SVD</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>tsvd <span class="op">=</span> TruncatedSVD(n_components<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>tsvd_result <span class="op">=</span> tsvd.fit_transform(sparse_matrix)</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to dense for PCA</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>dense_matrix <span class="op">=</span> sparse_matrix.toarray()</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply PCA</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>pca <span class="op">=</span> PCA(n_components<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>pca_result <span class="op">=</span> pca.fit_transform(dense_matrix)</span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare results</span></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">14</span>, <span class="dv">6</span>))</span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot Truncated SVD result</span></span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].scatter(tsvd_result[:, <span class="dv">0</span>], tsvd_result[:, <span class="dv">1</span>], alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">'Truncated SVD'</span>)</span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_xlabel(<span class="st">'Component 1'</span>)</span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_ylabel(<span class="st">'Component 2'</span>)</span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].grid(<span class="va">True</span>)</span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot PCA result</span></span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].scatter(pca_result[:, <span class="dv">0</span>], pca_result[:, <span class="dv">1</span>], alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">'PCA'</span>)</span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_xlabel(<span class="st">'Component 1'</span>)</span>
+<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_ylabel(<span class="st">'Component 2'</span>)</span>
+<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].grid(<span class="va">True</span>)</span>
+<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb20-40"><a href="#cb20-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-41"><a href="#cb20-41" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare explained variance</span></span>
+<span id="cb20-42"><a href="#cb20-42" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Truncated SVD explained variance ratio: </span><span class="sc">{</span>tsvd<span class="sc">.</span>explained_variance_ratio_<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb20-43"><a href="#cb20-43" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"PCA explained variance ratio: </span><span class="sc">{</span>pca<span class="sc">.</span>explained_variance_ratio_<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="fig-truncated-svd" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-truncated-svd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="chapter5_files/figure-html/fig-truncated-svd-output-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-truncated-svd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.17: Comparison of Truncated SVD and PCA
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Truncated SVD explained variance ratio: [0.07023138 0.06220455]
+PCA explained variance ratio: [0.07029491 0.06222747]</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="no-advantages-and-limitations-of-svd" class="level2" data-number="6.10">
+<h2 data-number="6.10" class="anchored" data-anchor-id="no-advantages-and-limitations-of-svd"><span class="header-section-number">6.10</span> No# Advantages and Limitations of SVD</h2>
+<section id="advantages" class="level4" data-number="6.10.0.1">
+<h4 data-number="6.10.0.1" class="anchored" data-anchor-id="advantages"><span class="header-section-number">6.10.0.1</span> Advantages</h4>
+<ol type="1">
+<li><strong>Robust mathematical foundation</strong>: Based on well-established linear algebra principles</li>
+<li><strong>Numerical stability</strong>: Often more stable than eigendecomposition-based methods</li>
+<li><strong>Applicability to non-square matrices</strong>: Can be applied to any rectangular matrix</li>
+<li><strong>Optimal low-rank approximation</strong>: Provides the best approximation in terms of Frobenius norm</li>
+</ol>
+</section>
+<section id="limitations" class="level4" data-number="6.10.0.2">
+<h4 data-number="6.10.0.2" class="anchored" data-anchor-id="limitations"><span class="header-section-number">6.10.0.2</span> Limitations</h4>
+<ol type="1">
+<li><strong>Computational cost</strong>: Full SVD is expensive for large matrices (O(min(mn², m²n)))</li>
+<li><strong>Memory requirements</strong>: Working with large matrices can be memory-intensive</li>
+<li><strong>Interpretability</strong>: The resulting components may be difficult to interpret in some domains</li>
+<li><strong>Linearity</strong>: As with PCA, SVD assumes linear relationships in the data</li>
+</ol>
+</section>
+</section>
+<section id="conclusion" class="level2" data-number="6.11">
+<h2 data-number="6.11" class="anchored" data-anchor-id="conclusion"><span class="header-section-number">6.11</span> Conclusion</h2>
+<p>Dimensionality reduction techniques are essential tools in the data scientist’s toolkit, enabling:</p>
+<ul>
+<li>More efficient model training</li>
+<li>Better visualization of complex datasets</li>
+<li>Improved performance through noise reduction</li>
+<li>Insights into feature importance and relationships</li>
+</ul>
+<p>As with all techniques, the choice of dimensionality reduction method should be guided by:</p>
+<ol type="1">
+<li>The specific characteristics of your dataset</li>
+<li>Your analysis goals</li>
+<li>Computational constraints</li>
+<li>Whether you need interpretable results</li>
+</ol>
+<p>Singular Value Decomposition is a fundamental technique in linear algebra with powerful applications in dimensionality reduction, data compression, noise filtering, and recommendation systems. Its ability to decompose any matrix into meaningful components makes it an essential tool for data scientists and machine learning practitioners.</p>
+<p>By understanding the mathematical principles behind SVD and its relationship to other dimensionality reduction techniques like PCA, we can effectively apply it to solve complex problems across various domains.</p>
+<p>In practice, the choice between full SVD, truncated SVD, or randomized algorithms depends on the specific characteristics of the data and computational constraints. Modern implementations in libraries like SciPy and scikit-learn provide efficient algorithms that make SVD accessible for large-scale applications.</p>
+<p>The Python implementations demonstrated in this document provide a starting point for applying these techniques to your own data analysis and machine learning projects.</p>
+</section>
+<section id="references" class="level2" data-number="6.12">
+<h2 data-number="6.12" class="anchored" data-anchor-id="references"><span class="header-section-number">6.12</span> References</h2>
+<ol type="1">
+<li>Jolliffe, I. T., &amp; Cadima, J. (2016). Principal component analysis: a review and recent developments. Philosophical Transactions of the Royal Society A, 374(2065).</li>
+<li>Van der Maaten, L., &amp; Hinton, G. (2008). Visualizing data using t-SNE. Journal of Machine Learning Research, 9(11).</li>
+<li>Pedregosa, F., et al.&nbsp;(2011). Scikit-learn: Machine Learning in Python. Journal of Machine Learning Research, 12, 2825-2830.</li>
+</ol>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./chapter4.html" class="pagination-link" aria-label="Supervised Learning: Regression and Classification">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Supervised Learning: Regression and Classification</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./chapter6.html" class="pagination-link" aria-label="Tree-Based Models and Ensemble Learning">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Tree-Based Models and Ensemble Learning</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

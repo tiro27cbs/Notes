@@ -1,0 +1,1373 @@
+---
+title: "Neural Networks and Deep Learning Foundations"
+---
+
+## ML and Deep Learning History
+
+### 1950s-1960s: Early Developments
+
+Initial excitement about machine learning began in the 1950s.
+
+Perceptron was one of the first models: a linear classifier, trained using a method similar to stochastic gradient descent.
+
+Limitation: Perceptrons cannot solve non-linearly separable problems (e.g., XOR), which led to a decline in popularity.
+
+📌 Analogy: Think of a perceptron like a straight knife trying to slice a circular cake with internal patterns—it can't reach the inner parts effectively.
+
+```{python}
+# Simple Perceptron Example in Python
+import numpy as np
+
+X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+y = np.array([0, 0, 0, 1])  # AND operation
+
+weights = np.zeros(2)
+bias = 0
+lr = 0.1
+
+for epoch in range(10):
+    for xi, target in zip(X, y):
+        output = np.dot(xi, weights) + bias
+        prediction = 1 if output > 0 else 0
+        error = target - prediction
+        weights += lr * error * xi
+        bias += lr * error
+
+print("Trained weights:", weights)
+```
+
+### 1970s-1980s: Rise of Connectionism
+
+Interest shifted to connectionism — models inspired by how the brain works.
+
+Hidden layers were introduced, increasing model expressiveness.
+
+Achieved success in tasks like optical character recognition.
+
+📌 Analogy: Adding hidden layers is like giving a child a set of crayons instead of just a pencil—it allows more flexibility and richer representations.
+
+### 1990s–2000s: Decline & Rise of Alternatives
+
+Interest declined again due to slow training and lack of data.
+
+Logistic Regression and SVMs with regularization and kernel tricks became dominant.
+
+## Overview of Machine Learning
+
+### Core Components
+
+**Data**: The foundation of learning. Inputs (features) and Outputs (labels/targets).
+
+Represented using a design matrix: rows are examples, columns are features.
+
+```{python}
+# Design matrix representation
+import pandas as pd
+
+df = pd.DataFrame({
+    'feature1': [1, 2, 3],
+    'feature2': [4, 5, 6],
+    'output': [7, 8, 9]
+})
+print(df)
+```
+
+**Model**: Maps input to output.
+
+-   Parametric (e.g., Linear Regression): fixed number of parameters.
+-   Non-parametric (e.g., k-NN): model complexity grows with data.
+
+**Objective Function**: Measures how well the model is performing.
+
+-   Mean Squared Error (MSE) for regression.
+-   Cross-Entropy Loss for classification.
+-   Often derived from Maximum Likelihood Estimation (MLE).
+
+```{python}
+from sklearn.metrics import mean_squared_error, log_loss
+
+y_true = [0, 1, 1, 0]
+y_pred_prob = [0.1, 0.9, 0.8, 0.3]
+
+print("Cross-entropy loss:", log_loss(y_true, y_pred_prob))
+```
+
+**Optimization Algorithm**: Minimizes the objective function.
+
+Gradient Descent: Move in the direction opposite to the gradient.
+
+```{python}
+# Simple Gradient Descent
+def f(x): return (x - 3) ** 2
+def grad_f(x): return 2 * (x - 3)
+
+x = 0
+lr = 0.1
+for _ in range(20):
+    x -= lr * grad_f(x)
+
+print("Minimum at:", x)
+```
+
+📌 Analogy: Optimization is like hiking down a mountain by always stepping downhill (gradient direction).
+
+### Key Concepts: Overfitting and Underfitting
+
+**Underfitting**: Model is too simple and fails to capture the underlying pattern in data.
+
+**Overfitting**: Model is too complex and memorizes the training data, performing poorly on unseen data.
+
+The goal is to balance complexity to minimize both training and test error.
+
+## Neural Networks: From Biological Inspiration to Deep Learning
+
+### Why Are They Called Neural Networks?
+
+Neural networks draw inspiration from the structure and function of the human brain, hence the name. Let's explore this analogy:
+
+**Biological Neurons**: In our brains, neurons receive signals through dendrites, process them in the cell body, and transmit output signals through axons to other neurons.
+
+**Artificial Neurons**: In artificial neural networks (ANNs), we have mathematical "neurons" that:
+
+1.  Receive inputs (like dendrites receiving signals)
+2.  Apply weights to these inputs (representing synaptic strengths)
+3.  Sum the weighted inputs and apply an activation function (like the neuron firing)
+4.  Produce an output that connects to other neurons
+
+```{python}
+import numpy as np
+
+# Simple artificial neuron
+def neuron(inputs, weights, bias, activation_function):
+    # Calculate weighted sum of inputs (like dendrites and cell body function)
+    weighted_sum = np.dot(inputs, weights) + bias
+    
+    # Apply activation function (like neuron firing)
+    output = activation_function(weighted_sum)
+    
+    return output
+```
+
+While actual brains are infinitely more complex, this simplified model has proven remarkably effective for machine learning tasks.
+
+## Linearity and Non-Linearity in Neural Networks
+
+### The Concept of Linearity
+
+A linear function has two key properties: 1. Additivity: $f(x + y) = f(x) + f(y)$ 2. Homogeneity: $f(αx) = αf(x)$
+
+In neural networks, a linear transformation of inputs can be represented as:
+
+```{python}
+def linear_layer(x, W, b):
+    # Linear transformation: z = Wx + b
+    z = np.dot(W, x) + b
+    return z
+```
+
+### Why We Need Non-Linearity
+
+If we were to stack multiple linear layers together:
+
+```{python}
+# Example of stacking linear layers
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Sample data
+x = np.array([1, 2, 3, 4])
+
+# First layer parameters
+W1 = np.array([[0.1, 0.2, 0.3, 0.4], 
+               [0.5, 0.6, 0.7, 0.8]])
+b1 = np.array([0.1, 0.2])
+
+# Second layer parameters
+W2 = np.array([[0.3, 0.5], 
+               [0.7, 0.9]])
+b2 = np.array([0.2, 0.4])
+
+# First linear layer
+z1 = np.dot(W1, x) + b1
+print("Output of first layer:", z1)
+
+# Second linear layer
+z2 = np.dot(W2, z1) + b2
+print("Output of second layer:", z2)
+
+# Equivalent single layer
+W_combined = np.dot(W2, W1)
+b_combined = np.dot(W2, b1) + b2
+z_combined = np.dot(W_combined, x) + b_combined
+print("Output of combined layer:", z_combined)
+```
+
+Mathematically, this is equivalent to a single linear transformation: $z2 = W2(W1x + b1) + b2 = (W2W1)x + (W2b1 + b2)$
+
+This means that without non-linearity, a deep neural network would be no more powerful than a single layer! This is where non-linear activation functions become crucial.
+
+### Non-Linearity in Neural Networks
+
+Non-linear functions enable neural networks to learn complex patterns:
+
+```{python}
+def non_linear_layer(x, W, b, activation_function):
+    # Linear transformation
+    z = np.dot(W, x) + b
+    # Non-linear activation
+    a = activation_function(z)
+    return a
+```
+
+This non-linearity allows neural networks to: - Approximate any continuous function (universal approximation theorem) - Learn hierarchical features - Solve complex, non-linear problems like image recognition, natural language processing, etc.
+
+## Activation Functions: Adding Non-Linearity
+
+## Activation Functions: Understanding the Neural Network's Decision-Making Process
+
+Activation functions are the critical components that give neural networks their power to learn complex patterns. Without them, neural networks would be nothing more than linear regression models, unable to solve interesting problems.
+
+### The Conceptual Role of Activation Functions
+
+Activation functions serve several crucial purposes:
+
+1. **Introducing Non-Linearity**: The real world is rarely linear. Activation functions allow networks to model complex, non-linear relationships.
+
+2. **Feature Transformation**: They transform input signals into more useful representations.
+
+3. **Decision Boundaries**: They help create complex decision boundaries that separate different classes of data.
+
+4. **Biological Inspiration**: They mimic the "firing" behavior of biological neurons, which activate only when inputs reach certain thresholds.
+
+### Sigmoid Function: The S-Shaped Decision Maker
+
+The sigmoid function maps any input to a value between 0 and 1, creating a smooth S-shaped curve:
+
+```{python}
+def sigmoid(z):
+    return 1 / (1 + np.exp(-z))
+
+# Visualization
+import matplotlib.pyplot as plt
+
+z = np.linspace(-10, 10, 100)
+plt.plot(z, sigmoid(z))
+plt.title("Sigmoid Activation Function")
+plt.xlabel("z")
+plt.ylabel("sigmoid(z)")
+plt.grid(True)
+plt.axhline(y=0, color='k', linestyle='-', alpha=0.3)
+plt.axhline(y=1, color='k', linestyle='-', alpha=0.3)
+plt.axvline(x=0, color='k', linestyle='-', alpha=0.3)
+```
+
+**Conceptual Understanding**: 
+- Acts like a "probability estimator" - values close to 1 represent high confidence, values close to 0 represent low confidence.
+- Creates a smooth transition between inactive (0) and active (1) states.
+- Historically important but less used in hidden layers today.
+
+**Mental Model**: Imagine a thermostat that gradually turns on heating as the temperature drops, with a smooth transition rather than an abrupt on/off switch.
+
+**Mathematical Intuition**: The sigmoid compresses extreme values while being most sensitive to changes around z=0.
+
+### ReLU: The Modern Workhorse
+
+ReLU (Rectified Linear Unit) is elegantly simple: it returns the input if positive, otherwise zero.
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+
+def relu(z):
+    return np.maximum(0, z)  
+
+# Visualization
+z = np.linspace(-10, 10, 100)
+plt.plot(z, relu(z))
+plt.title("ReLU Activation Function")
+plt.xlabel("z")
+plt.ylabel("ReLU(z)")
+plt.grid(True)
+plt.axhline(y=0, color='k', linestyle='-', alpha=0.3)
+plt.axvline(x=0, color='k', linestyle='-', alpha=0.3)
+plt.show()
+```
+
+**Conceptual Understanding**:
+- Acts as a feature selector - it highlights useful signals (positive values) while suppressing noise (negative values).
+- Creates sparsity in the network, as many neurons will output zero for any given input.
+- Computationally efficient and helps signals flow more effectively through deep networks.
+
+**Mental Model**: Think of ReLU as a filter that only allows positive information to pass through, completely blocking negative information.
+
+**Biological Intuition**: Similar to biological neurons that fire only when stimulation exceeds a threshold, ReLU neurons are only "activated" by positive inputs.
+
+### Variants: Leaky ReLU, ELU, and GELU
+
+These ReLU variants address some of its limitations:
+
+**Leaky ReLU**: Allows a small gradient when the unit is not active:
+```{python}
+def leaky_relu(z, alpha=0.01):
+    return np.maximum(alpha * z, z)
+
+# Visualization
+z = np.linspace(-10, 10, 100)
+plt.plot(z, leaky_relu(z))
+plt.title("Leaky ReLU Activation Function")
+plt.xlabel("z")
+plt.ylabel("Leaky ReLU(z)")
+plt.grid(True)
+plt.axhline(y=0, color='k', linestyle='-', alpha=0.3)
+plt.axvline(x=0, color='k', linestyle='-', alpha=0.3)
+plt.show()
+```
+
+**Conceptual Understanding**: Gives "dying" neurons a chance to recover by allowing a small gradient when inactive.
+
+**ELU** (Exponential Linear Unit): Smoothes the transition at zero:
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+
+def elu(z, alpha=1.0):
+    # Use NumPy's where function for element-wise conditional operations
+    return np.where(z > 0, z, alpha * (np.exp(z) - 1))
+
+# Visualization
+z = np.linspace(-10, 10, 100)
+plt.plot(z, elu(z))
+plt.title("ELU Activation Function")
+plt.xlabel("z")
+plt.ylabel("ELU(z)")
+plt.grid(True)
+plt.axhline(y=0, color='k', linestyle='-', alpha=0.3)
+plt.axvline(x=0, color='k', linestyle='-', alpha=0.3)
+plt.show()
+```
+
+**Conceptual Understanding**: Combines ReLU's benefits with a smoother transition, helping gradients flow better.
+
+**GELU** (Gaussian Error Linear Unit): Used in many transformer models like BERT:
+```{python}
+def gelu(z):
+    return 0.5 * z * (1 + np.tanh(np.sqrt(2 / np.pi) * (z + 0.044715 * z**3)))
+```
+
+**Conceptual Understanding**: Weighs inputs by their value, approximating a smooth step function modulated by the input's magnitude.
+
+### Softmax: The Probability Distributor
+
+Softmax converts a vector of values into a probability distribution:
+
+```{python}
+def softmax(z):
+    exp_z = np.exp(z - np.max(z))
+    return exp_z / np.sum(exp_z)
+
+# Visualization
+z = np.array([2.0, 1.0, 0.1])
+print("Softmax probabilities:", softmax(z))
+```
+
+**Conceptual Understanding**:
+- Acts as a "decision maker" for multi-class problems.
+- Emphasizes the largest values while suppressing smaller ones.
+- Creates competition between outputs - increasing one probability must decrease others.
+
+**Mental Model**: Imagine softmax as a committee voting system where members with stronger opinions (higher values) get more voting power, but the total votes must add up to 100%.
+
+### Choosing the Right Activation Function
+
+The choice of activation function depends on:
+
+1. **Layer Type**: 
+   - Hidden layers: ReLU and variants work well
+   - Output layer: Sigmoid for binary classification, Softmax for multi-class, Linear for regression
+
+2. **Problem Domain**:
+   - Image recognition: ReLU family performs well
+   - Time series and sequence modeling: GELU and Swish often excel
+   - Generative models: Leaky ReLU can help
+
+3. **Network Depth**:
+   - Deeper networks often benefit from ReLU variants that help mitigate vanishing gradients
+
+### The Mathematics Behind Learning
+
+Activation functions critically affect how networks learn through their derivatives:
+
+```{python}
+# Derivatives
+def sigmoid_derivative(z):
+    sig = sigmoid(z)
+    return sig * (1 - sig)
+
+# Visualization
+z = np.linspace(-10, 10, 100)
+plt.plot(z, sigmoid_derivative(z))
+plt.title("Sigmoid Derivative")
+plt.xlabel("z")
+plt.ylabel("sigmoid'(z)")
+plt.grid(True)
+plt.axhline(y=0, color='k', linestyle='-', alpha=0.3)
+plt.axvline(x=0, color='k', linestyle='-', alpha=0.3)
+plt.show()
+    
+def relu_derivative(z):
+    return 1 if z > 0 else 0
+
+# Visualization
+z = np.linspace(-10, 10, 100)
+plt.plot(z, [relu_derivative(zi) for zi in z])
+plt.title("ReLU Derivative")
+plt.xlabel("z")
+plt.ylabel("ReLU'(z)")
+plt.grid(True)
+plt.axhline(y=0, color='k', linestyle='-', alpha=0.3)
+plt.axvline(x=0, color='k', linestyle='-', alpha=0.3)
+plt.show()
+
+```
+
+**Conceptual Understanding**:
+- The derivative determines how much a neuron's weights update during learning.
+- Functions with stronger derivatives in useful ranges learn faster.
+- Functions with derivatives that approach zero (like sigmoid at extremes) can slow or stop learning.
+
+### Visualizing Decision Boundaries
+
+Different activation functions create different decision boundaries:
+
+- Linear: Can only create linear boundaries (lines, planes)
+- Sigmoid/Tanh: Can approximate curved boundaries with enough neurons
+- ReLU: Creates piecewise linear boundaries, which can approximate any shape with enough neurons
+
+This ability to create complex boundaries is what gives neural networks their remarkable flexibility.
+
+
+## The Role of Bias in Neural Networks
+
+### Understanding Bias in the Statistical Sense
+
+In statistics and machine learning, bias refers to the model's tendency to consistently over or underestimate the true values. It's one component of the generalization error along with variance and irreducible error.
+
+-   **High Bias**: Model is too simple to capture the underlying pattern (underfitting)
+-   **High Variance**: Model is too complex and captures noise in the training data (overfitting)
+
+### Bias Nodes in Neural Networks
+
+In neural networks, "bias" has a specific technical meaning: it's an additional parameter added to each layer that allows the activation function to shift:
+
+```{python}
+# Example showing the effect of bias
+import numpy as np
+
+# Without bias
+def no_bias_output(inputs, weights, activation_function):
+    return activation_function(np.dot(weights, inputs))
+
+# With bias
+def with_bias_output(inputs, weights, bias, activation_function):
+    return activation_function(np.dot(weights, inputs) + bias)
+
+# Define a simple sigmoid function
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+# Example data
+inputs = np.array([0, 0])  # Both inputs are zero
+weights = np.array([0.5, 0.5])
+
+# Compare outputs
+print("Without bias:", no_bias_output(inputs, weights, sigmoid))
+print("With bias (b=1):", with_bias_output(inputs, weights, 1, sigmoid))
+print("With bias (b=2):", with_bias_output(inputs, weights, 2, sigmoid))
+print("With bias (b=-2):", with_bias_output(inputs, weights, -2, sigmoid))
+```
+
+**Analogy**: Think of bias as the "y-intercept" in a linear equation y = mx + b. It shifts the entire activation function up or down, allowing the neuron to fire even when all inputs are zero.
+
+Let's visualize the effect of bias on a sigmoid neuron:
+
+```{python}
+def sigmoid_with_bias(x, bias):
+    return 1 / (1 + np.exp(-(x + bias)))
+
+x = np.linspace(-10, 10, 100)
+plt.figure(figsize=(10, 6))
+biases = [-5, -2, 0, 2, 5]
+for b in biases:
+    plt.plot(x, sigmoid_with_bias(x, b), label=f"bias = {b}")
+
+plt.title("Effect of Bias on Sigmoid Function")
+plt.xlabel("Input")
+plt.ylabel("Output")
+plt.legend()
+plt.grid(True)
+```
+
+### Practical Implementation in Python
+
+Here's how bias is typically implemented in a neural network layer using NumPy:
+
+```{python}
+class NeuralNetworkLayer:
+    def __init__(self, input_size, output_size, activation_function):
+        # Initialize weights and biases
+        self.weights = np.random.randn(output_size, input_size) * 0.01
+        self.bias = np.zeros((output_size, 1))
+        self.activation_function = activation_function
+    
+    def forward(self, inputs):
+        # Calculate the weighted sum including bias
+        self.z = np.dot(self.weights, inputs) + self.bias
+        # Apply activation function
+        self.a = self.activation_function(self.z)
+        return self.a
+```
+
+And here's how it looks in a modern deep learning framework like TensorFlow/Keras:
+
+``` python
+#| eval: false
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+
+# Create a model with two hidden layers
+model = Sequential([
+    # Input layer to first hidden layer
+    Dense(128, activation='relu', input_shape=(784,), use_bias=True),
+    # Second hidden layer
+    Dense(64, activation='relu', use_bias=True),
+    # Output layer
+    Dense(10, activation='softmax', use_bias=True)
+])
+
+# Note: use_bias=True is actually the default in Keras
+```
+
+## Putting It All Together: Building a Neural Network
+
+Let's build a simple neural network that demonstrates these concepts:
+
+```{python}
+import numpy as np
+
+class SimpleNeuralNetwork:
+    def __init__(self, input_size, hidden_size, output_size):
+        # Initialize weights and biases
+        self.W1 = np.random.randn(hidden_size, input_size) * 0.01
+        self.b1 = np.zeros((hidden_size, 1))
+        self.W2 = np.random.randn(output_size, hidden_size) * 0.01
+        self.b2 = np.zeros((output_size, 1))
+    
+    def relu(self, Z):
+        return np.maximum(0, Z)
+    
+    def softmax(self, Z):
+        exp_Z = np.exp(Z - np.max(Z, axis=0, keepdims=True))
+        return exp_Z / np.sum(exp_Z, axis=0, keepdims=True)
+    
+    def forward(self, X):
+        # First layer linear transformation
+        Z1 = np.dot(self.W1, X) + self.b1
+        # Apply non-linear activation
+        A1 = self.relu(Z1)
+        # Second layer linear transformation
+        Z2 = np.dot(self.W2, A1) + self.b2
+        # Apply softmax activation for output layer
+        A2 = self.softmax(Z2)
+        
+        return A2
+    
+    def predict(self, X):
+        # Get probabilities
+        probs = self.forward(X)
+        # Return class with highest probability
+        return np.argmax(probs, axis=0)
+
+# Example usage
+if __name__ == "__main__":
+    # Create dummy data: 3 samples with 4 features each
+    X = np.random.randn(4, 3)
+    
+    # Create a neural network with 4 input neurons, 5 hidden neurons, and 2 output classes
+    nn = SimpleNeuralNetwork(4, 5, 2)
+    
+    # Make predictions
+    predictions = nn.predict(X)
+    print("Predictions:", predictions)
+```
+
+## Connection to Deep Learning
+
+Deep learning refers to neural networks with many layers (hence "deep"). The key insight of deep learning is that:
+
+1.  Multiple layers allow the network to learn hierarchical representations
+2.  Lower layers learn simple features
+3.  Higher layers combine these features into more complex patterns
+
+For example, in a deep convolutional network for image recognition: - First layer might detect edges and simple textures - Middle layers might detect patterns like corners and curves - Higher layers might detect entire objects like faces or cars
+
+The non-linearity introduced by activation functions is what makes this hierarchical learning possible.
+
+## Real-World Analogy: Building a House
+
+Let's use the analogy of building a house to understand neural networks:
+
+1.  **Inputs (X)**: These are the raw materials (bricks, wood, cement, etc.)
+2.  **Weights (W)**: These represent the importance of each material for different parts of the house
+3.  **Bias (b)**: This represents the architectural style or design preferences
+4.  **Activation function**: This represents the construction techniques that transform materials into structures
+5.  **Hidden layers**: These are the intermediate structures (walls, roof frames, plumbing)
+6.  **Output**: The completed house
+
+Without non-linearity (activation functions), we could only build simple, linear structures. The non-linear activation functions allow us to create complex, curved, and intricate designs.
+
+## Conclusion
+
+Neural networks derive their power from:
+
+1.  **Biological inspiration**: Learning from how our brains process information
+2.  **Non-linearity**: Enabling the approximation of complex functions
+3.  **Bias parameters**: Allowing flexibility in neuron activation
+4.  **Hierarchical representation**: Building complex concepts from simpler ones
+
+Together, these elements have revolutionized machine learning and enabled breakthroughs in various fields including computer vision, natural language processing, and many other domains.
+
+# Neural Networks Foundations: TLUs, Perceptrons, and MLPs
+
+## Threshold Logic Units (TLUs)
+
+### The Building Blocks of Neural Networks
+
+A Threshold Logic Unit (TLU), also known as a Linear Threshold Unit (LTU), is the foundational building block of early neural networks. Think of a TLU as a simplified model of a biological neuron - it receives multiple inputs, processes them, and produces a single output based on whether the combined input exceeds a certain threshold.
+
+### How TLUs Work
+
+A TLU can be visualized as a decision-making unit with the following components:
+
+-   **Inputs**: A set of numerical values $x_1, x_2, ..., x_n$
+-   **Weights**: Each input is assigned a weight $w_1, w_2, ..., w_n$
+-   **Threshold**: A value $\theta$ that determines when the unit activates
+-   **Output**: A single value $y$ (typically 0 or 1)
+
+The TLU computes its output using this simple formula:
+
+$$y = \begin{cases}
+1, & \text{if } \sum_{i=1}^{n} w_i x_i \geq \theta \\
+0, & \text{otherwise}
+\end{cases}$$
+
+::: callout-note
+This is often rewritten by moving the threshold to the other side, creating what we call a "bias" term $b = -\theta$:
+
+$$y = \begin{cases}
+1, & \text{if } \sum_{i=1}^{n} w_i x_i + b \geq 0 \\
+0, & \text{otherwise}
+\end{cases}$$
+:::
+
+### Analogy: The Voting Committee
+
+Imagine a committee where each member (input) has a different level of influence (weight) on the final decision. The committee is voting on whether to approve a proposal (output 1) or reject it (output 0). Each member casts their vote, which is then weighted by their influence. If the weighted sum of votes exceeds a certain threshold, the proposal is approved; otherwise, it's rejected.
+
+### TLUs as Logic Gates
+
+TLUs can implement basic logical operations. Let's look at two examples:
+
+#### Example 1: Logical AND Operation (x₁ ∧ x₂)
+
+For the logical AND of two binary inputs, we want: - Output 1 only when both inputs are 1 - Output 0 otherwise
+
+We can achieve this with the following weights and threshold: - $w_1 = 1$ - $w_2 = 1$ - $\theta = 1.5$
+
+With these parameters: - When $x_1 = 0, x_2 = 0$: $0 \cdot 1 + 0 \cdot 1 = 0 < 1.5$, so output is 0 - When $x_1 = 1, x_2 = 0$: $1 \cdot 1 + 0 \cdot 1 = 1 < 1.5$, so output is 0 - When $x_1 = 0, x_2 = 1$: $0 \cdot 1 + 1 \cdot 1 = 1 < 1.5$, so output is 0 - When $x_1 = 1, x_2 = 1$: $1 \cdot 1 + 1 \cdot 1 = 2 > 1.5$, so output is 1
+
+#### Example 2: Logical Implication (x₂ → x₁)
+
+For the logical implication "if x₂ then x₁", we want: - Output 0 only when x₂ is 1 and x₁ is 0 (the only case where the implication fails) - Output 1 otherwise
+
+We can achieve this with: - $w_1 = 1$ - $w_2 = -1$ - $\theta = -0.5$
+
+Let's verify: - When $x_1 = 0, x_2 = 0$: $0 \cdot 1 + 0 \cdot (-1) = 0 > -0.5$, so output is 1 - When $x_1 = 1, x_2 = 0$: $1 \cdot 1 + 0 \cdot (-1) = 1 > -0.5$, so output is 1 - When $x_1 = 0, x_2 = 1$: $0 \cdot 1 + 1 \cdot (-1) = -1 < -0.5$, so output is 0 - When $x_1 = 1, x_2 = 1$: $1 \cdot 1 + 1 \cdot (-1) = 0 > -0.5$, so output is 1
+
+### Python Implementation of a TLU
+
+``` python
+import numpy as np
+
+class ThresholdLogicUnit:
+    def __init__(self, weights, threshold):
+        self.weights = np.array(weights)
+        self.threshold = threshold
+
+    def activate(self, inputs):
+        # Ensure inputs is a numpy array
+        inputs = np.array(inputs)
+
+        # Calculate weighted sum
+        weighted_sum = np.dot(inputs, self.weights)
+
+        # Apply threshold
+        return 1 if weighted_sum >= self.threshold else 0
+
+# Example: TLU implementing logical AND
+and_tlu = ThresholdLogicUnit([1, 1], 1.5)
+
+# Test all possible inputs
+inputs = [[0, 0], [0, 1], [1, 0], [1, 1]]
+for input_pair in inputs:
+    output = and_tlu.activate(input_pair)
+    print(f"Inputs: {input_pair}, Output: {output}")
+
+# Example: TLU implementing logical implication (x₂ → x₁)
+implication_tlu = ThresholdLogicUnit([1, -1], -0.5)
+
+# Test all possible inputs
+for input_pair in inputs:
+    output = implication_tlu.activate(input_pair)
+    print(f"Inputs: {input_pair}, Implication Output: {output}")
+```
+
+## Perceptron
+
+### The First Learning Neural Network
+
+The Perceptron, invented by Frank Rosenblatt in 1957, was one of the first algorithmic implementations of a learning neural network. It builds upon the TLU by adding a mechanism to automatically learn the weights and threshold.
+
+### Structure of a Perceptron
+
+A basic Perceptron consists of:
+
+-   A single layer of TLUs
+-   Each TLU connected to all inputs
+-   An additional bias input (usually fixed at 1)
+
+::: callout-tip
+The bias input allows the Perceptron to learn the threshold automatically as part of the weight vector.
+:::
+
+### Analogy: Learning to Balance a Scale
+
+Imagine a scale with multiple weight plates (inputs) on one side. Initially, you don't know how much each plate weighs (the weights are unknown). The Perceptron is like a system that gradually learns the weight of each plate by making guesses, checking whether the scale tips (the output), and adjusting its estimates based on errors.
+
+### Binary Classification with Perceptrons
+
+The simplest use of a Perceptron is for binary classification:
+
+1.  Inputs are fed into the Perceptron
+2.  The Perceptron computes a weighted sum and applies a step function
+3.  If the result exceeds the threshold, it classifies the input as positive; otherwise, as negative
+
+The decision boundary created by a Perceptron is always a straight line (in 2D), a plane (in 3D), or a hyperplane (in higher dimensions).
+
+### Multi-Output Perceptrons
+
+A Perceptron can have multiple outputs, with each output neuron solving a different binary classification problem. This creates a multi-output classifier.
+
+![Perceptron with two inputs and three outputs](perceptron_multi_output.png)
+
+### Activation Functions
+
+The original Perceptron uses a step function for activation. Common choices include:
+
+1.  **Heaviside Step Function**: $$H(x) = \begin{cases}
+    1, & \text{if } x \geq 0 \\
+    0, & \text{otherwise}
+    \end{cases}$$
+
+2.  **Signum Function**: $$\text{sgn}(x) = \begin{cases}
+    1, & \text{if } x > 0 \\
+    0, & \text{if } x = 0 \\
+    -1, & \text{if } x < 0
+    \end{cases}$$
+
+### The Perceptron Learning Algorithm
+
+The Perceptron learning algorithm follows these steps:
+
+1.  Initialize weights to small random values
+2.  For each training instance:
+    a.  Compute the output ŷ based on current weights
+    b.  Update weights using the Perceptron learning rule: $w_i \leftarrow w_i + \eta (y - \hat{y}) x_i$ where η is the learning rate, y is the true label, and ŷ is the predicted label
+
+This algorithm was inspired by Hebbian learning, which is often summarized as "neurons that fire together, wire together."
+
+### Python Implementation of a Perceptron
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import make_classification
+
+class Perceptron:
+    def __init__(self, learning_rate=0.01, n_iterations=1000):
+        self.learning_rate = learning_rate
+        self.n_iterations = n_iterations
+        self.weights = None
+        self.bias = None
+    
+    def fit(self, X, y):
+        n_samples, n_features = X.shape
+        
+        # Initialize weights and bias
+        self.weights = np.zeros(n_features)
+        self.bias = 0
+        
+        # Ensure y is in proper format (-1, 1)
+        y_ = np.array([1 if i > 0 else -1 for i in y])
+        
+        # Learning
+        for _ in range(self.n_iterations):
+            for idx, x_i in enumerate(X):
+                linear_output = np.dot(x_i, self.weights) + self.bias
+                y_predicted = 1 if linear_output >= 0 else -1
+                
+                # Update weights if prediction is wrong
+                if y_predicted != y_[idx]:
+                    update = self.learning_rate * y_[idx]
+                    self.weights += update * x_i
+                    self.bias += update
+
+    def predict(self, X):
+        linear_output = np.dot(X, self.weights) + self.bias
+        return np.array([1 if i >= 0 else 0 for i in linear_output])
+```
+
+# Generate a simple dataset
+
+``` python
+X, y = make_classification(n_samples=100, n_features=2, n_redundant=0, n_informative=2, random_state=1, n_clusters_per_class=1)
+
+# Train Perceptron
+perceptron = Perceptron(learning_rate=0.1, n_iterations=100)
+perceptron.fit(X, y)
+
+# Visualize decision boundary
+def plot_decision_boundary(X, y, classifier):
+    # Create mesh grid
+    h = 0.02  # step size in the mesh
+    x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+    y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
+    
+    # Plot decision boundary
+    Z = classifier.predict(np.c_[xx.ravel(), yy.ravel()])
+    Z = Z.reshape(xx.shape)
+    plt.contourf(xx, yy, Z, alpha=0.3)
+    
+    # Plot data points
+    plt.scatter(X[:, 0], X[:, 1], c=y, edgecolors='k', marker='o')
+    plt.xlabel('Feature 1')
+    plt.ylabel('Feature 2')
+    plt.title('Perceptron Decision Boundary')
+    plt.show()
+
+# Plot decision boundary
+plot_decision_boundary(X, y, perceptron)
+```
+
+### Comparison with Logistic Regression
+
+While Perceptrons and Logistic Regression both create linear decision boundaries, they differ in important ways:
+
+1.  **Output type**:
+    -   Perceptron: Hard binary output (0 or 1)
+    -   Logistic Regression: Probability (0 to 1)
+2.  **Training objective**:
+    -   Perceptron: Minimize misclassification
+    -   Logistic Regression: Maximize likelihood
+3.  **Convergence**:
+    -   Perceptron: Guaranteed to converge only for linearly separable data
+    -   Logistic Regression: Can converge even for non-separable data
+
+### Limitations of Perceptrons
+
+The most famous limitation of the Perceptron is its inability to solve problems that aren't linearly separable, such as the XOR problem:
+
+| x₁  | x₂  | XOR |
+|:---:|:---:|:---:|
+|  0  |  0  |  0  |
+|  0  |  1  |  1  |
+|  1  |  0  |  1  |
+|  1  |  1  |  0  |
+
+No straight line can separate the 0s from the 1s in this case. This limitation was highlighted in the famous 1969 book "Perceptrons" by Minsky and Papert, which temporarily slowed down neural network research.
+
+The solution to this problem was to stack multiple Perceptrons together, creating a Multilayer Perceptron.
+
+## Multilayer Perceptron (MLP)
+
+### Beyond Simple Linear Boundaries
+
+A Multilayer Perceptron (MLP) is a neural network that consists of multiple layers of TLUs, allowing it to learn non-linear decision boundaries and solve complex problems like XOR.
+
+### Structure of an MLP
+
+An MLP consists of:
+
+1.  **Input layer**: Receives the input features
+2.  **Hidden layers**: One or more intermediate layers of neurons
+3.  **Output layer**: Produces the final prediction
+
+Each layer is typically fully connected to the next layer, meaning every neuron connects to all neurons in the adjacent layer.
+
+::: callout-note
+Layers closer to the input are called "lower" layers, while those closer to the output are called "upper" layers.
+:::
+
+### Analogy: Hierarchical Decision Making
+
+Imagine a company where decisions pass through multiple levels of management: - Level 1 managers (first hidden layer) each focus on specific aspects of the input data - Level 2 managers (second hidden layer) combine the insights from Level 1 managers - Executives (output layer) make the final decision based on the processed information
+
+Each level transforms and refines the information, allowing complex patterns to be recognized that wouldn't be visible at any single level.
+
+### Why MLPs Can Solve XOR
+
+The XOR problem can be solved with a 2-layer MLP: 1. The first hidden layer can learn two different lines 2. The second layer combines these lines to create a non-linear boundary
+
+To solve XOR: - One hidden neuron learns to activate when (x₁=0, x₂=1) - Another hidden neuron learns to activate when (x₁=1, x₂=0) - The output neuron activates when either hidden neuron is active
+
+### The Need for Non-Linear Activation Functions
+
+In modern MLPs, the step function is typically replaced with differentiable non-linear functions such as:
+
+1.  **Sigmoid**: $$\sigma(x) = \frac{1}{1 + e^{-x}}$$
+
+2.  **Hyperbolic Tangent (tanh)**: $$\tanh(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}$$
+
+3.  **Rectified Linear Unit (ReLU)**: $$\text{ReLU}(x) = \max(0, x)$$
+
+These non-linear functions are crucial - without them, multiple linear layers would simply collapse into a single linear transformation.
+
+### Training MLPs with Backpropagation
+
+MLPs are trained using the backpropagation algorithm, which: 1. Performs a forward pass to compute predictions 2. Calculates the error between predictions and targets 3. Propagates the error backward through the network 4. Updates weights using gradient descent
+
+This process allows the MLP to learn complex patterns by gradually adjusting its internal parameters.
+
+### Python Implementation of an MLP
+
+```{python}
+import numpy as np
+from sklearn.datasets import make_moons
+import matplotlib.pyplot as plt
+
+class MLP:
+    def __init__(self, input_size, hidden_size, output_size, learning_rate=0.1):
+        # Initialize weights with small random values
+        self.W1 = np.random.randn(input_size, hidden_size) * 0.01
+        self.b1 = np.zeros((1, hidden_size))
+        self.W2 = np.random.randn(hidden_size, output_size) * 0.01
+        self.b2 = np.zeros((1, output_size))
+        self.learning_rate = learning_rate
+    
+    def sigmoid(self, x):
+        return 1 / (1 + np.exp(-np.clip(x, -500, 500)))
+    
+    def sigmoid_derivative(self, x):
+        return x * (1 - x)
+    
+    def forward(self, X):
+        # Forward pass through the network
+        self.z1 = np.dot(X, self.W1) + self.b1
+        self.a1 = self.sigmoid(self.z1)
+        self.z2 = np.dot(self.a1, self.W2) + self.b2
+        self.a2 = self.sigmoid(self.z2)
+        return self.a2
+    
+    def backward(self, X, y, output):
+        # Backward pass
+        self.output_error = y - output
+        self.output_delta = self.output_error * self.sigmoid_derivative(output)
+        
+        self.hidden_error = self.output_delta.dot(self.W2.T)
+        self.hidden_delta = self.hidden_error * self.sigmoid_derivative(self.a1)
+        
+        # Update weights
+        m = X.shape[0]  # number of examples
+        self.W2 += self.a1.T.dot(self.output_delta) * self.learning_rate / m
+        self.b2 += np.sum(self.output_delta, axis=0, keepdims=True) * self.learning_rate / m
+        self.W1 += X.T.dot(self.hidden_delta) * self.learning_rate / m
+        self.b1 += np.sum(self.hidden_delta, axis=0, keepdims=True) * self.learning_rate / m
+    
+    def train(self, X, y, epochs=10000):
+        for epoch in range(epochs):
+            output = self.forward(X)
+            self.backward(X, y, output)
+            
+            if epoch % 1000 == 0:
+                loss = np.mean(np.square(y - output))
+                print(f"Epoch {epoch}, Loss: {loss}")
+    
+    def predict(self, X):
+        return (self.forward(X) > 0.5).astype(int)
+
+# Generate a moon-shaped dataset (non-linearly separable)
+X, y = make_moons(n_samples=100, noise=0.1, random_state=42)
+y = y.reshape(-1, 1)  # Reshape for matrix operations
+
+# Create and train MLP
+mlp = MLP(input_size=2, hidden_size=4, output_size=1)
+mlp.train(X, y, epochs=10000)
+
+# Visualize decision boundary
+def plot_decision_boundary(X, y, model):
+    # Create mesh grid
+    h = 0.02
+    x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+    y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
+                         np.arange(y_min, y_max, h))
+    
+    # Get predictions for mesh grid points
+    Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+    Z = Z.reshape(xx.shape)
+    
+    # Plot decision boundary
+    plt.contourf(xx, yy, Z, alpha=0.3)
+    plt.scatter(X[:, 0], X[:, 1], c=y.reshape(-1), edgecolors='k')
+    plt.xlabel('Feature 1')
+    plt.ylabel('Feature 2')
+    plt.title('MLP Decision Boundary on Moon Dataset')
+    plt.show()
+
+# Plot decision boundary
+plot_decision_boundary(X, y, mlp)
+
+# Demonstrate XOR solution with MLP
+X_xor = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+y_xor = np.array([[0], [1], [1], [0]])
+
+mlp_xor = MLP(input_size=2, hidden_size=2, output_size=1)
+mlp_xor.train(X_xor, y_xor, epochs=10000)
+
+# Show XOR predictions
+print("\nXOR Problem Predictions:")
+print("Input | Target | Prediction")
+print("-" * 30)
+predictions = mlp_xor.predict(X_xor)
+for i in range(len(X_xor)):
+    print(f"{X_xor[i]} | {y_xor[i][0]}      | {predictions[i][0]}")
+```
+
+### Using MLPs with Scikit-Learn
+
+Scikit-learn provides a convenient implementation of MLPs through the `MLPClassifier` class:
+
+``` {python}
+from sklearn.neural_network import MLPClassifier
+from sklearn.datasets import make_moons
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+# Generate non-linear dataset
+X, y = make_moons(n_samples=1000, noise=0.2, random_state=42)
+
+# Split into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Create and train MLP
+mlp = MLPClassifier(hidden_layer_sizes=(10, 5), activation='relu', 
+                    max_iter=1000, alpha=0.0001,
+                    solver='adam', random_state=42)
+mlp.fit(X_train, y_train)
+
+# Evaluate
+y_pred = mlp.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Test accuracy: {accuracy:.4f}")
+
+# Visualize decision boundary
+plt.figure(figsize=(10, 6))
+plot_decision_boundary(X, y, mlp)
+```
+
+### MLP Applications
+
+MLPs are versatile and can be applied to various tasks:
+
+1.  **Classification**: Identifying categories (e.g., digit recognition)
+2.  **Regression**: Predicting continuous values (e.g., house prices)
+3.  **Pattern Recognition**: Detecting patterns in data
+4.  **Function Approximation**: Learning complex mathematical functions
+
+### Advantages and Disadvantages of MLPs
+
+**Advantages:** - Can learn non-linear patterns - Versatile and applicable to many problems - Form the foundation for deeper neural networks
+
+**Disadvantages:** - Prone to local minima during training - Sensitive to feature scaling - Require careful hyperparameter tuning - May overfit with insufficient data
+
+## Summary: From TLUs to Deep Learning
+
+The progression from TLUs to Perceptrons to MLPs represents the foundational evolution of neural networks:
+
+1.  **TLUs** introduced the concept of a thresholding artificial neuron
+2.  **Perceptrons** added the ability to learn from data but were limited to linear problems
+3.  **MLPs** overcame these limitations by stacking multiple layers, enabling non-linear learning
+
+These concepts form the foundation of modern deep learning architectures like Convolutional Neural Networks (CNNs), Recurrent Neural Networks (RNNs), and Transformers.
+
+
+## Feed-Forward Neural Networks
+
+Feed-forward neural networks are the foundation of deep learning architectures. Unlike recurrent or graph-based neural networks, feed-forward networks have a simple, unidirectional flow of information.
+
+### Key Characteristics
+
+-   Information flows in a single direction: from input to output through hidden layers
+-   No cycles or loops in the network structure
+-   Each neuron in a layer connects to every neuron in the subsequent layer
+-   The network makes predictions by propagating signals forward through the network
+
+### Understanding Feed-Forward Networks: The Assembly Line Analogy
+
+Think of a feed-forward neural network as an assembly line in a factory:
+
+1.  **Raw materials** (input data) enter at the beginning of the line
+2.  **Workers at different stations** (neurons in hidden layers) process and transform the materials
+3.  Each station adds value and passes materials to the next station
+4.  **Final inspection** (output layer) produces the finished product (prediction)
+
+Like a manufacturing assembly line, there's no going backward - materials only move forward. Each worker makes decisions based solely on what they receive from the previous station, not from stations further ahead.
+
+### Mathematical Representation
+
+A simple feed-forward network with one hidden layer can be represented as:
+
+$$z^{(1)} = W^{(1)}x + b^{(1)}$$ $$a^{(1)} = \sigma(z^{(1)})$$ $$z^{(2)} = W^{(2)}a^{(1)} + b^{(2)}$$ $$\hat{y} = \sigma(z^{(2)})$$
+
+Where: - $x$ is the input vector - $W^{(1)}$ and $W^{(2)}$ are weight matrices - $b^{(1)}$ and $b^{(2)}$ are bias vectors - $\sigma$ is an activation function (commonly sigmoid, tanh, or ReLU) - $\hat{y}$ is the predicted output
+
+### Python Implementation of Feed-Forward Network
+
+Here's a simple implementation of a feed-forward neural network using NumPy:
+
+``` {python}
+import numpy as np
+
+class FeedForwardNetwork:
+    def __init__(self, input_size, hidden_size, output_size):
+        # Initialize weights with small random values
+        self.W1 = np.random.randn(input_size, hidden_size) * 0.01
+        self.b1 = np.zeros((1, hidden_size))
+        self.W2 = np.random.randn(hidden_size, output_size) * 0.01
+        self.b2 = np.zeros((1, output_size))
+    
+    def sigmoid(self, x):
+        """Sigmoid activation function"""
+        return 1 / (1 + np.exp(-x))
+    
+    def forward(self, X):
+        """Forward pass through the network"""
+        # First layer
+        self.z1 = np.dot(X, self.W1) + self.b1
+        self.a1 = self.sigmoid(self.z1)
+        
+        # Output layer
+        self.z2 = np.dot(self.a1, self.W2) + self.b2
+        self.a2 = self.sigmoid(self.z2)
+        
+        return self.a2
+```
+
+### Example: Binary Classification with Feed-Forward Network
+
+Let's use our feed-forward network to solve a simple binary classification problem:
+
+``` {python}
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import make_moons
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+# Generate a non-linear dataset
+X, y = make_moons(n_samples=1000, noise=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Initialize our network
+input_size = 2  # Two features
+hidden_size = 5  # Five neurons in hidden layer
+output_size = 1  # Binary classification
+network = FeedForwardNetwork(input_size, hidden_size, output_size)
+
+# Make predictions
+predictions = network.forward(X_test)
+binary_predictions = (predictions > 0.5).astype(int)
+
+# Check initial accuracy (should be close to random guessing)
+accuracy = accuracy_score(y_test, binary_predictions)
+print(f"Initial accuracy: {accuracy:.2f}")
+
+# Note: The network needs training to improve accuracy
+# We'll implement training with backpropagation in the next section
+```
+
+## Backpropagation
+
+Backpropagation is the key algorithm that enables neural networks to learn. It's a method for computing gradients efficiently in feed-forward networks, which are then used to update the weights.
+
+### The Learning Process: Backpropagation Explained
+
+Backpropagation works in three steps:
+
+1.  **Forward Pass**: The network makes a prediction given an input
+2.  **Error Calculation**: The error between the prediction and actual target is measured
+3.  **Backward Pass**: The error is propagated backward through the network to adjust weights
+
+### The Mail Delivery Analogy
+
+Think of backpropagation like a postal service with feedback:
+
+1.  You send a package (input) to a destination (output) through multiple sorting centers (hidden layers)
+2.  When the package arrives, the recipient checks if it's correct (error calculation)
+3.  The recipient sends feedback about the error back through the same route
+4.  Each sorting center learns from this feedback and adjusts its processing (weight updates)
+5.  Over time, the entire system improves its delivery accuracy
+
+### Mathematical Framework
+
+For a network with one hidden layer:
+
+1.  **Forward Pass**: Calculate predicted output $\hat{y}$ as shown earlier
+2.  **Calculate Loss**: Using a loss function like Mean Squared Error (MSE): $L = \frac{1}{2}(y - \hat{y})^2$
+3.  **Backward Pass**: Compute gradients using the chain rule
+    -   $\frac{\partial L}{\partial W^{(2)}} = \frac{\partial L}{\partial \hat{y}} \cdot \frac{\partial \hat{y}}{\partial z^{(2)}} \cdot \frac{\partial z^{(2)}}{\partial W^{(2)}}$
+    -   $\frac{\partial L}{\partial W^{(1)}} = \frac{\partial L}{\partial \hat{y}} \cdot \frac{\partial \hat{y}}{\partial z^{(2)}} \cdot \frac{\partial z^{(2)}}{\partial a^{(1)}} \cdot \frac{\partial a^{(1)}}{\partial z^{(1)}} \cdot \frac{\partial z^{(1)}}{\partial W^{(1)}}$
+4.  **Update Weights**: $W^{(l)} = W^{(l)} - \alpha \cdot \frac{\partial L}{\partial W^{(l)}}$, where $\alpha$ is the learning rate
+
+### Implementing Backpropagation
+
+Let's extend our FeedForwardNetwork class to include backpropagation:
+
+``` {python}
+class FeedForwardNetwork:
+    def __init__(self, input_size, hidden_size, output_size, learning_rate=0.01):
+        # Initialize weights with small random values
+        self.W1 = np.random.randn(input_size, hidden_size) * 0.01
+        self.b1 = np.zeros((1, hidden_size))
+        self.W2 = np.random.randn(hidden_size, output_size) * 0.01
+        self.b2 = np.zeros((1, output_size))
+        self.learning_rate = learning_rate
+    
+    def sigmoid(self, x):
+        """Sigmoid activation function"""
+        return 1 / (1 + np.exp(-x))
+    
+    def sigmoid_derivative(self, x):
+        """Derivative of sigmoid function"""
+        return x * (1 - x)
+    
+    def forward(self, X):
+        """Forward pass through the network"""
+        # First layer
+        self.z1 = np.dot(X, self.W1) + self.b1
+        self.a1 = self.sigmoid(self.z1)
+        
+        # Output layer
+        self.z2 = np.dot(self.a1, self.W2) + self.b2
+        self.a2 = self.sigmoid(self.z2)
+        
+        return self.a2
+    
+    def backward(self, X, y, output):
+        """Backward pass to update weights"""
+        # Calculate error
+        self.output_error = y - output
+        self.output_delta = self.output_error * self.sigmoid_derivative(output)
+        
+        # Calculate hidden layer error
+        self.hidden_error = self.output_delta.dot(self.W2.T)
+        self.hidden_delta = self.hidden_error * self.sigmoid_derivative(self.a1)
+        
+        # Update weights
+        self.W2 += self.a1.T.dot(self.output_delta) * self.learning_rate
+        self.b2 += np.sum(self.output_delta, axis=0, keepdims=True) * self.learning_rate
+        self.W1 += X.T.dot(self.hidden_delta) * self.learning_rate
+        self.b1 += np.sum(self.hidden_delta, axis=0, keepdims=True) * self.learning_rate
+    
+    def train(self, X, y, epochs=1000):
+        """Train the network"""
+        losses = []
+        
+        for epoch in range(epochs):
+            # Forward pass
+            output = self.forward(X)
+            
+            # Calculate loss
+            loss = np.mean(np.square(y - output))
+            losses.append(loss)
+            
+            # Backward pass
+            self.backward(X, y, output)
+            
+            # Print progress
+            if epoch % 100 == 0:
+                print(f"Epoch {epoch}, Loss: {loss:.4f}")
+        
+        return losses
+```
+
+### Complete Example: Training a Network with Backpropagation
+
+Let's use our implementation to train a network on a non-linear classification problem:
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import make_moons
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+# Generate a non-linear dataset
+X, y = make_moons(n_samples=1000, noise=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Reshape y for training (to match network output)
+y_train = y_train.reshape(-1, 1)
+y_test = y_test.reshape(-1, 1)
+
+# Initialize our network
+input_size = 2  # Two features
+hidden_size = 5  # Five neurons in hidden layer
+output_size = 1  # Binary classification
+network = FeedForwardNetwork(input_size, hidden_size, output_size, learning_rate=0.1)
+
+# Train the network
+losses = network.train(X_train, y_train, epochs=2000)
+
+# Evaluate the trained network
+predictions = network.forward(X_test)
+binary_predictions = (predictions > 0.5).astype(int)
+accuracy = accuracy_score(y_test, binary_predictions)
+print(f"Final accuracy: {accuracy:.2f}")
+
+# Visualize the decision boundary
+plt.figure(figsize=(10, 8))
+
+# Plot the training data
+plt.scatter(X[:, 0], X[:, 1], c=y, cmap=plt.cm.Spectral, edgecolors='k')
+
+# Create a mesh grid to visualize the decision boundary
+h = 0.01
+x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
+                     np.arange(y_min, y_max, h))
+
+# Make predictions on the mesh grid
+mesh_inputs = np.c_[xx.ravel(), yy.ravel()]
+Z = network.forward(mesh_inputs)
+Z = (Z > 0.5).reshape(xx.shape)
+
+# Plot the decision boundary
+plt.contourf(xx, yy, Z, cmap=plt.cm.Spectral, alpha=0.3)
+plt.xlabel('Feature 1')
+plt.ylabel('Feature 2')
+plt.title('Feed-Forward Network Decision Boundary')
+plt.show()
+```

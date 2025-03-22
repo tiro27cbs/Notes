@@ -1,0 +1,115 @@
+---
+title: "Fundamentals of Machine Learning"
+date: "March 17, 2025"
+format: html
+---
+
+Machine Learning (ML) powers everything from Netflix suggestions to self-driving cars. But what is it? ML is teaching computers to learn from data and make decisions—think of it like training a dog with treats (data) to do tricks (predictions).
+
+## Types of Machine Learning Systems
+
+ML systems are categorized by how they learn. Why? It determines what data they need and how they’ll perform.
+
+### 1. Supervised Learning
+Supervised learning is like a teacher guiding a student with a textbook and answer key. We give the model inputs (features) and outputs (labels) to learn patterns.
+
+#### Key Techniques
+- **Classification**: Sorting data into buckets—like labeling emails as "spam" or "not spam."
+- **Regression**: Predicting numbers—like guessing tomorrow’s temperature.
+
+**Example: Linear Regression**
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+
+# Features (hours studied), Labels (test scores)
+X = np.array([[1], [2], [3], [4]])
+y = np.array([55, 70, 85, 90])
+
+model = LinearRegression().fit(X, y)
+predictions = model.predict(X)
+
+plt.scatter(X, y, color="blue")
+plt.plot(X, predictions, color="red")
+plt.xlabel("Hours Studied")
+plt.ylabel("Test Score")
+plt.show()
+```
+
+Why? This shows how hours studied predict scores with a straight line.
+
+
+### 2. Unsupervised Learning
+
+No labels here—think of it like a librarian organizing books without titles. The system finds patterns on its own.
+
+#### Key Techniques
+-- **Clustering: Grouping similar items—like sorting candies by color.**
+-- **Dimensionality Reduction: Shrinking data while keeping the good stuff—like summarizing a book into key points.**
+Example: K-Means Clustering
+```{python}
+from sklearn.cluster import KMeans
+import numpy as np
+
+# Random data points
+X = np.array([[1, 2], [1, 4], [1, 0], [10, 2], [10, 4], [10, 0]])
+
+kmeans = KMeans(n_clusters=2).fit(X)
+labels = kmeans.labels_
+
+print("Cluster labels:", labels)
+```
+Why? This groups data into 2 clusters based on similarity.
+
+### 3. Semi-Supervised Learning
+
+A hybrid approach—imagine teaching with a few labeled examples and a pile of unlabeled ones. Why? It’s efficient when labeling all data is too costly (e.g., speech recognition).
+
+### 4. Reinforcement Learning
+
+Think of training a puppy with treats and timeouts. An agent learns by trying actions in an environment, earning rewards or penalties. Why? Perfect for dynamic tasks like robotics.
+
+#### Example Concept
+A robot learning to walk gets a treat (reward) for each step forward.
+
+#### Main Challenges of Machine Learning
+
+ML isn’t perfect—here’s why these challenges matter.
+
+- **Insufficient Training Data**: Models need lots of data—like a chef needing ingredients to cook well.
+- **Nonrepresentative Data**: Bad data = bad predictions—like using beach weather to predict mountain snow.
+- **Poor Quality Data**: Noise or errors mess it up—like static in a phone call.
+- **Irrelevant Features**: Extra junk confuses the model—like adding random spices to a recipe.
+- **Overfitting**: Memorizing the textbook but failing the test—too specific to training data.
+- **Underfitting**: Too simple, like using a straight line for a curvy pattern.
+Example: Overfitting vs. Underfitting
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+
+# Data
+X = np.array([[0], [1], [2], [3]])
+y = np.array([0, 1, 4, 9])
+
+# Underfit (linear)
+lin_model = LinearRegression().fit(X, y)
+lin_pred = lin_model.predict(X)
+
+# Overfit (high-degree polynomial)
+poly = PolynomialFeatures(degree=3)
+X_poly = poly.fit_transform(X)
+poly_model = LinearRegression().fit(X_poly, y)
+poly_pred = poly_model.predict(X_poly)
+
+plt.scatter(X, y, color="blue")
+plt.plot(X, lin_pred, color="green", label="Underfit")
+plt.plot(X, poly_pred, color="red", label="Overfit")
+plt.legend()
+plt.show()
+```
+
+Why? Green underfits (misses the curve), red overfits (too wiggly).

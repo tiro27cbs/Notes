@@ -1,0 +1,1684 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>7&nbsp; Tree-Based Models and Ensemble Learning – Machine Learning and Deep Learning Notes</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./chapter6v2.html" rel="next">
+<link href="./chapter5.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-8da5b4427184b79ecddefad3d342027e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapter6.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Tree-Based Models and Ensemble Learning</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Machine Learning and Deep Learning Notes</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">🚀 Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Fundamentals of Machine Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Building an End-to-End Machine Learning Pipeline</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Unsupervised Learning: Clustering Techniques</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Supervised Learning: Regression and Classification</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Dimensionality Reduction Methods</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter6.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Tree-Based Models and Ensemble Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter6v2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Support Vector Machines and Model Evaluation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Outlier Detection and Recommendation Systems</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter8.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Gradient Descent: Optimization in Machine Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Neural Networks and Deep Learning Foundations</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Batch Normalization, RNN, Distributed Deep Learning and Tensorflow</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#decision-trees" id="toc-decision-trees" class="nav-link active" data-scroll-target="#decision-trees"><span class="header-section-number">7.1</span> Decision Trees</a>
+  <ul class="collapse">
+  <li><a href="#key-features" id="toc-key-features" class="nav-link" data-scroll-target="#key-features"><span class="header-section-number">7.1.1</span> Key Features</a></li>
+  <li><a href="#core-concepts" id="toc-core-concepts" class="nav-link" data-scroll-target="#core-concepts"><span class="header-section-number">7.1.2</span> Core Concepts</a></li>
+  <li><a href="#decision-boundaries" id="toc-decision-boundaries" class="nav-link" data-scroll-target="#decision-boundaries"><span class="header-section-number">7.1.3</span> Decision Boundaries</a></li>
+  <li><a href="#representation" id="toc-representation" class="nav-link" data-scroll-target="#representation"><span class="header-section-number">7.1.4</span> Representation</a></li>
+  <li><a href="#when-to-use-decision-trees" id="toc-when-to-use-decision-trees" class="nav-link" data-scroll-target="#when-to-use-decision-trees"><span class="header-section-number">7.1.5</span> When to Use Decision Trees</a></li>
+  <li><a href="#classification-process" id="toc-classification-process" class="nav-link" data-scroll-target="#classification-process"><span class="header-section-number">7.1.6</span> Classification Process</a></li>
+  <li><a href="#algorithmic-approaches" id="toc-algorithmic-approaches" class="nav-link" data-scroll-target="#algorithmic-approaches"><span class="header-section-number">7.1.7</span> Algorithmic Approaches</a></li>
+  <li><a href="#the-cart-algorithm" id="toc-the-cart-algorithm" class="nav-link" data-scroll-target="#the-cart-algorithm"><span class="header-section-number">7.1.8</span> The CART Algorithm</a></li>
+  <li><a href="#training-a-decision-tree" id="toc-training-a-decision-tree" class="nav-link" data-scroll-target="#training-a-decision-tree"><span class="header-section-number">7.1.9</span> Training a Decision Tree</a></li>
+  <li><a href="#pruning-techniques" id="toc-pruning-techniques" class="nav-link" data-scroll-target="#pruning-techniques"><span class="header-section-number">7.1.10</span> Pruning Techniques</a></li>
+  <li><a href="#handling-categorical-and-continuous-features" id="toc-handling-categorical-and-continuous-features" class="nav-link" data-scroll-target="#handling-categorical-and-continuous-features"><span class="header-section-number">7.1.11</span> Handling Categorical and Continuous Features</a></li>
+  <li><a href="#advantages-and-limitations" id="toc-advantages-and-limitations" class="nav-link" data-scroll-target="#advantages-and-limitations"><span class="header-section-number">7.1.12</span> Advantages and Limitations</a></li>
+  </ul></li>
+  <li><a href="#ensemble-methods" id="toc-ensemble-methods" class="nav-link" data-scroll-target="#ensemble-methods"><span class="header-section-number">7.2</span> Ensemble Methods</a>
+  <ul class="collapse">
+  <li><a href="#core-principles" id="toc-core-principles" class="nav-link" data-scroll-target="#core-principles"><span class="header-section-number">7.2.1</span> Core Principles</a></li>
+  <li><a href="#the-bias-variance-tradeoff" id="toc-the-bias-variance-tradeoff" class="nav-link" data-scroll-target="#the-bias-variance-tradeoff"><span class="header-section-number">7.2.2</span> The Bias-Variance Tradeoff</a></li>
+  <li><a href="#types-of-ensemble-learning" id="toc-types-of-ensemble-learning" class="nav-link" data-scroll-target="#types-of-ensemble-learning"><span class="header-section-number">7.2.3</span> Types of Ensemble Learning</a></li>
+  <li><a href="#theoretical-foundations" id="toc-theoretical-foundations" class="nav-link" data-scroll-target="#theoretical-foundations"><span class="header-section-number">7.2.4</span> Theoretical Foundations</a></li>
+  </ul></li>
+  <li><a href="#random-forests" id="toc-random-forests" class="nav-link" data-scroll-target="#random-forests"><span class="header-section-number">7.3</span> Random Forests</a>
+  <ul class="collapse">
+  <li><a href="#core-concepts-1" id="toc-core-concepts-1" class="nav-link" data-scroll-target="#core-concepts-1"><span class="header-section-number">7.3.1</span> Core Concepts</a></li>
+  <li><a href="#random-forest-algorithm" id="toc-random-forest-algorithm" class="nav-link" data-scroll-target="#random-forest-algorithm"><span class="header-section-number">7.3.2</span> Random Forest Algorithm</a></li>
+  <li><a href="#how-random-forest-works" id="toc-how-random-forest-works" class="nav-link" data-scroll-target="#how-random-forest-works"><span class="header-section-number">7.3.3</span> How Random Forest Works</a></li>
+  <li><a href="#key-features-of-random-forests" id="toc-key-features-of-random-forests" class="nav-link" data-scroll-target="#key-features-of-random-forests"><span class="header-section-number">7.3.4</span> Key Features of Random Forests</a></li>
+  <li><a href="#mathematical-intuition" id="toc-mathematical-intuition" class="nav-link" data-scroll-target="#mathematical-intuition"><span class="header-section-number">7.3.5</span> Mathematical Intuition</a></li>
+  <li><a href="#out-of-bag-oob-error-estimation" id="toc-out-of-bag-oob-error-estimation" class="nav-link" data-scroll-target="#out-of-bag-oob-error-estimation"><span class="header-section-number">7.3.6</span> Out-of-Bag (OOB) Error Estimation</a></li>
+  <li><a href="#feature-importance" id="toc-feature-importance" class="nav-link" data-scroll-target="#feature-importance"><span class="header-section-number">7.3.7</span> Feature Importance</a></li>
+  <li><a href="#proximity-analysis" id="toc-proximity-analysis" class="nav-link" data-scroll-target="#proximity-analysis"><span class="header-section-number">7.3.8</span> Proximity Analysis</a></li>
+  <li><a href="#hyperparameters" id="toc-hyperparameters" class="nav-link" data-scroll-target="#hyperparameters"><span class="header-section-number">7.3.9</span> Hyperparameters</a></li>
+  <li><a href="#advantages-and-limitations-1" id="toc-advantages-and-limitations-1" class="nav-link" data-scroll-target="#advantages-and-limitations-1"><span class="header-section-number">7.3.10</span> Advantages and Limitations</a></li>
+  </ul></li>
+  <li><a href="#gradient-boosting" id="toc-gradient-boosting" class="nav-link" data-scroll-target="#gradient-boosting"><span class="header-section-number">7.4</span> Gradient Boosting</a>
+  <ul class="collapse">
+  <li><a href="#core-concepts-2" id="toc-core-concepts-2" class="nav-link" data-scroll-target="#core-concepts-2"><span class="header-section-number">7.4.1</span> Core Concepts</a></li>
+  <li><a href="#gradient-boosting-algorithm" id="toc-gradient-boosting-algorithm" class="nav-link" data-scroll-target="#gradient-boosting-algorithm"><span class="header-section-number">7.4.2</span> Gradient Boosting Algorithm</a></li>
+  <li><a href="#how-gradient-boosting-works" id="toc-how-gradient-boosting-works" class="nav-link" data-scroll-target="#how-gradient-boosting-works"><span class="header-section-number">7.4.3</span> How Gradient Boosting Works</a></li>
+  <li><a href="#mathematical-formulation" id="toc-mathematical-formulation" class="nav-link" data-scroll-target="#mathematical-formulation"><span class="header-section-number">7.4.4</span> Mathematical Formulation</a></li>
+  <li><a href="#loss-functions" id="toc-loss-functions" class="nav-link" data-scroll-target="#loss-functions"><span class="header-section-number">7.4.5</span> Loss Functions</a></li>
+  <li><a href="#types-of-gradient-boosting" id="toc-types-of-gradient-boosting" class="nav-link" data-scroll-target="#types-of-gradient-boosting"><span class="header-section-number">7.4.6</span> Types of Gradient Boosting</a></li>
+  <li><a href="#regularization-techniques" id="toc-regularization-techniques" class="nav-link" data-scroll-target="#regularization-techniques"><span class="header-section-number">7.4.7</span> Regularization Techniques</a></li>
+  <li><a href="#key-hyperparameters" id="toc-key-hyperparameters" class="nav-link" data-scroll-target="#key-hyperparameters"><span class="header-section-number">7.4.8</span> Key Hyperparameters</a></li>
+  <li><a href="#advantages-and-limitations-2" id="toc-advantages-and-limitations-2" class="nav-link" data-scroll-target="#advantages-and-limitations-2"><span class="header-section-number">7.4.9</span> Advantages and Limitations</a></li>
+  </ul></li>
+  <li><a href="#comparing-ensemble-methods" id="toc-comparing-ensemble-methods" class="nav-link" data-scroll-target="#comparing-ensemble-methods"><span class="header-section-number">7.5</span> Comparing Ensemble Methods</a>
+  <ul class="collapse">
+  <li><a href="#bagging-vs.-boosting" id="toc-bagging-vs.-boosting" class="nav-link" data-scroll-target="#bagging-vs.-boosting"><span class="header-section-number">7.5.1</span> Bagging vs.&nbsp;Boosting</a></li>
+  <li><a href="#stacking" id="toc-stacking" class="nav-link" data-scroll-target="#stacking"><span class="header-section-number">7.5.2</span> Stacking</a></li>
+  <li><a href="#choosing-the-right-ensemble-method" id="toc-choosing-the-right-ensemble-method" class="nav-link" data-scroll-target="#choosing-the-right-ensemble-method"><span class="header-section-number">7.5.3</span> Choosing the Right Ensemble Method</a></li>
+  <li><a href="#practical-considerations" id="toc-practical-considerations" class="nav-link" data-scroll-target="#practical-considerations"><span class="header-section-number">7.5.4</span> Practical Considerations</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">7.6</span> Conclusion</a>
+  <ul class="collapse">
+  <li><a href="#key-takeaways" id="toc-key-takeaways" class="nav-link" data-scroll-target="#key-takeaways"><span class="header-section-number">7.6.1</span> Key Takeaways</a></li>
+  <li><a href="#further-research-directions" id="toc-further-research-directions" class="nav-link" data-scroll-target="#further-research-directions"><span class="header-section-number">7.6.2</span> Further Research Directions</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Tree-Based Models and Ensemble Learning</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="decision-trees" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="decision-trees"><span class="header-section-number">7.1</span> Decision Trees</h2>
+<p>Decision trees are versatile machine learning models that can handle both classification and regression tasks. They’re powerful tools for inductive inference and particularly useful for approximating discrete-valued target functions.</p>
+<section id="key-features" class="level3" data-number="7.1.1">
+<h3 data-number="7.1.1" class="anchored" data-anchor-id="key-features"><span class="header-section-number">7.1.1</span> Key Features</h3>
+<ul>
+<li><strong>Robust to Noisy Data</strong>: Handle imperfections in data, including noise and missing values</li>
+<li><strong>Complex Datasets</strong>: Capable of fitting complex datasets and representing disjunctive expressions</li>
+<li><strong>Interpretable</strong>: Trees model decisions through a series of “if/else” questions, providing clear decision-making processes</li>
+</ul>
+</section>
+<section id="core-concepts" class="level3" data-number="7.1.2">
+<h3 data-number="7.1.2" class="anchored" data-anchor-id="core-concepts"><span class="header-section-number">7.1.2</span> Core Concepts</h3>
+<p>Decision trees operate by recursively partitioning the feature space based on the values of input features. At each node:</p>
+<ol type="1">
+<li><strong>Feature Selection</strong>: Choose the most informative feature to split on</li>
+<li><strong>Splitting Criterion</strong>: Determine the optimal threshold or condition for the split</li>
+<li><strong>Recursive Partitioning</strong>: Continue splitting until stopping criteria are met</li>
+</ol>
+<p>The algorithm aims to create homogeneous subsets with respect to the target variable, maximizing information gain at each step.</p>
+</section>
+<section id="decision-boundaries" class="level3" data-number="7.1.3">
+<h3 data-number="7.1.3" class="anchored" data-anchor-id="decision-boundaries"><span class="header-section-number">7.1.3</span> Decision Boundaries</h3>
+<p>Decision trees create piecewise constant decision boundaries that are parallel to the feature axes. This characteristic leads to:</p>
+<ul>
+<li><strong>Rectangular Partitioning</strong>: Each leaf represents a rectangular region in the feature space</li>
+<li><strong>Orthogonal Boundaries</strong>: Decision boundaries are always perpendicular to feature axes</li>
+<li><strong>Staircase Effect</strong>: Complex functions are approximated using axis-parallel rectangles</li>
+</ul>
+<div id="36a0969c" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_iris</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.tree <span class="im">import</span> DecisionTreeClassifier, plot_tree</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Load dataset</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>iris <span class="op">=</span> load_iris()</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>X, y <span class="op">=</span> iris.data, iris.target</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Split data</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X, y, test_size<span class="op">=</span><span class="fl">0.3</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Create and train decision tree</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>clf <span class="op">=</span> DecisionTreeClassifier(max_depth<span class="op">=</span><span class="dv">3</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>clf.fit(X_train, y_train)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize decision tree</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">8</span>))</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>plot_tree(clf, filled<span class="op">=</span><span class="va">True</span>, feature_names<span class="op">=</span>iris.feature_names, class_names<span class="op">=</span>iris.target_names)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Decision Tree on Iris Dataset"</span>)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Evaluate performance</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>train_score <span class="op">=</span> clf.score(X_train, y_train)</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>test_score <span class="op">=</span> clf.score(X_test, y_test)</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Training accuracy: </span><span class="sc">{</span>train_score<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Testing accuracy: </span><span class="sc">{</span>test_score<span class="sc">:.3f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter6_files/figure-html/cell-2-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Training accuracy: 0.952
+Testing accuracy: 1.000</code></pre>
+</div>
+</div>
+</section>
+<section id="representation" class="level3" data-number="7.1.4">
+<h3 data-number="7.1.4" class="anchored" data-anchor-id="representation"><span class="header-section-number">7.1.4</span> Representation</h3>
+<p>Decision trees represent a disjunction (OR) of conjunctions (AND) of constraints on attribute values:</p>
+<ul>
+<li>Each path from root to leaf represents a conjunction (AND) of tests on instance attributes</li>
+<li>The entire tree is a disjunction (OR) of these conjunctions</li>
+<li>Each leaf node represents a classification outcome</li>
+</ul>
+</section>
+<section id="when-to-use-decision-trees" class="level3" data-number="7.1.5">
+<h3 data-number="7.1.5" class="anchored" data-anchor-id="when-to-use-decision-trees"><span class="header-section-number">7.1.5</span> When to Use Decision Trees</h3>
+<ul>
+<li><strong>Attribute-Value Pair Representation</strong>: Instances are represented as attribute-value pairs</li>
+<li><strong>Discrete Output</strong>: Target function has discrete output values (classification tasks)</li>
+<li><strong>Disjunctive Descriptions</strong>: Need to represent logical ORs</li>
+<li><strong>Noisy Data</strong>: Training data contains errors or missing values</li>
+</ul>
+</section>
+<section id="classification-process" class="level3" data-number="7.1.6">
+<h3 data-number="7.1.6" class="anchored" data-anchor-id="classification-process"><span class="header-section-number">7.1.6</span> Classification Process</h3>
+<p>Trees classify instances by sorting them from root to leaf: - Each node tests an attribute - Each branch corresponds to a possible attribute value - Each leaf assigns a class label</p>
+</section>
+<section id="algorithmic-approaches" class="level3" data-number="7.1.7">
+<h3 data-number="7.1.7" class="anchored" data-anchor-id="algorithmic-approaches"><span class="header-section-number">7.1.7</span> Algorithmic Approaches</h3>
+<p>Several algorithms exist for constructing decision trees:</p>
+<ol type="1">
+<li><strong>ID3 (Iterative Dichotomiser 3)</strong>: Uses entropy and information gain</li>
+<li><strong>C4.5</strong>: Extends ID3 by handling continuous attributes and missing values</li>
+<li><strong>CART (Classification and Regression Trees)</strong>: Uses Gini impurity for classification</li>
+<li><strong>CHAID (Chi-square Automatic Interaction Detector)</strong>: Uses chi-square tests for categorical outputs</li>
+</ol>
+</section>
+<section id="the-cart-algorithm" class="level3" data-number="7.1.8">
+<h3 data-number="7.1.8" class="anchored" data-anchor-id="the-cart-algorithm"><span class="header-section-number">7.1.8</span> The CART Algorithm</h3>
+<p>CART (Classification and Regression Trees) is one of the most popular decision tree algorithms:</p>
+<ol type="1">
+<li>Start with all data at the root node</li>
+<li>For each feature, find the best split that minimizes impurity</li>
+<li>Split the data based on the best feature and threshold</li>
+<li>Recursively apply steps 2-3 to the child nodes</li>
+<li>Stop when a stopping criterion is met (e.g., max depth, min samples)</li>
+</ol>
+</section>
+<section id="training-a-decision-tree" class="level3" data-number="7.1.9">
+<h3 data-number="7.1.9" class="anchored" data-anchor-id="training-a-decision-tree"><span class="header-section-number">7.1.9</span> Training a Decision Tree</h3>
+<p>The training process involves finding the best set of questions (splits) to divide the data:</p>
+<div id="97c7cf81" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Leaf:</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, value):</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.value <span class="op">=</span> value</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Node:</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, attribute):</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.attribute <span class="op">=</span> attribute</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.branches <span class="op">=</span> {}</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> add_branch(<span class="va">self</span>, value, subtree):</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.branches[value] <span class="op">=</span> subtree</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> basic_decision_tree_algorithm(examples, target_attribute, attributes):</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co">    Basic implementation of a decision tree algorithm</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># If all examples have the same value for the target attribute, return a leaf node</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(<span class="bu">set</span>(ex[target_attribute] <span class="cf">for</span> ex <span class="kw">in</span> examples)) <span class="op">==</span> <span class="dv">1</span>:</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Leaf(examples[<span class="dv">0</span>][target_attribute])</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># If no attributes are left, return a leaf node with the majority value</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> attributes:</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>        majority_value <span class="op">=</span> <span class="bu">max</span>(<span class="bu">set</span>(ex[target_attribute] <span class="cf">for</span> ex <span class="kw">in</span> examples), key<span class="op">=</span><span class="kw">lambda</span> val: <span class="bu">sum</span>(ex[target_attribute] <span class="op">==</span> val <span class="cf">for</span> ex <span class="kw">in</span> examples))</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Leaf(majority_value)</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Choose the best attribute to split on (placeholder for actual selection logic)</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    best_attribute <span class="op">=</span> attributes[<span class="dv">0</span>]  <span class="co"># Replace with actual logic to select the best attribute</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create a new decision tree node</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>    tree <span class="op">=</span> Node(best_attribute)</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get unique values for the best attribute</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>    unique_values <span class="op">=</span> <span class="bu">set</span>(ex[best_attribute] <span class="cf">for</span> ex <span class="kw">in</span> examples)</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> value <span class="kw">in</span> unique_values:</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Create a subset of examples where the best attribute equals the current value</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>        subset <span class="op">=</span> [ex <span class="cf">for</span> ex <span class="kw">in</span> examples <span class="cf">if</span> ex[best_attribute] <span class="op">==</span> value]</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> subset:</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>            <span class="co"># If the subset is empty, add a leaf with the majority value</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>            majority_value <span class="op">=</span> <span class="bu">max</span>(<span class="bu">set</span>(ex[target_attribute] <span class="cf">for</span> ex <span class="kw">in</span> examples), key<span class="op">=</span><span class="kw">lambda</span> val: <span class="bu">sum</span>(ex[target_attribute] <span class="op">==</span> val <span class="cf">for</span> ex <span class="kw">in</span> examples))</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>            tree.add_branch(value, Leaf(majority_value))</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Recursively build the subtree</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>            subtree <span class="op">=</span> basic_decision_tree_algorithm(subset, target_attribute, [attr <span class="cf">for</span> attr <span class="kw">in</span> attributes <span class="cf">if</span> attr <span class="op">!=</span> best_attribute])</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>            tree.add_branch(value, subtree)</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> tree</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="impurity-measures" class="level4" data-number="7.1.9.1">
+<h4 data-number="7.1.9.1" class="anchored" data-anchor-id="impurity-measures"><span class="header-section-number">7.1.9.1</span> Impurity Measures</h4>
+<p>To decide the best feature to split on, decision trees use impurity measures:</p>
+<ul>
+<li><strong>Gini Index</strong>: Measures the likelihood of misclassifying a randomly selected instance</li>
+<li><strong>Entropy</strong>: Measures disorder or uncertainty in the dataset</li>
+<li><strong>Misclassification Error</strong>: Proportion of misclassified instances</li>
+</ul>
+<section id="entropy" class="level5" data-number="7.1.9.1.1">
+<h5 data-number="7.1.9.1.1" class="anchored" data-anchor-id="entropy"><span class="header-section-number">7.1.9.1.1</span> Entropy</h5>
+<p>Entropy quantifies the uncertainty or randomness in a set of examples:</p>
+<p><span class="math inline">\(H(S) = -\sum_{i=1}^{c} p_i \log_2(p_i)\)</span></p>
+<p>Where: - <span class="math inline">\(S\)</span> is the dataset - <span class="math inline">\(c\)</span> is the number of classes - <span class="math inline">\(p_i\)</span> is the proportion of examples in class <span class="math inline">\(i\)</span></p>
+</section>
+<section id="information-gain" class="level5" data-number="7.1.9.1.2">
+<h5 data-number="7.1.9.1.2" class="anchored" data-anchor-id="information-gain"><span class="header-section-number">7.1.9.1.2</span> Information Gain</h5>
+<p>Information gain measures the reduction in entropy after splitting on an attribute:</p>
+<p><span class="math inline">\(IG(S, A) = H(S) - \sum_{v \in Values(A)} \frac{|S_v|}{|S|} H(S_v)\)</span></p>
+<p>Where: - <span class="math inline">\(A\)</span> is the attribute - <span class="math inline">\(S_v\)</span> is the subset of <span class="math inline">\(S\)</span> for which attribute <span class="math inline">\(A\)</span> has value <span class="math inline">\(v\)</span></p>
+</section>
+<section id="gini-impurity" class="level5" data-number="7.1.9.1.3">
+<h5 data-number="7.1.9.1.3" class="anchored" data-anchor-id="gini-impurity"><span class="header-section-number">7.1.9.1.3</span> Gini Impurity</h5>
+<p>Gini impurity measures the probability of incorrectly classifying a randomly chosen element if it were randomly labeled according to the class distribution in the subset:</p>
+<p><span class="math inline">\(Gini(S) = 1 - \sum_{i=1}^{c} (p_i)^2\)</span></p>
+<div id="35fae946" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_entropy(y):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Calculate entropy of a label set"""</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    classes, counts <span class="op">=</span> np.unique(y, return_counts<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    probabilities <span class="op">=</span> counts <span class="op">/</span> counts.<span class="bu">sum</span>()</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    entropy <span class="op">=</span> <span class="op">-</span>np.<span class="bu">sum</span>(probabilities <span class="op">*</span> np.log2(probabilities))</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> entropy</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_gini(y):</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Calculate Gini impurity of a label set"""</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    classes, counts <span class="op">=</span> np.unique(y, return_counts<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    probabilities <span class="op">=</span> counts <span class="op">/</span> counts.<span class="bu">sum</span>()</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    gini <span class="op">=</span> <span class="dv">1</span> <span class="op">-</span> np.<span class="bu">sum</span>(probabilities<span class="op">**</span><span class="dv">2</span>)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> gini</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Example calculation</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>sample_labels <span class="op">=</span> np.array([<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>])</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Entropy: </span><span class="sc">{</span>calculate_entropy(sample_labels)<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Gini: </span><span class="sc">{</span>calculate_gini(sample_labels)<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Entropy: 1.0000
+Gini: 0.5000</code></pre>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="pruning-techniques" class="level3" data-number="7.1.10">
+<h3 data-number="7.1.10" class="anchored" data-anchor-id="pruning-techniques"><span class="header-section-number">7.1.10</span> Pruning Techniques</h3>
+<p>Decision trees are prone to overfitting, especially when they grow too deep. Pruning helps mitigate this:</p>
+<section id="pre-pruning-early-stopping" class="level4" data-number="7.1.10.1">
+<h4 data-number="7.1.10.1" class="anchored" data-anchor-id="pre-pruning-early-stopping"><span class="header-section-number">7.1.10.1</span> Pre-pruning (Early Stopping)</h4>
+<p>Stops the tree from growing before it perfectly fits the training data: - Maximum depth limit - Minimum samples per leaf - Minimum impurity decrease</p>
+</section>
+<section id="post-pruning" class="level4" data-number="7.1.10.2">
+<h4 data-number="7.1.10.2" class="anchored" data-anchor-id="post-pruning"><span class="header-section-number">7.1.10.2</span> Post-pruning</h4>
+<p>Builds the full tree, then removes branches that don’t improve generalization: - Cost-complexity pruning (Minimal Cost-Complexity Pruning) - Reduced Error Pruning - Pessimistic Error Pruning</p>
+</section>
+</section>
+<section id="handling-categorical-and-continuous-features" class="level3" data-number="7.1.11">
+<h3 data-number="7.1.11" class="anchored" data-anchor-id="handling-categorical-and-continuous-features"><span class="header-section-number">7.1.11</span> Handling Categorical and Continuous Features</h3>
+<p>Decision trees can handle both categorical and continuous features:</p>
+<ul>
+<li><strong>Categorical Features</strong>: Create branches for each category or group similar categories</li>
+<li><strong>Continuous Features</strong>: Find the optimal threshold that maximizes information gain</li>
+</ul>
+</section>
+<section id="advantages-and-limitations" class="level3" data-number="7.1.12">
+<h3 data-number="7.1.12" class="anchored" data-anchor-id="advantages-and-limitations"><span class="header-section-number">7.1.12</span> Advantages and Limitations</h3>
+<section id="advantages" class="level4" data-number="7.1.12.1">
+<h4 data-number="7.1.12.1" class="anchored" data-anchor-id="advantages"><span class="header-section-number">7.1.12.1</span> Advantages</h4>
+<ul>
+<li>Intuitive and easy to explain</li>
+<li>Require little data preprocessing</li>
+<li>Handle numerical and categorical data</li>
+<li>Non-parametric (no assumptions about data distribution)</li>
+<li>Handle missing values and outliers effectively</li>
+</ul>
+</section>
+<section id="limitations" class="level4" data-number="7.1.12.2">
+<h4 data-number="7.1.12.2" class="anchored" data-anchor-id="limitations"><span class="header-section-number">7.1.12.2</span> Limitations</h4>
+<ul>
+<li>Prone to overfitting</li>
+<li>Biased toward features with more levels</li>
+<li>Unstable (small changes in data can result in very different trees)</li>
+<li>Struggle with diagonal decision boundaries</li>
+<li>May create biased trees if classes are imbalanced</li>
+</ul>
+</section>
+</section>
+</section>
+<section id="ensemble-methods" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="ensemble-methods"><span class="header-section-number">7.2</span> Ensemble Methods</h2>
+<p>Ensemble methods combine multiple predictors to improve accuracy by reducing variance and bias.</p>
+<section id="core-principles" class="level3" data-number="7.2.1">
+<h3 data-number="7.2.1" class="anchored" data-anchor-id="core-principles"><span class="header-section-number">7.2.1</span> Core Principles</h3>
+<p>Ensemble methods work based on the “wisdom of crowds” principle:</p>
+<ol type="1">
+<li><strong>Diversity</strong>: Individual models make different errors</li>
+<li><strong>Independence</strong>: Errors are uncorrelated</li>
+<li><strong>Aggregation</strong>: Combining predictions reduces overall error</li>
+</ol>
+</section>
+<section id="the-bias-variance-tradeoff" class="level3" data-number="7.2.2">
+<h3 data-number="7.2.2" class="anchored" data-anchor-id="the-bias-variance-tradeoff"><span class="header-section-number">7.2.2</span> The Bias-Variance Tradeoff</h3>
+<p>Ensemble methods address the fundamental bias-variance tradeoff:</p>
+<ul>
+<li><strong>Bias</strong>: Error from incorrect assumptions in the learning algorithm</li>
+<li><strong>Variance</strong>: Error from sensitivity to small fluctuations in the training set</li>
+<li><strong>Total Error</strong> = Bias² + Variance + Irreducible Error</li>
+</ul>
+<p>Different ensemble techniques target different components of this error: - Bagging primarily reduces variance - Boosting reduces both bias and variance</p>
+<div id="52c12cae" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestClassifier, GradientBoostingClassifier</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Create ensemble models</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>rf_model <span class="op">=</span> RandomForestClassifier(n_estimators<span class="op">=</span><span class="dv">100</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>gb_model <span class="op">=</span> GradientBoostingClassifier(n_estimators<span class="op">=</span><span class="dv">100</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Train models</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>rf_model.fit(X_train, y_train)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>gb_model.fit(X_train, y_train)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Make predictions</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>rf_preds <span class="op">=</span> rf_model.predict(X_test)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>gb_preds <span class="op">=</span> gb_model.predict(X_test)</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare accuracies</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Model'</span>: [<span class="st">'Decision Tree'</span>, <span class="st">'Random Forest'</span>, <span class="st">'Gradient Boosting'</span>],</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Test Accuracy'</span>: [</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>        clf.score(X_test, y_test),</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>        accuracy_score(y_test, rf_preds),</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>        accuracy_score(y_test, gb_preds)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               Model  Test Accuracy
+0      Decision Tree            1.0
+1      Random Forest            1.0
+2  Gradient Boosting            1.0</code></pre>
+</div>
+</div>
+</section>
+<section id="types-of-ensemble-learning" class="level3" data-number="7.2.3">
+<h3 data-number="7.2.3" class="anchored" data-anchor-id="types-of-ensemble-learning"><span class="header-section-number">7.2.3</span> Types of Ensemble Learning</h3>
+<ol type="1">
+<li><strong>Bagging (Bootstrap Aggregating)</strong>:
+<ul>
+<li>Builds independent predictors and combines them</li>
+<li>Models trained on bootstrapped datasets (random samples with replacement)</li>
+<li>Reduces variance, effective against overfitting</li>
+<li>Example: Random Forest</li>
+</ul></li>
+<li><strong>Boosting</strong>:
+<ul>
+<li>Builds predictors sequentially, each correcting errors of previous models</li>
+<li>Assigns higher weights to misclassified data points</li>
+<li>Reduces both bias and variance</li>
+<li>Examples: AdaBoost, Gradient Boosting, XGBoost</li>
+</ul></li>
+<li><strong>Stacking</strong>:
+<ul>
+<li>Combines multiple models using another model (meta-learner)</li>
+<li>Base models make predictions independently</li>
+<li>Meta-learner learns how to combine these predictions optimally</li>
+<li>Examples: Stacked Generalization, Blending</li>
+</ul></li>
+<li><strong>Voting</strong>:
+<ul>
+<li>Simple aggregation of predictions from multiple models</li>
+<li>Hard Voting: Majority vote for classification</li>
+<li>Soft Voting: Weighted average of probabilities</li>
+<li>Works best with diverse, uncorrelated models</li>
+</ul></li>
+</ol>
+</section>
+<section id="theoretical-foundations" class="level3" data-number="7.2.4">
+<h3 data-number="7.2.4" class="anchored" data-anchor-id="theoretical-foundations"><span class="header-section-number">7.2.4</span> Theoretical Foundations</h3>
+<p>The power of ensemble methods is backed by mathematical proofs:</p>
+<ul>
+<li><strong>Condorcet’s Jury Theorem</strong>: As the number of independent, better-than-random models increases, the probability of a correct majority vote approaches 1</li>
+<li><strong>Bias-Variance Decomposition</strong>: Ensembles can reduce variance without increasing bias</li>
+<li><strong>No Free Lunch Theorem</strong>: No single model is optimal for all problems, but ensembles can adapt to different problem structures</li>
+</ul>
+</section>
+</section>
+<section id="random-forests" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="random-forests"><span class="header-section-number">7.3</span> Random Forests</h2>
+<p>Random Forest is an ensemble method combining multiple decision trees through bagging.</p>
+<section id="core-concepts-1" class="level3" data-number="7.3.1">
+<h3 data-number="7.3.1" class="anchored" data-anchor-id="core-concepts-1"><span class="header-section-number">7.3.1</span> Core Concepts</h3>
+<p>Random Forests extend the bagging idea with additional randomness:</p>
+<ol type="1">
+<li><strong>Bootstrap Sampling</strong>: Each tree is trained on a random subset of data</li>
+<li><strong>Feature Randomization</strong>: At each node, consider only a random subset of features</li>
+<li><strong>Ensemble Aggregation</strong>: Combine predictions through voting (classification) or averaging (regression)</li>
+</ol>
+</section>
+<section id="random-forest-algorithm" class="level3" data-number="7.3.2">
+<h3 data-number="7.3.2" class="anchored" data-anchor-id="random-forest-algorithm"><span class="header-section-number">7.3.2</span> Random Forest Algorithm</h3>
+<ol type="1">
+<li>Create n_estimators bootstrap samples from the original dataset</li>
+<li>For each sample, grow a decision tree with the following modification:
+<ul>
+<li>At each node, randomly select m features (typically m ≈ sqrt(total features))</li>
+<li>Split on the best feature among the m features</li>
+</ul></li>
+<li>Predict new data by aggregating predictions from all trees</li>
+</ol>
+<div id="0f736e2c" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Train a Random Forest with different parameters</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>rf <span class="op">=</span> RandomForestClassifier(</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    n_estimators<span class="op">=</span><span class="dv">100</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    max_depth<span class="op">=</span><span class="dv">4</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    min_samples_split<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span><span class="dv">42</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>rf.fit(X_train, y_train)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Get feature importances</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>importances <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Feature'</span>: iris.feature_names,</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Importance'</span>: rf.feature_importances_</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>}).sort_values(<span class="st">'Importance'</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot feature importances</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>plt.barh(importances[<span class="st">'Feature'</span>], importances[<span class="st">'Importance'</span>])</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Importance'</span>)</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Feature Importances from Random Forest'</span>)</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(importances)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter6_files/figure-html/cell-6-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             Feature  Importance
+3   petal width (cm)    0.448932
+2  petal length (cm)    0.429927
+0  sepal length (cm)    0.095760
+1   sepal width (cm)    0.025381</code></pre>
+</div>
+</div>
+</section>
+<section id="how-random-forest-works" class="level3" data-number="7.3.3">
+<h3 data-number="7.3.3" class="anchored" data-anchor-id="how-random-forest-works"><span class="header-section-number">7.3.3</span> How Random Forest Works</h3>
+<ul>
+<li>Each tree is trained independently on a random subset of the data</li>
+<li>Additional randomness is introduced by selecting a random subset of features at each node</li>
+<li>Final output is determined by aggregating results from all trees (majority voting for classification, averaging for regression)</li>
+</ul>
+</section>
+<section id="key-features-of-random-forests" class="level3" data-number="7.3.4">
+<h3 data-number="7.3.4" class="anchored" data-anchor-id="key-features-of-random-forests"><span class="header-section-number">7.3.4</span> Key Features of Random Forests</h3>
+<ul>
+<li>Controls the growth of individual trees</li>
+<li>Controls the ensemble as a whole through bagging parameters</li>
+<li>Randomness at each decision tree’s growth stage increases tree diversity</li>
+</ul>
+</section>
+<section id="mathematical-intuition" class="level3" data-number="7.3.5">
+<h3 data-number="7.3.5" class="anchored" data-anchor-id="mathematical-intuition"><span class="header-section-number">7.3.5</span> Mathematical Intuition</h3>
+<p>The error rate of a random forest depends on:</p>
+<ol type="1">
+<li><strong>Correlation between trees</strong>: Lower correlation improves performance</li>
+<li><strong>Strength of individual trees</strong>: Stronger trees improve performance</li>
+</ol>
+<p>The feature randomization helps reduce correlation between trees while maintaining their strength.</p>
+</section>
+<section id="out-of-bag-oob-error-estimation" class="level3" data-number="7.3.6">
+<h3 data-number="7.3.6" class="anchored" data-anchor-id="out-of-bag-oob-error-estimation"><span class="header-section-number">7.3.6</span> Out-of-Bag (OOB) Error Estimation</h3>
+<p>A unique advantage of random forests is built-in validation:</p>
+<ul>
+<li>Each bootstrap sample leaves out approximately 1/3 of the data (out-of-bag samples)</li>
+<li>These OOB samples can be used to estimate model performance without a separate validation set</li>
+<li>OOB error is an unbiased estimate of the generalization error</li>
+</ul>
+</section>
+<section id="feature-importance" class="level3" data-number="7.3.7">
+<h3 data-number="7.3.7" class="anchored" data-anchor-id="feature-importance"><span class="header-section-number">7.3.7</span> Feature Importance</h3>
+<p>Random forests provide a natural way to measure feature importance:</p>
+<ol type="1">
+<li><strong>Mean Decrease Impurity (MDI)</strong>: Average reduction in impurity across all trees</li>
+<li><strong>Mean Decrease Accuracy (MDA)</strong>: Decrease in model accuracy when a feature is permuted</li>
+<li><strong>Permutation Importance</strong>: Randomize one feature at a time and measure the drop in performance</li>
+</ol>
+</section>
+<section id="proximity-analysis" class="level3" data-number="7.3.8">
+<h3 data-number="7.3.8" class="anchored" data-anchor-id="proximity-analysis"><span class="header-section-number">7.3.8</span> Proximity Analysis</h3>
+<p>Random forests can measure the similarity between data points:</p>
+<ul>
+<li>Two points are “close” if they often end up in the same leaf nodes</li>
+<li>This proximity measure can be used for clustering, outlier detection, and missing value imputation</li>
+</ul>
+</section>
+<section id="hyperparameters" class="level3" data-number="7.3.9">
+<h3 data-number="7.3.9" class="anchored" data-anchor-id="hyperparameters"><span class="header-section-number">7.3.9</span> Hyperparameters</h3>
+<p>Key parameters affecting random forest performance:</p>
+<ul>
+<li><strong>n_estimators</strong>: Number of trees (more is usually better)</li>
+<li><strong>max_features</strong>: Number of features to consider at each split</li>
+<li><strong>max_depth</strong>: Maximum depth of each tree</li>
+<li><strong>min_samples_split</strong>: Minimum samples required to split a node</li>
+<li><strong>min_samples_leaf</strong>: Minimum samples required in a leaf node</li>
+<li><strong>bootstrap</strong>: Whether to use bootstrap sampling</li>
+</ul>
+</section>
+<section id="advantages-and-limitations-1" class="level3" data-number="7.3.10">
+<h3 data-number="7.3.10" class="anchored" data-anchor-id="advantages-and-limitations-1"><span class="header-section-number">7.3.10</span> Advantages and Limitations</h3>
+<section id="advantages-1" class="level4" data-number="7.3.10.1">
+<h4 data-number="7.3.10.1" class="anchored" data-anchor-id="advantages-1"><span class="header-section-number">7.3.10.1</span> Advantages</h4>
+<ul>
+<li>Reduced overfitting compared to decision trees</li>
+<li>Robust to outliers and noise</li>
+<li>Handles high-dimensional data well</li>
+<li>Provides feature importance measures</li>
+<li>Built-in cross-validation through OOB samples</li>
+</ul>
+</section>
+<section id="limitations-1" class="level4" data-number="7.3.10.2">
+<h4 data-number="7.3.10.2" class="anchored" data-anchor-id="limitations-1"><span class="header-section-number">7.3.10.2</span> Limitations</h4>
+<ul>
+<li>Less interpretable than single decision trees</li>
+<li>Computationally more intensive</li>
+<li>Biased for categorical features with different numbers of levels</li>
+<li>May overfit on noisy datasets with many features</li>
+</ul>
+</section>
+</section>
+</section>
+<section id="gradient-boosting" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="gradient-boosting"><span class="header-section-number">7.4</span> Gradient Boosting</h2>
+<p>Gradient Boosting combines Gradient Descent with boosting principles.</p>
+<section id="core-concepts-2" class="level3" data-number="7.4.1">
+<h3 data-number="7.4.1" class="anchored" data-anchor-id="core-concepts-2"><span class="header-section-number">7.4.1</span> Core Concepts</h3>
+<p>Gradient Boosting frames the ensemble learning process as an optimization problem:</p>
+<ol type="1">
+<li><strong>Loss Function</strong>: Define a differentiable loss function to minimize</li>
+<li><strong>Weak Learners</strong>: Use simple models (typically shallow decision trees)</li>
+<li><strong>Additive Training</strong>: Build models sequentially to minimize the loss function</li>
+<li><strong>Gradient Descent</strong>: Each new model fits the negative gradient of the loss function</li>
+</ol>
+</section>
+<section id="gradient-boosting-algorithm" class="level3" data-number="7.4.2">
+<h3 data-number="7.4.2" class="anchored" data-anchor-id="gradient-boosting-algorithm"><span class="header-section-number">7.4.2</span> Gradient Boosting Algorithm</h3>
+<ol type="1">
+<li>Initialize model with a constant value</li>
+<li>For m = 1 to M (number of boosting rounds):
+<ul>
+<li>Compute negative gradient (residual) of the loss function</li>
+<li>Fit a base learner (decision tree) to the negative gradient</li>
+<li>Calculate optimal leaf values</li>
+<li>Update the model by adding the new tree (scaled by learning rate)</li>
+</ul></li>
+<li>Return the final model (sum of all trees)</li>
+</ol>
+<div id="306d8e71" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> GradientBoostingClassifier</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix, classification_report</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create and train Gradient Boosting model</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>gb <span class="op">=</span> GradientBoostingClassifier(</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    n_estimators<span class="op">=</span><span class="dv">100</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    learning_rate<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    max_depth<span class="op">=</span><span class="dv">3</span>,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span><span class="dv">42</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>gb.fit(X_train, y_train)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict and evaluate</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> gb.predict(X_test)</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(confusion_matrix(y_test, y_pred))</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classification_report(y_test, y_pred, target_names<span class="op">=</span>iris.target_names))</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Learning curve visualization</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>train_scores <span class="op">=</span> []</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>test_scores <span class="op">=</span> []</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>estimator_range <span class="op">=</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">101</span>)</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Train models with different numbers of estimators</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> n_estimators <span class="kw">in</span> estimator_range:</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>    gb <span class="op">=</span> GradientBoostingClassifier(</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>        n_estimators<span class="op">=</span>n_estimators,</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>        learning_rate<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>        max_depth<span class="op">=</span><span class="dv">3</span>,</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>        random_state<span class="op">=</span><span class="dv">42</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>    gb.fit(X_train, y_train)</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>    train_scores.append(gb.score(X_train, y_train))</span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>    test_scores.append(gb.score(X_test, y_test))</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot learning curve</span></span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>plt.plot(estimator_range, train_scores, label<span class="op">=</span><span class="st">'Training Score'</span>)</span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>plt.plot(estimator_range, test_scores, label<span class="op">=</span><span class="st">'Testing Score'</span>)</span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Number of Estimators'</span>)</span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Accuracy'</span>)</span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Gradient Boosting Learning Curve'</span>)</span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[19  0  0]
+ [ 0 13  0]
+ [ 0  0 13]]
+              precision    recall  f1-score   support
+
+      setosa       1.00      1.00      1.00        19
+  versicolor       1.00      1.00      1.00        13
+   virginica       1.00      1.00      1.00        13
+
+    accuracy                           1.00        45
+   macro avg       1.00      1.00      1.00        45
+weighted avg       1.00      1.00      1.00        45
+</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter6_files/figure-html/cell-7-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="how-gradient-boosting-works" class="level3" data-number="7.4.3">
+<h3 data-number="7.4.3" class="anchored" data-anchor-id="how-gradient-boosting-works"><span class="header-section-number">7.4.3</span> How Gradient Boosting Works</h3>
+<ol type="1">
+<li>Initial Model: Start with one model and its predictions</li>
+<li>Training on Residuals: Train new model on residuals of first model</li>
+<li>Iterative Correction: Each new model predicts residuals from ensemble of previous models</li>
+<li>Final Prediction: Sum of predictions from all trees</li>
+</ol>
+</section>
+<section id="mathematical-formulation" class="level3" data-number="7.4.4">
+<h3 data-number="7.4.4" class="anchored" data-anchor-id="mathematical-formulation"><span class="header-section-number">7.4.4</span> Mathematical Formulation</h3>
+<p>Gradient Boosting minimizes a loss function <span class="math inline">\(L(y, F(x))\)</span> by iteratively adding weak learners:</p>
+<p><span class="math inline">\(F_m(x) = F_{m-1}(x) + \alpha_m h_m(x)\)</span></p>
+<p>Where: - <span class="math inline">\(F_m(x)\)</span> is the model after m iterations - <span class="math inline">\(h_m(x)\)</span> is the weak learner (decision tree) - <span class="math inline">\(\alpha_m\)</span> is the step size (learning rate)</p>
+<p>The weak learner <span class="math inline">\(h_m\)</span> is trained to approximate the negative gradient of the loss function:</p>
+<p><span class="math inline">\(h_m(x) \approx -\left[\frac{\partial L(y, F(x))}{\partial F(x)}\right]_{F(x)=F_{m-1}(x)}\)</span></p>
+</section>
+<section id="loss-functions" class="level3" data-number="7.4.5">
+<h3 data-number="7.4.5" class="anchored" data-anchor-id="loss-functions"><span class="header-section-number">7.4.5</span> Loss Functions</h3>
+<p>Different loss functions can be used depending on the task:</p>
+<ul>
+<li><strong>Regression</strong>:
+<ul>
+<li>L2 loss (mean squared error)</li>
+<li>L1 loss (mean absolute error)</li>
+<li>Huber loss (robust to outliers)</li>
+</ul></li>
+<li><strong>Classification</strong>:
+<ul>
+<li>Binomial deviance (logistic loss)</li>
+<li>Multinomial deviance</li>
+<li>Exponential loss (AdaBoost)</li>
+</ul></li>
+</ul>
+</section>
+<section id="types-of-gradient-boosting" class="level3" data-number="7.4.6">
+<h3 data-number="7.4.6" class="anchored" data-anchor-id="types-of-gradient-boosting"><span class="header-section-number">7.4.6</span> Types of Gradient Boosting</h3>
+<ul>
+<li><strong>AdaBoost</strong>: Each new model focuses on mistakes of previous models by weighting misclassified instances</li>
+<li><strong>XGBoost</strong>: Highly efficient implementation with additional optimizations like regularization</li>
+<li><strong>LightGBM</strong>: Uses gradient-based one-side sampling and exclusive feature bundling for faster training</li>
+<li><strong>CatBoost</strong>: Handles categorical features automatically and uses ordered boosting</li>
+</ul>
+</section>
+<section id="regularization-techniques" class="level3" data-number="7.4.7">
+<h3 data-number="7.4.7" class="anchored" data-anchor-id="regularization-techniques"><span class="header-section-number">7.4.7</span> Regularization Techniques</h3>
+<p>Gradient Boosting can overfit easily. Common regularization techniques include:</p>
+<ol type="1">
+<li><strong>Shrinkage (Learning Rate)</strong>: Scale contribution of each tree by a factor &lt; 1</li>
+<li><strong>Subsampling</strong>: Train each tree on a random subset of data</li>
+<li><strong>Early Stopping</strong>: Stop training when validation error stops improving</li>
+<li><strong>Tree Constraints</strong>: Limit tree depth, minimum samples per leaf, etc.</li>
+<li><strong>L1/L2 Regularization</strong>: Penalize large leaf weights</li>
+</ol>
+</section>
+<section id="key-hyperparameters" class="level3" data-number="7.4.8">
+<h3 data-number="7.4.8" class="anchored" data-anchor-id="key-hyperparameters"><span class="header-section-number">7.4.8</span> Key Hyperparameters</h3>
+<ul>
+<li><strong>n_estimators</strong>: Number of boosting stages (trees)</li>
+<li><strong>learning_rate</strong>: Controls how much each tree influences predictions</li>
+<li><strong>max_depth</strong>: Limits nodes in each regression estimator (tree)</li>
+<li><strong>subsample</strong>: Fraction of samples to use for fitting each tree</li>
+<li><strong>loss</strong>: Loss function to be optimized</li>
+</ul>
+</section>
+<section id="advantages-and-limitations-2" class="level3" data-number="7.4.9">
+<h3 data-number="7.4.9" class="anchored" data-anchor-id="advantages-and-limitations-2"><span class="header-section-number">7.4.9</span> Advantages and Limitations</h3>
+<section id="advantages-2" class="level4" data-number="7.4.9.1">
+<h4 data-number="7.4.9.1" class="anchored" data-anchor-id="advantages-2"><span class="header-section-number">7.4.9.1</span> Advantages</h4>
+<ul>
+<li>Often provides best predictive accuracy</li>
+<li>Flexible - works with various loss functions</li>
+<li>Handles mixed data types well</li>
+<li>Robust to outliers with robust loss functions</li>
+<li>Automatically handles feature interactions</li>
+</ul>
+</section>
+<section id="limitations-2" class="level4" data-number="7.4.9.2">
+<h4 data-number="7.4.9.2" class="anchored" data-anchor-id="limitations-2"><span class="header-section-number">7.4.9.2</span> Limitations</h4>
+<ul>
+<li>Prone to overfitting without careful tuning</li>
+<li>Sensitive to noisy data and outliers with some loss functions</li>
+<li>Computationally intensive</li>
+<li>Less interpretable than single decision trees</li>
+<li>Sequential nature limits parallelization</li>
+</ul>
+</section>
+</section>
+</section>
+<section id="comparing-ensemble-methods" class="level2" data-number="7.5">
+<h2 data-number="7.5" class="anchored" data-anchor-id="comparing-ensemble-methods"><span class="header-section-number">7.5</span> Comparing Ensemble Methods</h2>
+<div id="d54c74ad" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare different ensemble methods</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> AdaBoostClassifier, RandomForestClassifier, GradientBoostingClassifier</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize models</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>models <span class="op">=</span> {</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Random Forest'</span>: RandomForestClassifier(n_estimators<span class="op">=</span><span class="dv">100</span>, random_state<span class="op">=</span><span class="dv">42</span>),</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'AdaBoost'</span>: AdaBoostClassifier(n_estimators<span class="op">=</span><span class="dv">100</span>, random_state<span class="op">=</span><span class="dv">42</span>),</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Gradient Boosting'</span>: GradientBoostingClassifier(n_estimators<span class="op">=</span><span class="dv">100</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Train and evaluate each model</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> {}</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, model <span class="kw">in</span> models.items():</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    model.fit(X_train, y_train)</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    train_acc <span class="op">=</span> accuracy_score(y_train, model.predict(X_train))</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    test_acc <span class="op">=</span> accuracy_score(y_test, model.predict(X_test))</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    results[name] <span class="op">=</span> {<span class="st">'Train Accuracy'</span>: train_acc, <span class="st">'Test Accuracy'</span>: test_acc}</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Display results</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>results_df <span class="op">=</span> pd.DataFrame(results).T</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(results_df)</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot results</span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>results_df.plot(kind<span class="op">=</span><span class="st">'bar'</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Comparison of Ensemble Methods'</span>)</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Accuracy'</span>)</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>plt.ylim(<span class="fl">0.8</span>, <span class="fl">1.0</span>)  <span class="co"># Adjust if needed</span></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   Train Accuracy  Test Accuracy
+Random Forest                 1.0            1.0
+AdaBoost                      1.0            1.0
+Gradient Boosting             1.0            1.0</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>&lt;Figure size 960x576 with 0 Axes&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter6_files/figure-html/cell-8-output-3.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="bagging-vs.-boosting" class="level3" data-number="7.5.1">
+<h3 data-number="7.5.1" class="anchored" data-anchor-id="bagging-vs.-boosting"><span class="header-section-number">7.5.1</span> Bagging vs.&nbsp;Boosting</h3>
+<section id="bagging-random-forest" class="level4" data-number="7.5.1.1">
+<h4 data-number="7.5.1.1" class="anchored" data-anchor-id="bagging-random-forest"><span class="header-section-number">7.5.1.1</span> Bagging (Random Forest)</h4>
+<ul>
+<li><strong>Goal</strong>: Reduce variance (overfitting)</li>
+<li><strong>Training</strong>: Parallel (trees are independent)</li>
+<li><strong>Weighting</strong>: Equal weight for all models</li>
+<li><strong>Bias-Variance</strong>: Primarily reduces variance</li>
+<li><strong>Robustness</strong>: Less prone to overfitting</li>
+<li><strong>Speed</strong>: Can be parallelized easily</li>
+</ul>
+</section>
+<section id="boosting-gradient-boosting" class="level4" data-number="7.5.1.2">
+<h4 data-number="7.5.1.2" class="anchored" data-anchor-id="boosting-gradient-boosting"><span class="header-section-number">7.5.1.2</span> Boosting (Gradient Boosting)</h4>
+<ul>
+<li><strong>Goal</strong>: Reduce bias and variance</li>
+<li><strong>Training</strong>: Sequential (each tree depends on previous trees)</li>
+<li><strong>Weighting</strong>: Different weights for different models</li>
+<li><strong>Bias-Variance</strong>: Reduces both bias and variance</li>
+<li><strong>Robustness</strong>: More prone to overfitting</li>
+<li><strong>Speed</strong>: Generally slower due to sequential nature</li>
+</ul>
+</section>
+</section>
+<section id="stacking" class="level3" data-number="7.5.2">
+<h3 data-number="7.5.2" class="anchored" data-anchor-id="stacking"><span class="header-section-number">7.5.2</span> Stacking</h3>
+<p>Stacking combines multiple models using a meta-learner:</p>
+<ol type="1">
+<li>Train base models on the original dataset</li>
+<li>Generate predictions from each base model</li>
+<li>Use these predictions as features to train a meta-model</li>
+<li>Final prediction is given by the meta-model</li>
+</ol>
+</section>
+<section id="choosing-the-right-ensemble-method" class="level3" data-number="7.5.3">
+<h3 data-number="7.5.3" class="anchored" data-anchor-id="choosing-the-right-ensemble-method"><span class="header-section-number">7.5.3</span> Choosing the Right Ensemble Method</h3>
+<p>The choice depends on the problem characteristics:</p>
+<ul>
+<li><strong>Random Forest</strong>: Good default for most problems, especially with limited data</li>
+<li><strong>Gradient Boosting</strong>: When maximum performance is needed and you can tune hyperparameters</li>
+<li><strong>AdaBoost</strong>: Simple boosting algorithm, good for weak learners</li>
+<li><strong>Stacking</strong>: When you have diverse models and computational resources</li>
+<li><strong>Voting</strong>: Simple ensemble when you already have several good models</li>
+</ul>
+</section>
+<section id="practical-considerations" class="level3" data-number="7.5.4">
+<h3 data-number="7.5.4" class="anchored" data-anchor-id="practical-considerations"><span class="header-section-number">7.5.4</span> Practical Considerations</h3>
+<p>When implementing ensemble methods:</p>
+<ol type="1">
+<li><strong>Computational Resources</strong>: Boosting methods are generally more resource-intensive</li>
+<li><strong>Model Complexity</strong>: Simpler models may be preferred for production</li>
+<li><strong>Interpretability Requirements</strong>: Random forests offer better interpretability than boosting</li>
+<li><strong>Dataset Size</strong>: For small datasets, random forests may be more appropriate</li>
+<li><strong>Noise Level</strong>: For noisy data, bagging methods are more robust</li>
+</ol>
+</section>
+</section>
+<section id="conclusion" class="level2" data-number="7.6">
+<h2 data-number="7.6" class="anchored" data-anchor-id="conclusion"><span class="header-section-number">7.6</span> Conclusion</h2>
+<ul>
+<li>Decision Trees provide interpretable models for both classification and regression</li>
+<li>Ensemble methods like Random Forest and Gradient Boosting improve upon Decision Trees by combining multiple models</li>
+<li>Random Forest reduces variance through bagging and random feature selection</li>
+<li>Gradient Boosting reduces both bias and variance through sequential model building</li>
+<li>Each method has strengths and weaknesses depending on the specific problem and dataset</li>
+</ul>
+<section id="key-takeaways" class="level3" data-number="7.6.1">
+<h3 data-number="7.6.1" class="anchored" data-anchor-id="key-takeaways"><span class="header-section-number">7.6.1</span> Key Takeaways</h3>
+<ol type="1">
+<li><strong>No Free Lunch</strong>: No single algorithm is best for all problems</li>
+<li><strong>Bias-Variance Tradeoff</strong>: Different ensemble methods address different aspects of model error</li>
+<li><strong>Hyperparameter Tuning</strong>: Proper tuning is crucial for optimal performance</li>
+<li><strong>Interpretability vs.&nbsp;Performance</strong>: More complex ensembles usually offer better performance at the cost of interpretability</li>
+<li><strong>Computational Considerations</strong>: Training time and resource requirements vary significantly between methods</li>
+</ol>
+<div id="1a8464e6" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Final comprehensive example: train models on different datasets and compare</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_breast_cancer, load_wine</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>datasets <span class="op">=</span> {</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Iris'</span>: load_iris(),</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Breast Cancer'</span>: load_breast_cancer(),</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Wine'</span>: load_wine()</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> []</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, dataset <span class="kw">in</span> datasets.items():</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    X, y <span class="op">=</span> dataset.data, dataset.target</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Scale features</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>    X <span class="op">=</span> scaler.fit_transform(X)</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Split data</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>    X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X, y, test_size<span class="op">=</span><span class="fl">0.3</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Train models</span></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>    dt <span class="op">=</span> DecisionTreeClassifier(max_depth<span class="op">=</span><span class="dv">4</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>    rf <span class="op">=</span> RandomForestClassifier(n_estimators<span class="op">=</span><span class="dv">100</span>, max_depth<span class="op">=</span><span class="dv">4</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>    gb <span class="op">=</span> GradientBoostingClassifier(n_estimators<span class="op">=</span><span class="dv">100</span>, max_depth<span class="op">=</span><span class="dv">3</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>    models <span class="op">=</span> {<span class="st">'Decision Tree'</span>: dt, <span class="st">'Random Forest'</span>: rf, <span class="st">'Gradient Boosting'</span>: gb}</span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Evaluate</span></span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> model_name, model <span class="kw">in</span> models.items():</span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>        model.fit(X_train, y_train)</span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>        train_acc <span class="op">=</span> model.score(X_train, y_train)</span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a>        test_acc <span class="op">=</span> model.score(X_test, y_test)</span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a>        results.append({</span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a>            <span class="st">'Dataset'</span>: name,</span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>            <span class="st">'Model'</span>: model_name,</span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a>            <span class="st">'Train Accuracy'</span>: train_acc,</span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a>            <span class="st">'Test Accuracy'</span>: test_acc</span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Create DataFrame with results</span></span>
+<span id="cb15-45"><a href="#cb15-45" aria-hidden="true" tabindex="-1"></a>final_results <span class="op">=</span> pd.DataFrame(results)</span>
+<span id="cb15-46"><a href="#cb15-46" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(final_results.pivot_table(index<span class="op">=</span><span class="st">'Dataset'</span>, columns<span class="op">=</span><span class="st">'Model'</span>, values<span class="op">=</span><span class="st">'Test Accuracy'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Model          Decision Tree  Gradient Boosting  Random Forest
+Dataset                                                       
+Breast Cancer       0.953216           0.959064        0.97076
+Iris                1.000000           1.000000        1.00000
+Wine                0.962963           0.907407        1.00000</code></pre>
+</div>
+</div>
+</section>
+<section id="further-research-directions" class="level3" data-number="7.6.2">
+<h3 data-number="7.6.2" class="anchored" data-anchor-id="further-research-directions"><span class="header-section-number">7.6.2</span> Further Research Directions</h3>
+<ul>
+<li><strong>Explainable AI</strong>: Methods to interpret complex ensemble models</li>
+<li><strong>Automatic Machine Learning (AutoML)</strong>: Automating the selection and tuning of ensemble methods</li>
+<li><strong>Deep Forest</strong>: Combining deep learning concepts with random forests</li>
+<li><strong>Online Learning</strong>: Adapting ensemble methods for streaming data</li>
+<li><strong>Imbalanced Learning</strong>: Specialized ensemble techniques for imbalanced datasets</li>
+</ul>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./chapter5.html" class="pagination-link" aria-label="Dimensionality Reduction Methods">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Dimensionality Reduction Methods</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./chapter6v2.html" class="pagination-link" aria-label="Support Vector Machines and Model Evaluation">
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Support Vector Machines and Model Evaluation</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

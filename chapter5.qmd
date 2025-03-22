@@ -1,0 +1,843 @@
+---
+title: "Dimensionality Reduction Methods"
+---
+
+Dimensionality reduction is a critical technique in data analysis and machine learning that reduces the number of input variables (features) while preserving essential information. High-dimensional datasets often contain redundancy or noise that can be eliminated through these methods.
+
+```{python}
+#| label: fig-libraries
+#| warning: false
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.datasets import load_iris, fetch_openml
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA, KernelPCA, IncrementalPCA
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.manifold import TSNE
+import plotly.express as px
+
+# Set plotting styles
+sns.set_style("whitegrid")
+plt.rcParams['figure.figsize'] = (10, 6)
+```
+
+## Why Reduce Dimensionality?
+
+The primary goals of dimensionality reduction include:
+
+1.  **Reducing overfitting** by eliminating noise and redundant features
+2.  **Improving computational efficiency** for faster, less expensive algorithms
+3.  **Enabling data visualization** by mapping to 2D or 3D spaces
+4.  **Removing noise** to focus on meaningful patterns
+
+## Dataset Example: Iris
+
+Let's load and examine the Iris dataset, which we'll use throughout this document:
+
+```{python}
+#| label: fig-iris-data
+
+# Load the Iris dataset
+iris = load_iris()
+X = iris.data
+y = iris.target
+feature_names = iris.feature_names
+target_names = iris.target_names
+
+# Create a DataFrame for easier manipulation
+iris_df = pd.DataFrame(X, columns=feature_names)
+iris_df['species'] = [target_names[i] for i in y]
+
+# Display dataset information
+print(f"Dataset shape: {X.shape}")
+print(f"Features: {feature_names}")
+print(f"Number of samples per class: {np.bincount(y)}")
+
+# Preview the dataset
+iris_df.head()
+```
+
+## Approaches to Dimensionality Reduction
+
+Dimensionality reduction methods fall into two main categories:
+
+### Unsupervised Methods
+
+These techniques don't require labeled data and find lower-dimensional representations based solely on the intrinsic structure of features.
+
+#### Principal Component Analysis (PCA)
+
+PCA identifies directions (principal components) where data varies the most and projects data onto this lower-dimensional space.
+
+```{python}
+#| label: fig-pca-iris
+#| fig-cap: "PCA visualization of the Iris dataset"
+
+# Standardize the data
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Apply PCA
+pca = PCA()
+X_pca = pca.fit_transform(X_scaled)
+
+# Plot explained variance
+plt.figure(figsize=(10, 6))
+plt.bar(range(1, len(pca.explained_variance_ratio_) + 1), pca.explained_variance_ratio_)
+plt.plot(range(1, len(pca.explained_variance_ratio_) + 1), 
+         np.cumsum(pca.explained_variance_ratio_), 'r-o')
+plt.xlabel('Principal Component')
+plt.ylabel('Explained Variance Ratio / Cumulative')
+plt.xticks(range(1, len(pca.explained_variance_ratio_) + 1))
+plt.title('Explained Variance by Principal Components')
+plt.grid(True)
+plt.show()
+
+# Print variance explained
+print(f"Variance explained by each component: {pca.explained_variance_ratio_}")
+print(f"Cumulative variance explained: {np.cumsum(pca.explained_variance_ratio_)}")
+
+# Visualization in 2D
+plt.figure(figsize=(10, 8))
+colors = ['navy', 'turquoise', 'darkorange']
+for i, c, label in zip(range(3), colors, target_names):
+    plt.scatter(X_pca[y == i, 0], X_pca[y == i, 1], c=c, label=label)
+plt.xlabel('First Principal Component')
+plt.ylabel('Second Principal Component')
+plt.title('PCA of Iris Dataset')
+plt.legend()
+plt.grid(True)
+plt.show()
+```
+
+##### Key Concepts of PCA
+
+1.  **Variance Maximization**: Captures directions with maximum variance
+2.  **Linear Combinations**: Each PC is a weighted sum of original features
+3.  **Uncorrelated Components**: PCs are orthogonal to each other
+4.  **Coordinate Transformation**: Rotates data into a new coordinate system
+
+Let's explore the relationship between original features and principal components:
+
+```{python}
+#| label: fig-pca-components
+#| fig-cap: "PCA components and their relationship to original features"
+
+# Display the component loadings
+loadings = pd.DataFrame(
+    pca.components_.T,
+    columns=[f'PC{i+1}' for i in range(pca.components_.shape[0])],
+    index=feature_names
+)
+
+# Visualize the loadings
+plt.figure(figsize=(10, 6))
+sns.heatmap(loadings, annot=True, cmap='coolwarm', fmt='.3f')
+plt.title('PCA Component Loadings')
+plt.tight_layout()
+plt.show()
+
+# Determine optimal number of components for 95% variance
+cumsum = np.cumsum(pca.explained_variance_ratio_)
+d = np.argmax(cumsum >= 0.95) + 1
+print(f"Number of components needed for 95% variance: {d}")
+```
+
+#### Other Unsupervised Methods
+
+-   **Independent Component Analysis (ICA)**: Focuses on statistical independence of components
+-   **Non-negative Matrix Factorization (NMF)**: Factorizes data into non-negative matrices
+
+### Supervised Methods
+
+These techniques consider class labels during dimensionality reduction to better preserve class separability.
+
+#### Linear Discriminant Analysis (LDA)
+
+LDA maximizes class separation by projecting data onto a lower-dimensional space:
+
+```{python}
+#| label: fig-lda-iris
+#| fig-cap: "LDA visualization of the Iris dataset"
+
+# Apply LDA
+lda = LinearDiscriminantAnalysis(n_components=2)
+X_lda = lda.fit_transform(X_scaled, y)
+
+# Visualization in 2D
+plt.figure(figsize=(10, 8))
+for i, c, label in zip(range(3), colors, target_names):
+    plt.scatter(X_lda[y == i, 0], X_lda[y == i, 1], c=c, label=label)
+plt.xlabel('First LDA Component')
+plt.ylabel('Second LDA Component')
+plt.title('LDA of Iris Dataset')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Check explained variance ratio
+print(f"Explained variance ratio: {lda.explained_variance_ratio_}")
+```
+
+## Advanced PCA Implementations
+
+### Kernel PCA
+
+When data is not linearly separable, Kernel PCA can be more effective:
+
+```{python}
+#| label: fig-kernel-pca
+#| fig-cap: "Comparison of PCA and Kernel PCA"
+
+# Apply Kernel PCA with different kernels
+kernels = ['linear', 'poly', 'rbf']
+fig, axes = plt.subplots(1, len(kernels), figsize=(18, 5))
+
+for i, kernel in enumerate(kernels):
+    kpca = KernelPCA(n_components=2, kernel=kernel)
+    X_kpca = kpca.fit_transform(X_scaled)
+    
+    for j, c, label in zip(range(3), colors, target_names):
+        axes[i].scatter(X_kpca[y == j, 0], X_kpca[y == j, 1], c=c, label=label)
+    
+    axes[i].set_xlabel('First Component')
+    axes[i].set_ylabel('Second Component')
+    axes[i].set_title(f'Kernel PCA ({kernel})')
+    axes[i].legend()
+    axes[i].grid(True)
+
+plt.tight_layout()
+plt.show()
+```
+
+### Incremental PCA
+
+For larger datasets, Incremental PCA processes data in batches:
+
+```{python}
+#| label: fig-incremental-pca
+#| warning: false
+
+# Simulate a larger dataset by repeating Iris
+X_large = np.vstack([X_scaled] * 10)
+y_large = np.hstack([y] * 10)
+
+# Apply Incremental PCA
+n_batches = 5
+batch_size = X_large.shape[0] // n_batches
+
+ipca = IncrementalPCA(n_components=2)
+for i in range(n_batches):
+    start = i * batch_size
+    end = min((i + 1) * batch_size, X_large.shape[0])
+    ipca.partial_fit(X_large[start:end])
+
+X_ipca = ipca.transform(X_large)
+
+# Compare with standard PCA
+pca = PCA(n_components=2)
+X_pca_large = pca.fit_transform(X_large)
+
+# Visualize both
+fig, axes = plt.subplots(1, 2, figsize=(15, 6))
+
+# Plot IPCA
+for i, c, label in zip(range(3), colors, target_names):
+    axes[0].scatter(X_ipca[y_large == i, 0], X_ipca[y_large == i, 1], c=c, label=label, alpha=0.5)
+axes[0].set_title('Incremental PCA')
+axes[0].legend()
+axes[0].grid(True)
+
+# Plot standard PCA
+for i, c, label in zip(range(3), colors, target_names):
+    axes[1].scatter(X_pca_large[y_large == i, 0], X_pca_large[y_large == i, 1], c=c, label=label, alpha=0.5)
+axes[1].set_title('Standard PCA')
+axes[1].legend()
+axes[1].grid(True)
+
+plt.tight_layout()
+plt.show()
+
+# Compare explained variance
+print(f"IPCA explained variance: {ipca.explained_variance_ratio_}")
+print(f"PCA explained variance: {pca.explained_variance_ratio_}")
+```
+
+## Visualizing High-Dimensional Data with t-SNE
+
+t-SNE is particularly effective for visualizing high-dimensional data:
+
+```{python}
+#| label: fig-tsne
+#| fig-cap: "t-SNE visualization of the Iris dataset"
+#| warning: false
+
+# Apply t-SNE
+tsne = TSNE(n_components=2, random_state=42)
+X_tsne = tsne.fit_transform(X_scaled)
+
+# Create visualization
+plt.figure(figsize=(10, 8))
+for i, c, label in zip(range(3), colors, target_names):
+    plt.scatter(X_tsne[y == i, 0], X_tsne[y == i, 1], c=c, label=label)
+plt.title('t-SNE of Iris Dataset')
+plt.legend()
+plt.grid(True)
+plt.show()
+```
+
+## Real-World Application: MNIST Dataset
+
+Let's apply dimensionality reduction to a larger, more complex dataset:
+
+```{python}
+#| label: fig-mnist
+#| fig-cap: "PCA applied to MNIST digits"
+#| eval: false
+
+# Load a subset of MNIST for demonstration
+mnist = fetch_openml('mnist_784', version=1, as_frame=False, parser='auto')
+X_mnist = mnist.data[:2000]
+y_mnist = mnist.target[:2000].astype(int)
+
+# Standardize the data
+scaler = StandardScaler()
+X_mnist_scaled = scaler.fit_transform(X_mnist)
+
+# Apply PCA
+pca_mnist = PCA(n_components=50)  # Reduce from 784 to 50 dimensions
+X_mnist_pca = pca_mnist.fit_transform(X_mnist_scaled)
+
+# Plot explained variance
+plt.figure(figsize=(10, 6))
+plt.plot(np.cumsum(pca_mnist.explained_variance_ratio_))
+plt.xlabel('Number of Components')
+plt.ylabel('Cumulative Explained Variance')
+plt.title('Explained Variance vs. Number of PCA Components (MNIST)')
+plt.grid(True)
+plt.show()
+
+# Check how many components needed for 95% variance
+cumsum = np.cumsum(pca_mnist.explained_variance_ratio_)
+d = np.argmax(cumsum >= 0.95) + 1
+print(f"Number of components needed for 95% variance: {d}")
+
+# Visualize first two components
+plt.figure(figsize=(10, 8))
+for i in range(10):
+    plt.scatter(X_mnist_pca[y_mnist == i, 0], X_mnist_pca[y_mnist == i, 1], label=str(i), alpha=0.6)
+plt.legend()
+plt.title('PCA of MNIST Dataset (First 2 Components)')
+plt.grid(True)
+plt.show()
+
+# Visualize some original vs. reconstructed images
+n_row, n_col = 2, 5
+fig, axes = plt.subplots(n_row, n_col, figsize=(15, 6))
+
+# Reconstruct images from PCA components
+X_mnist_reconstructed = pca_mnist.inverse_transform(X_mnist_pca)
+X_mnist_reconstructed = scaler.inverse_transform(X_mnist_reconstructed)
+
+for i in range(n_row):
+    for j in range(n_col):
+        idx = i * n_col + j
+        if i == 0:
+            axes[i, j].imshow(X_mnist[idx].reshape(28, 28), cmap='gray')
+            axes[i, j].set_title(f"Original: {y_mnist[idx]}")
+        else:
+            axes[i, j].imshow(X_mnist_reconstructed[idx].reshape(28, 28), cmap='gray')
+            axes[i, j].set_title(f"Reconstructed: {y_mnist[idx]}")
+        axes[i, j].axis('off')
+
+plt.tight_layout()
+plt.show()
+```
+
+## Interactive 3D Visualization with Plotly
+
+Plotly enables interactive exploration of dimensionality reduction results:
+
+```{python}
+#| label: fig-3d-pca
+#| fig-cap: "3D PCA visualization of the Iris dataset"
+
+# Apply PCA with 3 components
+pca_3d = PCA(n_components=3)
+components = pca_3d.fit_transform(X_scaled)
+
+# Create a DataFrame for plotting
+df = pd.DataFrame({
+    'PC1': components[:, 0],
+    'PC2': components[:, 1],
+    'PC3': components[:, 2],
+    'Species': [target_names[i] for i in y]
+})
+
+# Create 3D scatter plot
+fig = px.scatter_3d(
+    df, x='PC1', y='PC2', z='PC3',
+    color='Species',
+    title='3D PCA of Iris Dataset',
+    labels={'PC1': 'Principal Component 1', 
+            'PC2': 'Principal Component 2',
+            'PC3': 'Principal Component 3'}
+)
+
+fig.update_layout(
+    legend_title_text='Species',
+    scene=dict(
+        xaxis_title='PC1',
+        yaxis_title='PC2',
+        zaxis_title='PC3'
+    )
+)
+
+fig.show()
+```
+
+## Choosing the Right Dimensionality Reduction Technique
+
+| Technique | Strengths | Weaknesses | Best For |
+|------------------|------------------|-------------------|------------------|
+| PCA | Fast, easy to interpret | Linear transformations only | Large datasets, initial exploration |
+| Kernel PCA | Handles nonlinear relationships | More parameters to tune | Complex, nonlinear data |
+| LDA | Maximizes class separation | Requires labeled data | Classification tasks |
+| t-SNE | Excellent for visualization | Slow on large datasets | Visualizing high-dimensional data |
+| UMAP | Preserves local and global structure | Complex implementation | Alternative to t-SNE for larger datasets |
+
+## Singular Value Decomposition (SVD)
+
+Singular Value Decomposition (SVD) is a powerful linear algebra technique that decomposes a matrix into three component matrices, revealing the underlying structure of the data. SVD forms the mathematical foundation for many dimensionality reduction techniques, including PCA.
+
+```{python}
+#| label: fig-svd-libraries
+#| warning: false
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.datasets import load_iris
+from scipy.linalg import svd
+from sklearn.preprocessing import StandardScaler
+from PIL import Image
+```
+
+### Mathematical Foundation
+
+SVD decomposes a matrix $A$ (of size $m \times n$) into three matrices:
+
+$$A = U\Sigma V^T$$
+
+Where: - $U$ is an $m \times m$ orthogonal matrix containing the left singular vectors - $\Sigma$ is an $m \times n$ diagonal matrix containing the singular values - $V^T$ is the transpose of an $n \times n$ orthogonal matrix containing the right singular vectors
+
+The singular values in $\Sigma$ are ordered in descending order, with the largest values representing the most important dimensions of the data.
+
+### Basic SVD Example
+
+Let's implement SVD on the Iris dataset to understand its mechanics:
+
+```{python}
+#| label: fig-svd-iris
+#| fig-cap: "SVD applied to the Iris dataset"
+
+# Load and scale the Iris dataset
+iris = load_iris()
+X = iris.data
+y = iris.target
+feature_names = iris.feature_names
+
+# Standardize the data
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Apply SVD
+U, sigma, Vt = svd(X_scaled)
+
+# Print dimensions of decomposed matrices
+print(f"Original matrix shape: {X_scaled.shape}")
+print(f"U matrix shape: {U.shape}")
+print(f"Sigma shape: {sigma.shape}")
+print(f"V^T matrix shape: {Vt.shape}")
+
+# Plot the singular values
+plt.figure(figsize=(10, 6))
+plt.plot(sigma, 'bo-')
+plt.xlabel('Component Index')
+plt.ylabel('Singular Value')
+plt.title('Singular Values (in descending order)')
+plt.grid(True)
+plt.show()
+
+# Calculate and plot the explained variance ratio
+explained_variance = (sigma ** 2) / (len(X_scaled) - 1)
+total_var = explained_variance.sum()
+explained_variance_ratio = explained_variance / total_var
+
+plt.figure(figsize=(10, 6))
+plt.bar(range(len(explained_variance_ratio)), explained_variance_ratio)
+plt.plot(range(len(explained_variance_ratio)), 
+         np.cumsum(explained_variance_ratio), 'r-o')
+plt.xlabel('Component Index')
+plt.ylabel('Explained Variance Ratio / Cumulative')
+plt.title('Explained Variance by Component')
+plt.grid(True)
+plt.show()
+```
+
+### Relationship Between SVD and PCA
+
+PCA can be implemented using SVD, which is often more numerically stable. The principal components in PCA are equivalent to the right singular vectors in SVD.
+
+```{python}
+#| label: fig-svd-pca-comparison
+#| fig-cap: "Comparison of SVD and PCA projections"
+
+# Project data onto first two singular vectors (equivalent to first two PCs)
+svd_projection = X_scaled @ Vt.T[:, :2]
+
+# Visualize the projection
+plt.figure(figsize=(10, 8))
+colors = ['navy', 'turquoise', 'darkorange']
+target_names = iris.target_names
+
+for i, c, label in zip(range(3), colors, target_names):
+    plt.scatter(svd_projection[y == i, 0], svd_projection[y == i, 1], 
+                c=c, label=label)
+    
+plt.xlabel('First Component')
+plt.ylabel('Second Component')
+plt.title('SVD Projection of Iris Dataset')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Compare first two singular values with corresponding eigenvectors
+print(f"First two singular values: {sigma[:2]}")
+print(f"First two singular values squared: {sigma[:2]**2}")
+```
+
+### Low-Rank Approximation
+
+One of the key applications of SVD is low-rank matrix approximation, which enables data compression:
+
+```{python}
+#| label: fig-svd-low-rank
+#| fig-cap: "Low-rank approximation of a matrix"
+
+# Create a simple matrix for demonstration
+A = np.array([
+    [1, 2, 3, 4, 5],
+    [6, 7, 8, 9, 10],
+    [11, 12, 13, 14, 15]
+])
+
+# Apply SVD
+U, sigma, Vt = svd(A)
+
+# Create diagonal matrix Sigma
+Sigma = np.zeros((A.shape[0], A.shape[1]))
+for i in range(min(A.shape)):
+    Sigma[i, i] = sigma[i]
+
+# Function to reconstruct with k components
+def reconstruct_svd(u, sigma, vt, k):
+    # Create truncated sigma matrix
+    sigma_k = np.zeros((u.shape[0], vt.shape[0]))
+    for i in range(min(k, len(sigma))):
+        sigma_k[i, i] = sigma[i]
+    
+    # Reconstruct
+    return u @ sigma_k @ vt
+
+# Reconstruct with different ranks
+ranks = [1, 2, 3]
+fig, axes = plt.subplots(1, len(ranks) + 1, figsize=(15, 4))
+
+# Original matrix
+axes[0].imshow(A, cmap='viridis')
+axes[0].set_title('Original Matrix')
+axes[0].axis('off')
+
+# Reconstructions
+for i, k in enumerate(ranks):
+    A_k = reconstruct_svd(U, sigma, Vt, k)
+    axes[i+1].imshow(A_k, cmap='viridis')
+    axes[i+1].set_title(f'Rank {k} Approximation')
+    axes[i+1].axis('off')
+
+plt.tight_layout()
+plt.show()
+
+# Calculate and display approximation errors
+for k in ranks:
+    A_k = reconstruct_svd(U, sigma, Vt, k)
+    error = np.linalg.norm(A - A_k, 'fro')
+    print(f"Rank {k} approximation error: {error:.4f}")
+```
+
+### SVD for Image Compression
+
+A common application of SVD is image compression. Let's demonstrate this with a grayscale image:
+
+```{python}
+#| label: fig-image-compression
+#| fig-cap: "Image compression using SVD"
+#| eval: false
+
+# Load a sample image
+# For demonstration, let's create a simple gradient image
+img_size = 512
+img = np.zeros((img_size, img_size))
+for i in range(img_size):
+    for j in range(img_size):
+        img[i, j] = (i + j) / (2 * img_size)
+
+# Apply SVD
+U, sigma, Vt = svd(img, full_matrices=False)
+
+# Compress image with different numbers of singular values
+k_values = [5, 20, 50, 100]
+fig, axes = plt.subplots(1, len(k_values) + 1, figsize=(18, 4))
+
+# Original image
+axes[0].imshow(img, cmap='gray')
+axes[0].set_title('Original Image')
+axes[0].axis('off')
+
+# Compressed images
+for i, k in enumerate(k_values):
+    # Reconstruct image with k singular values
+    compressed_img = U[:, :k] @ np.diag(sigma[:k]) @ Vt[:k, :]
+    
+    # Display
+    axes[i+1].imshow(compressed_img, cmap='gray')
+    axes[i+1].set_title(f'k={k}, CR={img.size/(k*(img.shape[0] + img.shape[1] + 1)):.1f}')
+    axes[i+1].axis('off')
+    
+    # Print compression ratio
+    original_size = img.size * 8  # Assuming 8 bits per pixel
+    compressed_size = k * (img.shape[0] + img.shape[1] + 1) * 8  # k(m+n+1) values stored
+    compression_ratio = original_size / compressed_size
+    print(f"k={k}, Compression ratio: {compression_ratio:.2f}")
+
+plt.tight_layout()
+plt.show()
+```
+
+### Applications of SVD
+
+SVD has numerous applications across various domains:
+
+#### 1. Recommendation Systems
+
+```{python}
+#| label: fig-recommendation
+#| eval: false
+
+# Create a user-item ratings matrix (movies example)
+# Rows: users, Columns: movies, Values: ratings
+ratings = np.array([
+    [5, 4, 0, 0, 1],
+    [4, 0, 0, 3, 1],
+    [1, 1, 0, 5, 0],
+    [0, 0, 4, 0, 3],
+    [2, 0, 5, 0, 0]
+])
+
+# Apply SVD
+U, sigma, Vt = svd(ratings)
+
+# Use a low-rank approximation (k=2)
+k = 2
+ratings_approx = U[:, :k] @ np.diag(sigma[:k]) @ Vt[:k, :]
+
+# Fill in missing ratings
+print("Original ratings matrix:")
+print(ratings)
+print("\nReconstructed ratings matrix:")
+print(np.round(ratings_approx, 1))
+
+# Find recommendations for a user
+user_id = 0
+missing_ratings = np.where(ratings[user_id] == 0)[0]
+recommendations = [(item, ratings_approx[user_id, item]) for item in missing_ratings]
+recommendations.sort(key=lambda x: x[1], reverse=True)
+
+print(f"\nTop recommendations for User {user_id}:")
+for item, score in recommendations:
+    print(f"Item {item}: Predicted rating {score:.1f}")
+```
+
+#### 2. Latent Semantic Analysis (LSA) for Text Mining
+
+```{python}
+#| label: fig-lsa
+#| eval: false
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.decomposition import TruncatedSVD
+
+# Sample documents
+documents = [
+    "Machine learning is a field of artificial intelligence",
+    "Deep learning is a subset of machine learning",
+    "Neural networks are used in deep learning",
+    "SVD is used for dimensionality reduction",
+    "PCA and SVD are related techniques",
+    "Dimensionality reduction helps with visualizing data"
+]
+
+# Create TF-IDF matrix
+vectorizer = TfidfVectorizer(stop_words='english')
+X = vectorizer.fit_transform(documents)
+
+# Get feature names
+feature_names = vectorizer.get_feature_names_out()
+
+# Print the document-term matrix
+print("Document-Term Matrix (TF-IDF):")
+df = pd.DataFrame(X.toarray(), columns=feature_names)
+print(df)
+
+# Apply LSA (truncated SVD)
+n_components = 2
+lsa = TruncatedSVD(n_components=n_components)
+X_lsa = lsa.fit_transform(X)
+
+# Print explained variance
+print(f"\nExplained variance ratio: {lsa.explained_variance_ratio_}")
+print(f"Total explained variance: {sum(lsa.explained_variance_ratio_):.2f}")
+
+# Plot documents in the reduced space
+plt.figure(figsize=(10, 8))
+plt.scatter(X_lsa[:, 0], X_lsa[:, 1], alpha=0.8)
+
+# Label each point
+for i, doc in enumerate(documents):
+    plt.annotate(f"Doc {i+1}", (X_lsa[i, 0], X_lsa[i, 1]), 
+                 xytext=(5, 5), textcoords='offset points')
+
+plt.xlabel("Component 1")
+plt.ylabel("Component 2")
+plt.title("Documents in LSA Space")
+plt.grid(True)
+plt.show()
+
+# Examine term weights in components
+component_terms = {}
+for i, component in enumerate(lsa.components_):
+    # Get the top terms for this component
+    terms = zip(feature_names, component)
+    sorted_terms = sorted(terms, key=lambda x: abs(x[1]), reverse=True)[:5]
+    component_terms[f"Component {i+1}"] = sorted_terms
+
+# Display top terms for each component
+for component, terms in component_terms.items():
+    print(f"\n{component} top terms:")
+    for term, weight in terms:
+        print(f"  {term}: {weight:.3f}")
+```
+
+### Truncated SVD vs. PCA
+
+Truncated SVD can be applied directly to sparse matrices, while PCA typically requires dense matrices. This makes Truncated SVD particularly useful for text analysis and high-dimensional sparse data:
+
+```{python}
+#| label: fig-truncated-svd
+#| fig-cap: "Comparison of Truncated SVD and PCA"
+
+from sklearn.decomposition import TruncatedSVD, PCA
+from scipy.sparse import csr_matrix
+
+# Create a sparse matrix
+rows = np.random.randint(0, 100, 1000)
+cols = np.random.randint(0, 50, 1000)
+data = np.random.randn(1000)
+sparse_matrix = csr_matrix((data, (rows, cols)), shape=(100, 50))
+
+# Apply Truncated SVD
+tsvd = TruncatedSVD(n_components=2)
+tsvd_result = tsvd.fit_transform(sparse_matrix)
+
+# Convert to dense for PCA
+dense_matrix = sparse_matrix.toarray()
+
+# Apply PCA
+pca = PCA(n_components=2)
+pca_result = pca.fit_transform(dense_matrix)
+
+# Compare results
+fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+
+# Plot Truncated SVD result
+axes[0].scatter(tsvd_result[:, 0], tsvd_result[:, 1], alpha=0.5)
+axes[0].set_title('Truncated SVD')
+axes[0].set_xlabel('Component 1')
+axes[0].set_ylabel('Component 2')
+axes[0].grid(True)
+
+# Plot PCA result
+axes[1].scatter(pca_result[:, 0], pca_result[:, 1], alpha=0.5)
+axes[1].set_title('PCA')
+axes[1].set_xlabel('Component 1')
+axes[1].set_ylabel('Component 2')
+axes[1].grid(True)
+
+plt.tight_layout()
+plt.show()
+
+# Compare explained variance
+print(f"Truncated SVD explained variance ratio: {tsvd.explained_variance_ratio_}")
+print(f"PCA explained variance ratio: {pca.explained_variance_ratio_}")
+```
+
+## No# Advantages and Limitations of SVD
+
+#### Advantages
+
+1.  **Robust mathematical foundation**: Based on well-established linear algebra principles
+2.  **Numerical stability**: Often more stable than eigendecomposition-based methods
+3.  **Applicability to non-square matrices**: Can be applied to any rectangular matrix
+4.  **Optimal low-rank approximation**: Provides the best approximation in terms of Frobenius norm
+
+#### Limitations
+
+1.  **Computational cost**: Full SVD is expensive for large matrices (O(min(mn², m²n)))
+2.  **Memory requirements**: Working with large matrices can be memory-intensive
+3.  **Interpretability**: The resulting components may be difficult to interpret in some domains
+4.  **Linearity**: As with PCA, SVD assumes linear relationships in the data
+
+## Conclusion
+
+Dimensionality reduction techniques are essential tools in the data scientist's toolkit, enabling:
+
+-   More efficient model training
+-   Better visualization of complex datasets
+-   Improved performance through noise reduction
+-   Insights into feature importance and relationships
+
+As with all techniques, the choice of dimensionality reduction method should be guided by:
+
+1.  The specific characteristics of your dataset
+2.  Your analysis goals
+3.  Computational constraints
+4.  Whether you need interpretable results
+
+Singular Value Decomposition is a fundamental technique in linear algebra with powerful applications in dimensionality reduction, data compression, noise filtering, and recommendation systems. Its ability to decompose any matrix into meaningful components makes it an essential tool for data scientists and machine learning practitioners.
+
+By understanding the mathematical principles behind SVD and its relationship to other dimensionality reduction techniques like PCA, we can effectively apply it to solve complex problems across various domains.
+
+In practice, the choice between full SVD, truncated SVD, or randomized algorithms depends on the specific characteristics of the data and computational constraints. Modern implementations in libraries like SciPy and scikit-learn provide efficient algorithms that make SVD accessible for large-scale applications.
+
+The Python implementations demonstrated in this document provide a starting point for applying these techniques to your own data analysis and machine learning projects.
+
+## References
+
+1.  Jolliffe, I. T., & Cadima, J. (2016). Principal component analysis: a review and recent developments. Philosophical Transactions of the Royal Society A, 374(2065).
+2.  Van der Maaten, L., & Hinton, G. (2008). Visualizing data using t-SNE. Journal of Machine Learning Research, 9(11).
+3.  Pedregosa, F., et al. (2011). Scikit-learn: Machine Learning in Python. Journal of Machine Learning Research, 12, 2825-2830.
