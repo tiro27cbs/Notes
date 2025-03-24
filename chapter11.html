@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Variants of Recurrent Neural Networks (RNNs): LSTM, GRU, BiLSTM</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="chapter11_files/libs/clipboard/clipboard.min.js"></script>
+<script src="chapter11_files/libs/quarto-html/quarto.js"></script>
+<script src="chapter11_files/libs/quarto-html/popper.min.js"></script>
+<script src="chapter11_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="chapter11_files/libs/quarto-html/anchor.min.js"></script>
+<link href="chapter11_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="chapter11_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="chapter11_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="chapter11_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="chapter11_files/libs/bootstrap/bootstrap-1bc8a17f135ab3d594c857e9f48e611b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Variants of Recurrent Neural Networks (RNNs): LSTM, GRU, BiLSTM</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Recurrent Neural Networks (RNNs) are designed to work with sequential data such as time series, language, audio, and video. Unlike feedforward neural networks, RNNs maintain a “memory” of previous inputs using hidden states, allowing them to model temporal dependencies.</p>
+<p>However, traditional RNNs suffer from issues such as <strong>vanishing and exploding gradients</strong>, which makes it difficult for them to learn long-term dependencies. To solve this, several advanced architectures have been developed:</p>
+<ul>
+<li><strong>Long Short-Term Memory (LSTM)</strong></li>
+<li><strong>Gated Recurrent Units (GRU)</strong></li>
+<li><strong>Bidirectional LSTM (BiLSTM)</strong></li>
+</ul>
+<p>Each of these offers different trade-offs in terms of complexity, training time, and ability to capture temporal dependencies.</p>
+</section>
+<section id="long-short-term-memory-lstm" class="level2">
+<h2 class="anchored" data-anchor-id="long-short-term-memory-lstm">Long Short-Term Memory (LSTM)</h2>
+<section id="what-is-lstm" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-lstm">What is LSTM?</h3>
+<p>LSTM is a special kind of RNN capable of learning long-term dependencies. It was introduced in 1997 by Hochreiter and Schmidhuber. Unlike traditional RNNs, LSTM includes gates and a memory cell to control and maintain long-term information.</p>
+<p>Analogy:</p>
+<p>Imagine you’re reading a novel. You don’t remember every single word, but you store important details—like character relationships and major events—in your long-term memory (cell state). Other trivial details are forgotten. Your brain uses “gates” to decide what to remember and what to ignore.</p>
+</section>
+<section id="key-components" class="level3">
+<h3 class="anchored" data-anchor-id="key-components">Key Components:</h3>
+<p>Cell State (<span class="math inline">\(c_t\)</span>): Acts like a conveyor belt, carrying long-term information.</p>
+<p>Input Gate (<span class="math inline">\(i_t\)</span>): Controls how much new information should be added.</p>
+<p>Forget Gate (<span class="math inline">\(f_t\)</span>): Decides what information to discard.</p>
+<p>Output Gate (<span class="math inline">\(o_t\)</span>): Determines what information to pass to the next hidden state (<span class="math inline">\(h_t\)</span>).</p>
+</section>
+<section id="visual-diagram" class="level3">
+<h3 class="anchored" data-anchor-id="visual-diagram">Visual Diagram:</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="chapter11_lstm.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption>LSTM - Visual Representation</figcaption>
+</figure>
+</div>
+</section>
+<section id="mathematical-representation" class="level3">
+<h3 class="anchored" data-anchor-id="mathematical-representation">Mathematical Representation:</h3>
+<p>Forget gate: <span class="math inline">\(f_t = \sigma(W_f[h_{t-1}, x_t] + b_f)\)</span></p>
+<p>Input gate: <span class="math inline">\(i_t = \sigma(W_i[h_{t-1}, x_t] + b_i)\)</span></p>
+<p>Candidate memory: <span class="math inline">\(\tilde{c}t = \tanh(W_c[h{t-1}, x_t] + b_c)\)</span></p>
+<p>Updated cell state: <span class="math inline">\(c_t = f_t * c_{t-1} + i_t * \tilde{c}_t\)</span></p>
+<p>Output gate: <span class="math inline">\(o_t = \sigma(W_o[h_{t-1}, x_t] + b_o)\)</span></p>
+<p>Hidden state: <span class="math inline">\(h_t = o_t * \tanh(c_t)\)</span></p>
+<div id="7354d6f0" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow <span class="im">import</span> keras</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras <span class="im">import</span> layers</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate random training data</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>X_train <span class="op">=</span> np.random.rand(<span class="dv">100</span>, <span class="dv">10</span>, <span class="dv">1</span>)  <span class="co"># 100 samples, 10 time steps, 1 feature</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>y_train <span class="op">=</span> np.random.rand(<span class="dv">100</span>, <span class="dv">10</span>, <span class="dv">10</span>)  <span class="co"># 100 samples, 10 time steps, 10 output features</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the model</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> keras.models.Sequential([</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    layers.LSTM(<span class="dv">20</span>, return_sequences<span class="op">=</span><span class="va">True</span>, input_shape<span class="op">=</span>[<span class="va">None</span>, <span class="dv">1</span>]),</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    layers.LSTM(<span class="dv">20</span>, return_sequences<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    layers.TimeDistributed(layers.Dense(<span class="dv">10</span>))</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Compile the model</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> <span class="st">'adam'</span>  <span class="co"># Adaptive learning rate optimizer</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>loss <span class="op">=</span> <span class="st">'mean_squared_error'</span>  <span class="co"># Loss function for regression tasks</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(optimizer<span class="op">=</span>optimizer, loss<span class="op">=</span>loss)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Train the model</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>model.fit(X_train, y_train, epochs<span class="op">=</span><span class="dv">10</span>, batch_size<span class="op">=</span><span class="dv">32</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Epoch 1/10</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>C:\Users\roess\Documents\repos\Notes\myvenv312\Lib\site-packages\keras\src\layers\rnn\rnn.py:200: UserWarning:
+
+Do not pass an `input_shape`/`input_dim` argument to a layer. When using Sequential models, prefer using an `Input(shape)` object as the first layer in the model instead.
+</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>1/4 ━━━━━━━━━━━━━━━━━━━━ 6s 2s/step - loss: 0.33154/4 ━━━━━━━━━━━━━━━━━━━━ 2s 8ms/step - loss: 0.3278
+Epoch 2/10
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 29ms/step - loss: 0.30394/4 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - loss: 0.3076 
+Epoch 3/10
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 23ms/step - loss: 0.28474/4 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - loss: 0.2887 
+Epoch 4/10
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 20ms/step - loss: 0.27424/4 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - loss: 0.2710 
+Epoch 5/10
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 25ms/step - loss: 0.25474/4 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step - loss: 0.2515 
+Epoch 6/10
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 23ms/step - loss: 0.23244/4 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step - loss: 0.2290 
+Epoch 7/10
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 23ms/step - loss: 0.21264/4 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - loss: 0.2065 
+Epoch 8/10
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.18224/4 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - loss: 0.1824 
+Epoch 9/10
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 28ms/step - loss: 0.16644/4 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - loss: 0.1638 
+Epoch 10/10
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 23ms/step - loss: 0.14904/4 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - loss: 0.1511 </code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>&lt;keras.src.callbacks.history.History at 0x265a2bd6bd0&gt;</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="peephole-connections" class="level2">
+<h2 class="anchored" data-anchor-id="peephole-connections">Peephole Connections:</h2>
+<p>In traditional LSTM, the gates only depend on the current input and previous hidden state. In models with peephole connections, the gates can also consider the cell state. This allows for more precise control over the information flow, enhancing the model’s ability to learn long-term dependencies. This improvement can lead to better performance in tasks requiring the retention of information over extended sequences. Additionally, peephole connections can help mitigate the vanishing gradient problem, making it easier for the network to learn from longer sequences.</p>
+<p>Analogy: It’s like checking your entire calendar (cell state) before deciding whether to add a new event (input gate) or remove one (forget gate).</p>
+</section>
+<section id="gated-recurrent-units-gru" class="level2">
+<h2 class="anchored" data-anchor-id="gated-recurrent-units-gru">Gated Recurrent Units (GRU)</h2>
+<section id="what-is-gru" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-gru">What is GRU?</h3>
+<p>GRU is a simplified version of LSTM introduced by Cho et al.&nbsp;in 2014. It combines the forget and input gates into a single “update gate” and merges the cell state and hidden state. This reduces the number of parameters compared to LSTM, making GRU faster to train and less prone to overfitting.</p>
+<p>Analogy: It’s like having a simplified checklist that helps you decide what to keep and what to discard from your past experiences.</p>
+</section>
+<section id="key-components-1" class="level3">
+<h3 class="anchored" data-anchor-id="key-components-1">Key Components:</h3>
+<p>Update Gate (<span class="math inline">\(z_t\)</span>): Controls how much of the past information to keep.</p>
+<p>Reset Gate (<span class="math inline">\(r_t\)</span>): Decides how much of the past information to forget.</p>
+<p>Candidate Activation (<span class="math inline">\(\tilde{h}_t\)</span>): New candidate hidden state.</p>
+</section>
+<section id="visual-diagram-1" class="level3">
+<h3 class="anchored" data-anchor-id="visual-diagram-1">Visual Diagram:</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="chapter11_gru.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption>GRU - Visual Representation</figcaption>
+</figure>
+</div>
+</section>
+<section id="mathematical-representation-1" class="level3">
+<h3 class="anchored" data-anchor-id="mathematical-representation-1">Mathematical Representation:</h3>
+<p>Update gate: <span class="math inline">\(z_t = \sigma(W_z[h_{t-1}, x_t])\)</span></p>
+<p>Reset gate: <span class="math inline">\(r_t = \sigma(W_r[h_{t-1}, x_t])\)</span></p>
+<p>Candidate activation: <span class="math inline">\(\tilde{h}_t = \tanh(W[h_{t-1}, r_t * x_t])\)</span></p>
+<p>Hidden state: <span class="math inline">\(h_t = (1 - z_t) * h_{t-1} + z_t * \tilde{h}_t\)</span></p>
+<div id="1c117e0b" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> keras.models.Sequential([</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># input_shape=[None, 1]: 'None' represents variable time steps, and '1' represents one feature per time step</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Ensures the output is a sequence, allowing the next layer to process it</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    layers.GRU(<span class="dv">20</span>, return_sequences<span class="op">=</span><span class="va">True</span>, input_shape<span class="op">=</span>[<span class="va">None</span>, <span class="dv">1</span>]),</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    layers.GRU(<span class="dv">20</span>, return_sequences<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># TimeDistributed layer to apply a Dense layer to each time step.</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This ensures that the Dense layer is applied independently to each time step in the sequence.</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    layers.TimeDistributed(layers.Dense(<span class="dv">10</span>))</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="bidirectional-lstm-bilstm" class="level2">
+<h2 class="anchored" data-anchor-id="bidirectional-lstm-bilstm">Bidirectional LSTM (BiLSTM)</h2>
+<section id="what-is-bilstm" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-bilstm">What is BiLSTM?</h3>
+<p>BiLSTM is an extension of LSTM that processes the input sequence in both forward and backward directions. This allows the model to capture information from past and future contexts simultaneously, enhancing its ability to understand the sequence bidirectionally.</p>
+<p>Analogy: It’s like reading a book from both ends to get a complete understanding of the plot and characters.</p>
+</section>
+<section id="visual-diagram-2" class="level3">
+<h3 class="anchored" data-anchor-id="visual-diagram-2">Visual Diagram:</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="chapter11_bilstm.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption>BiLSTM - Visual Representation</figcaption>
+</figure>
+</div>
+</section>
+<section id="architecture" class="level3">
+<h3 class="anchored" data-anchor-id="architecture">Architecture:</h3>
+<ul>
+<li>Two LSTM layers: One processes the sequence from the beginning, and the other from the end.</li>
+<li>Concatenation: The outputs from both directions are combined at each time step.</li>
+</ul>
+<div id="7a5da988" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> keras.models.Sequential([</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    layers.Bidirectional(layers.LSTM(<span class="dv">20</span>, return_sequences<span class="op">=</span><span class="va">True</span>), input_shape<span class="op">=</span>[<span class="va">None</span>, <span class="dv">1</span>]),</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    layers.Bidirectional(layers.LSTM(<span class="dv">20</span>, return_sequences<span class="op">=</span><span class="va">True</span>)),</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    layers.TimeDistributed(layers.Dense(<span class="dv">10</span>))</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>C:\Users\roess\Documents\repos\Notes\myvenv312\Lib\site-packages\keras\src\layers\rnn\bidirectional.py:107: UserWarning:
+
+Do not pass an `input_shape`/`input_dim` argument to a layer. When using Sequential models, prefer using an `Input(shape)` object as the first layer in the model instead.
+</code></pre>
+</div>
+</div>
+</section>
+<section id="applications" class="level3">
+<h3 class="anchored" data-anchor-id="applications">Applications:</h3>
+<ul>
+<li>Speech recognition</li>
+<li>Named entity recognition</li>
+<li>Machine translation</li>
+</ul>
+</section>
+<section id="comparison-table" class="level3">
+<h3 class="anchored" data-anchor-id="comparison-table">Comparison Table:</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 26%">
+<col style="width: 24%">
+<col style="width: 24%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Feature</th>
+<th>LSTM</th>
+<th>GRU</th>
+<th>BiLSTM</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Architecture</td>
+<td>3 gates (input, forget, output)</td>
+<td>2 gates (update, reset)</td>
+<td>4 gates (2 forward, 2 backward)</td>
+</tr>
+<tr class="even">
+<td>Complexity</td>
+<td>High</td>
+<td>Medium</td>
+<td>Very High</td>
+</tr>
+<tr class="odd">
+<td>Training Speed</td>
+<td>Slow</td>
+<td>Fast</td>
+<td>Slow</td>
+</tr>
+<tr class="even">
+<td>Performance</td>
+<td>Long sequences</td>
+<td>Small datasets</td>
+<td>Bidirectional tasks</td>
+</tr>
+<tr class="odd">
+<td>Overfitting</td>
+<td>Less prone</td>
+<td>More prone</td>
+<td>Less prone</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>LSTM, GRU, and BiLSTM each have unique strengths:</p>
+<ul>
+<li>LSTM is effective for learning long-term dependencies.</li>
+<li>GRU is simpler, faster, and less prone to overfitting.</li>
+<li>BiLSTM captures bidirectional context for improved understanding.</li>
+</ul>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

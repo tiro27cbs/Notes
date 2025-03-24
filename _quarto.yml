@@ -5,6 +5,7 @@ book:
   title: "Machine Learning and Deep Learning Notes"
   author: "Tim Rößling"
   date: "18.3.2025"
+  search: true
   chapters:
     - index.qmd
     - intro.qmd
