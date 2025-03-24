@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Autoencoders</title>
+<title>14&nbsp; Autoencoders – Machine Learning and Deep Learning Notes</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -57,29 +57,233 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="chapter12_files/libs/clipboard/clipboard.min.js"></script>
-<script src="chapter12_files/libs/quarto-html/quarto.js"></script>
-<script src="chapter12_files/libs/quarto-html/popper.min.js"></script>
-<script src="chapter12_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="chapter12_files/libs/quarto-html/anchor.min.js"></script>
-<link href="chapter12_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="chapter12_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="chapter12_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="chapter12_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="chapter12_files/libs/bootstrap/bootstrap-1bc8a17f135ab3d594c857e9f48e611b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./summary.html" rel="next">
+<link href="./chapter11.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-8da5b4427184b79ecddefad3d342027e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
 
 
 </head>
 
-<body class="fullcontent">
+<body class="nav-sidebar floating">
 
-<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapter12.html"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Autoencoders</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Machine Learning and Deep Learning Notes</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">🚀 Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Fundamentals of Machine Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Building an End-to-End Machine Learning Pipeline</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Unsupervised Learning: Clustering Techniques</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Supervised Learning: Regression and Classification</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Dimensionality Reduction Methods</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Tree-Based Models and Ensemble Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter6v2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Support Vector Machines and Model Evaluation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Outlier Detection and Recommendation Systems</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter8.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Gradient Descent: Optimization in Machine Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Neural Networks and Deep Learning Foundations</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Batch Normalization, RNN, Distributed Deep Learning and Tensorflow</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Variants of Recurrent Neural Networks (RNNs): LSTM, GRU, BiLSTM</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter12.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Autoencoders</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link active" data-scroll-target="#prerequisites"><span class="header-section-number">14.1</span> Prerequisites</a></li>
+  <li><a href="#conceptual-overview" id="toc-conceptual-overview" class="nav-link" data-scroll-target="#conceptual-overview"><span class="header-section-number">14.2</span> Conceptual Overview</a>
+  <ul class="collapse">
+  <li><a href="#why-use-autoencoders" id="toc-why-use-autoencoders" class="nav-link" data-scroll-target="#why-use-autoencoders"><span class="header-section-number">14.2.1</span> Why Use Autoencoders?</a></li>
+  <li><a href="#architecture" id="toc-architecture" class="nav-link" data-scroll-target="#architecture"><span class="header-section-number">14.2.2</span> Architecture</a></li>
+  <li><a href="#visual-diagram" id="toc-visual-diagram" class="nav-link" data-scroll-target="#visual-diagram"><span class="header-section-number">14.2.3</span> Visual Diagram</a></li>
+  <li><a href="#undercomplete-autoencoders" id="toc-undercomplete-autoencoders" class="nav-link" data-scroll-target="#undercomplete-autoencoders"><span class="header-section-number">14.2.4</span> Undercomplete Autoencoders</a></li>
+  <li><a href="#stacked-autoencoders" id="toc-stacked-autoencoders" class="nav-link" data-scroll-target="#stacked-autoencoders"><span class="header-section-number">14.2.5</span> Stacked Autoencoders</a></li>
+  <li><a href="#visual-diagram-1" id="toc-visual-diagram-1" class="nav-link" data-scroll-target="#visual-diagram-1"><span class="header-section-number">14.2.6</span> Visual Diagram</a></li>
+  </ul></li>
+  <li><a href="#convolutional-autoencoders" id="toc-convolutional-autoencoders" class="nav-link" data-scroll-target="#convolutional-autoencoders"><span class="header-section-number">14.3</span> Convolutional Autoencoders</a>
+  <ul class="collapse">
+  <li><a href="#architecture-1" id="toc-architecture-1" class="nav-link" data-scroll-target="#architecture-1"><span class="header-section-number">14.3.1</span> Architecture</a></li>
+  </ul></li>
+  <li><a href="#recurrent-autoencoders" id="toc-recurrent-autoencoders" class="nav-link" data-scroll-target="#recurrent-autoencoders"><span class="header-section-number">14.4</span> Recurrent Autoencoders</a>
+  <ul class="collapse">
+  <li><a href="#architecture-2" id="toc-architecture-2" class="nav-link" data-scroll-target="#architecture-2"><span class="header-section-number">14.4.1</span> Architecture</a></li>
+  </ul></li>
+  <li><a href="#denoising-autoencoders" id="toc-denoising-autoencoders" class="nav-link" data-scroll-target="#denoising-autoencoders"><span class="header-section-number">14.5</span> Denoising Autoencoders</a>
+  <ul class="collapse">
+  <li><a href="#architecture-3" id="toc-architecture-3" class="nav-link" data-scroll-target="#architecture-3"><span class="header-section-number">14.5.1</span> Architecture</a></li>
+  </ul></li>
+  <li><a href="#comparison-table" id="toc-comparison-table" class="nav-link" data-scroll-target="#comparison-table"><span class="header-section-number">14.6</span> Comparison Table</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Autoencoders</h1>
+<h1 class="title"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Autoencoders</span></h1>
 </div>
 
 
@@ -96,15 +300,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="prerequisites" class="level2">
-<h2 class="anchored" data-anchor-id="prerequisites">Prerequisites</h2>
+<section id="prerequisites" class="level2" data-number="14.1">
+<h2 data-number="14.1" class="anchored" data-anchor-id="prerequisites"><span class="header-section-number">14.1</span> Prerequisites</h2>
 <p>Before running the code examples in this document, ensure you have TensorFlow installed. You can install it using the following command:</p>
 </section>
-<section id="conceptual-overview" class="level2">
-<h2 class="anchored" data-anchor-id="conceptual-overview">Conceptual Overview</h2>
+<section id="conceptual-overview" class="level2" data-number="14.2">
+<h2 data-number="14.2" class="anchored" data-anchor-id="conceptual-overview"><span class="header-section-number">14.2</span> Conceptual Overview</h2>
 <p>Analogy: Autoencoders can be thought of as a way to compress and then decompress data, similar to how a zip file reduces the size of files for storage and later restores them to their original form.</p>
-<section id="why-use-autoencoders" class="level3">
-<h3 class="anchored" data-anchor-id="why-use-autoencoders">Why Use Autoencoders?</h3>
+<section id="why-use-autoencoders" class="level3" data-number="14.2.1">
+<h3 data-number="14.2.1" class="anchored" data-anchor-id="why-use-autoencoders"><span class="header-section-number">14.2.1</span> Why Use Autoencoders?</h3>
 <ol type="1">
 <li><p><strong>Dimensionality Reduction</strong>: Autoencoders can reduce the dimensionality of the input data, which is useful for visualization, feature extraction, and denoising.</p></li>
 <li><p><strong>Anomaly Detection</strong>: By learning the normal patterns in the data, autoencoders can detect anomalies or outliers.</p></li>
@@ -112,16 +316,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p><strong>Extract Meaningful Features</strong>: The compressed representation can capture meaningful features of the input data.</p></li>
 </ol>
 </section>
-<section id="architecture" class="level3">
-<h3 class="anchored" data-anchor-id="architecture">Architecture</h3>
+<section id="architecture" class="level3" data-number="14.2.2">
+<h3 data-number="14.2.2" class="anchored" data-anchor-id="architecture"><span class="header-section-number">14.2.2</span> Architecture</h3>
 <p>An autoencoder consists of two main components:</p>
 <ol type="1">
 <li><p><strong>Encoder</strong>: This part of the network compresses the input data into a latent-space representation.</p></li>
 <li><p><strong>Decoder</strong>: This part reconstructs the input data from the compressed representation.</p></li>
 </ol>
 </section>
-<section id="visual-diagram" class="level3">
-<h3 class="anchored" data-anchor-id="visual-diagram">Visual Diagram</h3>
+<section id="visual-diagram" class="level3" data-number="14.2.3">
+<h3 data-number="14.2.3" class="anchored" data-anchor-id="visual-diagram"><span class="header-section-number">14.2.3</span> Visual Diagram</h3>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="chapter12_autoencoder.png" class="img-fluid figure-img" style="width:80.0%"></p>
@@ -129,11 +333,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </figure>
 </div>
 </section>
-<section id="undercomplete-autoencoders" class="level3">
-<h3 class="anchored" data-anchor-id="undercomplete-autoencoders">Undercomplete Autoencoders</h3>
+<section id="undercomplete-autoencoders" class="level3" data-number="14.2.4">
+<h3 data-number="14.2.4" class="anchored" data-anchor-id="undercomplete-autoencoders"><span class="header-section-number">14.2.4</span> Undercomplete Autoencoders</h3>
 <p>An undercomplete autoencoder is one where the dimensionality of the latent space is lower than the input space. This forces the autoencoder to learn a compressed representation of the data.</p>
 <p>PCA Analogy: If only using linear layers and MSE loss, an undercomplete autoencoder behaves like Principal Component Analysis (PCA).</p>
-<div id="1434bca6" class="cell" data-execution_count="1">
+<div id="c01842c5" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow <span class="im">import</span> keras</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras <span class="im">import</span> layers</span>
@@ -153,66 +357,66 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>autoencoder.fit(x_train, x_train, epochs<span class="op">=</span><span class="dv">20</span>, batch_size<span class="op">=</span><span class="dv">256</span>, validation_split<span class="op">=</span><span class="fl">0.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Epoch 1/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 1s 573ms/step - loss: 0.08534/4 ━━━━━━━━━━━━━━━━━━━━ 1s 48ms/step - loss: 0.0846 - val_loss: 0.0832
+1/4 ━━━━━━━━━━━━━━━━━━━━ 1s 466ms/step - loss: 0.08564/4 ━━━━━━━━━━━━━━━━━━━━ 1s 41ms/step - loss: 0.0847 - val_loss: 0.0834
 Epoch 2/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 23ms/step - loss: 0.08324/4 ━━━━━━━━━━━━━━━━━━━━ 0s 22ms/step - loss: 0.0833 - val_loss: 0.0831
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08374/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0835 - val_loss: 0.0834
 Epoch 3/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 23ms/step - loss: 0.08344/4 ━━━━━━━━━━━━━━━━━━━━ 0s 22ms/step - loss: 0.0832 - val_loss: 0.0831
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08324/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0834 - val_loss: 0.0834
 Epoch 4/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 28ms/step - loss: 0.08314/4 ━━━━━━━━━━━━━━━━━━━━ 0s 22ms/step - loss: 0.0831 - val_loss: 0.0831
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08364/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0835 - val_loss: 0.0834
 Epoch 5/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 22ms/step - loss: 0.08314/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0831 - val_loss: 0.0831
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08344/4 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 0.0834 - val_loss: 0.0834
 Epoch 6/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 25ms/step - loss: 0.08324/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0832 - val_loss: 0.0831
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 20ms/step - loss: 0.08344/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0834 - val_loss: 0.0834
 Epoch 7/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 24ms/step - loss: 0.08294/4 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 0.0831 - val_loss: 0.0831
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 20ms/step - loss: 0.08344/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0834 - val_loss: 0.0834
 Epoch 8/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.08344/4 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step - loss: 0.0832 - val_loss: 0.0831
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 23ms/step - loss: 0.08364/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0835 - val_loss: 0.0834
 Epoch 9/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 24ms/step - loss: 0.08344/4 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 0.0832 - val_loss: 0.0831
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08384/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0835 - val_loss: 0.0834
 Epoch 10/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 24ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step - loss: 0.0832 - val_loss: 0.0831
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08324/4 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 0.0834 - val_loss: 0.0834
 Epoch 11/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 26ms/step - loss: 0.08294/4 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 0.0831 - val_loss: 0.0831
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 20ms/step - loss: 0.08344/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0834 - val_loss: 0.0834
 Epoch 12/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.08314/4 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step - loss: 0.0831 - val_loss: 0.0831
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 20ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0834 - val_loss: 0.0834
 Epoch 13/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 0.08304/4 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step - loss: 0.0831 - val_loss: 0.0831
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 23ms/step - loss: 0.08344/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0834 - val_loss: 0.0834
 Epoch 14/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 24ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step - loss: 0.0832 - val_loss: 0.0831
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08314/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0833 - val_loss: 0.0834
 Epoch 15/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 25ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 0.0832 - val_loss: 0.0831
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0834 - val_loss: 0.0834
 Epoch 16/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 25ms/step - loss: 0.08324/4 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step - loss: 0.0832 - val_loss: 0.0832
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 20ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 0.0834 - val_loss: 0.0834
 Epoch 17/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 15ms/step - loss: 0.08314/4 ━━━━━━━━━━━━━━━━━━━━ 0s 20ms/step - loss: 0.0831 - val_loss: 0.0832
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0834 - val_loss: 0.0834
 Epoch 18/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 23ms/step - loss: 0.08324/4 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step - loss: 0.0831 - val_loss: 0.0831
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08344/4 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 0.0834 - val_loss: 0.0834
 Epoch 19/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 24ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0831 - val_loss: 0.0831
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 20ms/step - loss: 0.08344/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0834 - val_loss: 0.0834
 Epoch 20/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 0.08304/4 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step - loss: 0.0831 - val_loss: 0.0832</code></pre>
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08344/4 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 0.0834 - val_loss: 0.0834</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="3">
-<pre><code>&lt;keras.src.callbacks.history.History at 0x1a03a05b1d0&gt;</code></pre>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>&lt;keras.src.callbacks.history.History at 0x20192fc9d60&gt;</code></pre>
 </div>
 </div>
 </section>
-<section id="stacked-autoencoders" class="level3">
-<h3 class="anchored" data-anchor-id="stacked-autoencoders">Stacked Autoencoders</h3>
+<section id="stacked-autoencoders" class="level3" data-number="14.2.5">
+<h3 data-number="14.2.5" class="anchored" data-anchor-id="stacked-autoencoders"><span class="header-section-number">14.2.5</span> Stacked Autoencoders</h3>
 <p><strong>Why Stack Layers?</strong> - By stacking multiple layers, the autoencoder can learn more complex representations of the input data.</p>
 <p><strong>Architecture:</strong></p>
 <p>An autoencodr for MNIST have the following architecture: - Input: 784 (28x28) pixels - Hidden Layer: 100 neurons - Central Layer: 30 neurons - Hidden Layer: 100 neurons - Output: 784 (28x28) pixels</p>
 </section>
-<section id="visual-diagram-1" class="level3">
-<h3 class="anchored" data-anchor-id="visual-diagram-1">Visual Diagram</h3>
+<section id="visual-diagram-1" class="level3" data-number="14.2.6">
+<h3 data-number="14.2.6" class="anchored" data-anchor-id="visual-diagram-1"><span class="header-section-number">14.2.6</span> Visual Diagram</h3>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="chapter12_stacked_autoencoder.png" class="img-fluid figure-img" style="width:80.0%"></p>
 <figcaption>Stacked Autoencoder - Visual Representation</figcaption>
 </figure>
 </div>
-<div id="27bb7cde" class="cell" data-execution_count="2">
+<div id="e270be56" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow <span class="im">import</span> keras</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras <span class="im">import</span> layers</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -229,87 +433,87 @@ Epoch 20/20
 <span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>autoencoder.fit(x_train, x_train, epochs<span class="op">=</span><span class="dv">20</span>, batch_size<span class="op">=</span><span class="dv">256</span>, validation_split<span class="op">=</span><span class="fl">0.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Epoch 1/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 2s 697ms/step - loss: 0.08414/4 ━━━━━━━━━━━━━━━━━━━━ 1s 49ms/step - loss: 0.0837 - val_loss: 0.0832
+1/4 ━━━━━━━━━━━━━━━━━━━━ 1s 617ms/step - loss: 0.08444/4 ━━━━━━━━━━━━━━━━━━━━ 1s 43ms/step - loss: 0.0840 - val_loss: 0.0834
 Epoch 2/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 25ms/step - loss: 0.08324/4 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step - loss: 0.0832 - val_loss: 0.0832
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08374/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0835 - val_loss: 0.0834
 Epoch 3/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 25ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step - loss: 0.0832 - val_loss: 0.0832
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08354/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0835 - val_loss: 0.0834
 Epoch 4/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 24ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step - loss: 0.0832 - val_loss: 0.0832
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 22ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0834 - val_loss: 0.0834
 Epoch 5/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 24ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step - loss: 0.0832 - val_loss: 0.0831
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 23ms/step - loss: 0.08354/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0835 - val_loss: 0.0834
 Epoch 6/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 25ms/step - loss: 0.08314/4 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step - loss: 0.0831 - val_loss: 0.0832
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 22ms/step - loss: 0.08354/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0835 - val_loss: 0.0834
 Epoch 7/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 25ms/step - loss: 0.08304/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.0831 - val_loss: 0.0832
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 20ms/step - loss: 0.08354/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0834 - val_loss: 0.0834
 Epoch 8/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step - loss: 0.08314/4 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step - loss: 0.0831 - val_loss: 0.0831
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 22ms/step - loss: 0.08354/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0834 - val_loss: 0.0835
 Epoch 9/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 0.08304/4 ━━━━━━━━━━━━━━━━━━━━ 0s 22ms/step - loss: 0.0830 - val_loss: 0.0832
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08354/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0834 - val_loss: 0.0834
 Epoch 10/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 25ms/step - loss: 0.08314/4 ━━━━━━━━━━━━━━━━━━━━ 0s 20ms/step - loss: 0.0830 - val_loss: 0.0832
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0833 - val_loss: 0.0834
 Epoch 11/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08314/4 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step - loss: 0.0830 - val_loss: 0.0832
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 22ms/step - loss: 0.08344/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0834 - val_loss: 0.0834
 Epoch 12/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 24ms/step - loss: 0.08324/4 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step - loss: 0.0830 - val_loss: 0.0832
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 23ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0833 - val_loss: 0.0834
 Epoch 13/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 26ms/step - loss: 0.08284/4 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step - loss: 0.0829 - val_loss: 0.0831
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08354/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0833 - val_loss: 0.0834
 Epoch 14/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 25ms/step - loss: 0.08294/4 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step - loss: 0.0829 - val_loss: 0.0831
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0833 - val_loss: 0.0834
 Epoch 15/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 24ms/step - loss: 0.08294/4 ━━━━━━━━━━━━━━━━━━━━ 0s 20ms/step - loss: 0.0828 - val_loss: 0.0831
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 23ms/step - loss: 0.08324/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0832 - val_loss: 0.0834
 Epoch 16/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 25ms/step - loss: 0.08274/4 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step - loss: 0.0827 - val_loss: 0.0831
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 23ms/step - loss: 0.08304/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0831 - val_loss: 0.0834
 Epoch 17/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 24ms/step - loss: 0.08254/4 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step - loss: 0.0826 - val_loss: 0.0831
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 20ms/step - loss: 0.08314/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0832 - val_loss: 0.0834
 Epoch 18/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 25ms/step - loss: 0.08274/4 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step - loss: 0.0826 - val_loss: 0.0831
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08314/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0831 - val_loss: 0.0834
 Epoch 19/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 25ms/step - loss: 0.08264/4 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step - loss: 0.0825 - val_loss: 0.0831
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08314/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0831 - val_loss: 0.0834
 Epoch 20/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 33ms/step - loss: 0.08274/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.0824 - val_loss: 0.0831</code></pre>
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 23ms/step - loss: 0.08324/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0831 - val_loss: 0.0834</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="4">
-<pre><code>&lt;keras.src.callbacks.history.History at 0x1a03a142f60&gt;</code></pre>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<pre><code>&lt;keras.src.callbacks.history.History at 0x201958eb2c0&gt;</code></pre>
 </div>
 </div>
 </section>
 </section>
-<section id="convolutional-autoencoders" class="level2">
-<h2 class="anchored" data-anchor-id="convolutional-autoencoders">Convolutional Autoencoders</h2>
+<section id="convolutional-autoencoders" class="level2" data-number="14.3">
+<h2 data-number="14.3" class="anchored" data-anchor-id="convolutional-autoencoders"><span class="header-section-number">14.3</span> Convolutional Autoencoders</h2>
 <p>Convolutional autoencoders are used for image data and leverage convolutional layers for encoding and decoding. They are particularly effective for capturing spatial patterns in images.</p>
-<section id="architecture-1" class="level3">
-<h3 class="anchored" data-anchor-id="architecture-1">Architecture</h3>
+<section id="architecture-1" class="level3" data-number="14.3.1">
+<h3 data-number="14.3.1" class="anchored" data-anchor-id="architecture-1"><span class="header-section-number">14.3.1</span> Architecture</h3>
 <ol type="1">
 <li><strong>Encoder</strong>: This part of the network uses convolutional layers to compress the input image into a latent-space representation.</li>
 <li><strong>Decoder</strong>: This part reconstructs the input image from the compressed representation using transposed convolutional layers.</li>
 </ol>
 </section>
 </section>
-<section id="recurrent-autoencoders" class="level2">
-<h2 class="anchored" data-anchor-id="recurrent-autoencoders">Recurrent Autoencoders</h2>
+<section id="recurrent-autoencoders" class="level2" data-number="14.4">
+<h2 data-number="14.4" class="anchored" data-anchor-id="recurrent-autoencoders"><span class="header-section-number">14.4</span> Recurrent Autoencoders</h2>
 <p>Recurrent autoencoders are used for sequential data, such as time series or text. They leverage recurrent neural networks (RNNs) or long short-term memory (LSTM) networks for encoding and decoding sequential data.</p>
-<section id="architecture-2" class="level3">
-<h3 class="anchored" data-anchor-id="architecture-2">Architecture</h3>
+<section id="architecture-2" class="level3" data-number="14.4.1">
+<h3 data-number="14.4.1" class="anchored" data-anchor-id="architecture-2"><span class="header-section-number">14.4.1</span> Architecture</h3>
 <ol type="1">
 <li><p><strong>Encoder</strong>: This part of the network uses RNN or LSTM layers to compress the sequential input data into a latent-space representation.</p></li>
 <li><p><strong>Decoder</strong>: This part reconstructs the input sequence from the compressed representation using RNN or LSTM layers.</p></li>
 </ol>
 </section>
 </section>
-<section id="denoising-autoencoders" class="level2">
-<h2 class="anchored" data-anchor-id="denoising-autoencoders">Denoising Autoencoders</h2>
+<section id="denoising-autoencoders" class="level2" data-number="14.5">
+<h2 data-number="14.5" class="anchored" data-anchor-id="denoising-autoencoders"><span class="header-section-number">14.5</span> Denoising Autoencoders</h2>
 <p>Denoising autoencoders are trained to remove noise from the input data. They are useful for learning robust representations of the data.</p>
-<section id="architecture-3" class="level3">
-<h3 class="anchored" data-anchor-id="architecture-3">Architecture</h3>
+<section id="architecture-3" class="level3" data-number="14.5.1">
+<h3 data-number="14.5.1" class="anchored" data-anchor-id="architecture-3"><span class="header-section-number">14.5.1</span> Architecture</h3>
 <ol type="1">
 <li><p><strong>Training</strong>: The autoencoder is trained on noisy input data and learns to reconstruct the clean input data.</p></li>
 <li><p><strong>Loss Function</strong>: The loss function used during training is typically Mean Squared Error (MSE), which measures the difference between the input and the reconstructed output.</p></li>
 </ol>
 </section>
 </section>
-<section id="comparison-table" class="level2">
-<h2 class="anchored" data-anchor-id="comparison-table">Comparison Table</h2>
+<section id="comparison-table" class="level2" data-number="14.6">
+<h2 data-number="14.6" class="anchored" data-anchor-id="comparison-table"><span class="header-section-number">14.6</span> Comparison Table</h2>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 30%">
@@ -356,10 +560,11 @@ Epoch 20/20
 </tr>
 </tbody>
 </table>
+
+
 </section>
 
-</main>
-<!-- /main column -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -777,6 +982,18 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./chapter11.html" class="pagination-link" aria-label="Variants of Recurrent Neural Networks (RNNs): LSTM, GRU, BiLSTM">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Variants of Recurrent Neural Networks (RNNs): LSTM, GRU, BiLSTM</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./summary.html" class="pagination-link" aria-label="Summary">
+        <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Summary</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
 </div> <!-- /content -->
 
 

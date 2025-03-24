@@ -249,8 +249,20 @@ window.Quarto = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./chapter11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Variants of Recurrent Neural Networks (RNNs): LSTM, GRU, BiLSTM</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Autoencoders</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./summary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -367,7 +379,7 @@ Why Outlier Detection Matters
 <li><strong>Scatterplots</strong>: Useful for detecting complex patterns in two-variable datasets</li>
 <li><strong>Histograms</strong>: Help identify values that fall outside the typical distribution</li>
 </ul>
-<div id="7cc37093" class="cell" data-execution_count="1">
+<div id="61da551d" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
@@ -426,7 +438,7 @@ Why Outlier Detection Matters
 <li>Any value above Q3 + 1.5 × IQR or below Q1 - 1.5 × IQR is considered an outlier.</li>
 </ul>
 <p>This method is robust to extreme values and doesn’t assume a specific distribution, making it widely applicable.</p>
-<div id="5602ea86" class="cell" data-execution_count="2">
+<div id="927a0235" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Find outliers using the IQR method</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> find_outliers_iqr(data):</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    q1 <span class="op">=</span> np.percentile(data, <span class="dv">25</span>)</span>
@@ -466,7 +478,7 @@ Bounds (lower, upper): (np.float64(-2.260417817278694), np.float64(2.16423595926
 <li><strong>Density-Based Clustering</strong> (e.g., DBSCAN): Outliers are data points that remain unassigned to clusters</li>
 <li><strong>Hierarchical Clustering</strong>: Outliers take longer to merge with other groups, making them distinguishable</li>
 </ul>
-<div id="e9baae9e" class="cell" data-execution_count="3">
+<div id="888b0f24" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.cluster <span class="im">import</span> KMeans</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> make_blobs</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -529,7 +541,7 @@ Bounds (lower, upper): (np.float64(-2.260417817278694), np.float64(2.16423595926
 <li>If the ratio exceeds 1, the point is flagged as an outlier</li>
 <li>This approach can detect local outliers in datasets with varying densities</li>
 </ol>
-<div id="3eaf8b4a" class="cell" data-execution_count="4">
+<div id="3fbc418a" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.neighbors <span class="im">import</span> NearestNeighbors</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate sample 2D data</span></span>
@@ -591,7 +603,7 @@ Bounds (lower, upper): (np.float64(-2.260417817278694), np.float64(2.16423595926
 </ul></li>
 </ol>
 <p>The anomaly score is calculated based on the path length to isolate a point. Outliers typically have shorter path lengths.</p>
-<div id="63aa7cb8" class="cell" data-execution_count="5">
+<div id="3a8c6295" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> IsolationForest</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate sample data with outliers</span></span>
@@ -711,7 +723,7 @@ Business Impact of Recommender Systems
 <section id="user-product-matrix" class="level2" data-number="10.3">
 <h2 data-number="10.3" class="anchored" data-anchor-id="user-product-matrix"><span class="header-section-number">10.3</span> User-Product Matrix</h2>
 <p>The user-product matrix represents users as rows and products as columns, with entries indicating purchases or ratings. This matrix is the foundation of many recommendation algorithms.</p>
-<div id="e3a16600" class="cell" data-execution_count="6">
+<div id="4de5f6c4" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a sample user-item matrix</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>users <span class="op">=</span> [<span class="st">'User1'</span>, <span class="st">'User2'</span>, <span class="st">'User3'</span>, <span class="st">'User4'</span>, <span class="st">'User5'</span>]</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>items <span class="op">=</span> [<span class="st">'Item1'</span>, <span class="st">'Item2'</span>, <span class="st">'Item3'</span>, <span class="st">'Item4'</span>, <span class="st">'Item5'</span>]</span>
@@ -768,7 +780,7 @@ User5    5.0    2.0    4.0    2.0    5.0</code></pre>
 <li>This ensures that recommendations reflect the relative popularity of a product rather than absolute purchase counts</li>
 <li>Products bought by similar users are considered more alike</li>
 </ul>
-<div id="a13246f7" class="cell" data-execution_count="7">
+<div id="72265737" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics.pairwise <span class="im">import</span> cosine_similarity</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute item-item similarity matrix</span></span>
@@ -841,7 +853,7 @@ Name: Item1, dtype: float64</code></pre>
 <p><strong>Mathematical Formulation:</strong> For a user-item matrix <span class="math inline">\(R\)</span> with users <span class="math inline">\(u\)</span> and items <span class="math inline">\(i\)</span>, matrix factorization finds matrices <span class="math inline">\(P\)</span> and <span class="math inline">\(Q\)</span> such that:</p>
 <p><span class="math inline">\(R \approx P \times Q^T\)</span></p>
 <p>Where <span class="math inline">\(P\)</span> represents user vectors and <span class="math inline">\(Q\)</span> represents item vectors in the latent space.</p>
-<div id="e8a5f461" class="cell" data-execution_count="8">
+<div id="1f82ee39" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> NMF</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Fill missing values with zeros for demonstration</span></span>
@@ -1001,7 +1013,7 @@ User5    4.9    1.5    4.5    3.3    3.5</code></pre>
 <li>Tomek links removal</li>
 <li>Near-miss algorithm</li>
 </ul>
-<div id="4ed17bc9" class="cell" data-execution_count="9">
+<div id="be128a1f" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> make_classification</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> imblearn.over_sampling <span class="im">import</span> SMOTE, ADASYN</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> Counter</span>
@@ -1084,7 +1096,7 @@ ADASYN class distribution: Counter({np.int64(1): 4519, np.int64(0): 4500})</code
 <li>Can introduce noise if not carefully applied</li>
 <li>May exacerbate the problem of overlapping class distributions</li>
 </ul>
-<div id="18a380cb" class="cell" data-execution_count="10">
+<div id="ec0cc1fd" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestClassifier</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> classification_report, confusion_matrix, roc_curve, auc</span>

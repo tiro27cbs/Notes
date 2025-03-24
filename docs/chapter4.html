@@ -249,8 +249,20 @@ window.Quarto = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./chapter11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Variants of Recurrent Neural Networks (RNNs): LSTM, GRU, BiLSTM</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Autoencoders</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./summary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -330,7 +342,7 @@ window.Quarto = {
 </header>
 
 
-<div id="9f93b285" class="cell" data-execution_count="1">
+<div id="8f0403e7" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Import necessary libraries for examples</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -381,7 +393,7 @@ Tip
 <li>For regression: Take the average of the K neighbors’ values</li>
 </ul></li>
 </ol>
-<div id="2e861581" class="cell" data-execution_count="2">
+<div id="30328c08" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example: KNN Classification with Iris dataset</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>iris <span class="op">=</span> load_iris()</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>X, y <span class="op">=</span> iris.data, iris.target</span>
@@ -447,7 +459,7 @@ Tip
 <section id="choosing-k-value" class="level3" data-number="5.2.4">
 <h3 data-number="5.2.4" class="anchored" data-anchor-id="choosing-k-value"><span class="header-section-number">5.2.4</span> Choosing K Value</h3>
 <p>The value of K is critical: - Small K (e.g., K=1): High flexibility, potential overfitting - Large K: Smoother decision boundary, potential underfitting - For classification problems, use an odd K to avoid ties</p>
-<div id="101619cc" class="cell" data-execution_count="3">
+<div id="b8adcf06" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example: Effect of K value on KNN classifier performance</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>k_values <span class="op">=</span> <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">30</span>, <span class="dv">2</span>))</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>train_accuracy <span class="op">=</span> []</span>
@@ -546,7 +558,7 @@ Tip
 <li><span class="math inline">\(x_i\)</span> are the input features</li>
 </ul></li>
 </ul>
-<div id="36539fa7" class="cell" data-execution_count="4">
+<div id="379fbdaf" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example: Simple Linear Regression</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate synthetic data</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
@@ -658,7 +670,7 @@ Tip
 <p>The logistic (sigmoid) function transforms a linear equation into a probability between 0 and 1:</p>
 <p><span class="math display">\[P(y=1|X) = \frac{1}{1 + e^{-(b + w_1x_1 + w_2x_2 + \ldots + w_nx_n)}}\]</span></p>
 <p>Where: - <span class="math inline">\(P(y=1|X)\)</span> is the probability of the positive class - <span class="math inline">\(b\)</span> is the bias term (intercept) - <span class="math inline">\(w_i\)</span> are the weights for each feature - <span class="math inline">\(x_i\)</span> are the input features</p>
-<div id="c2ee094f" class="cell" data-execution_count="5">
+<div id="7c32ed4b" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example: Logistic Regression</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate classification dataset</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>X, y <span class="op">=</span> make_classification(n_samples<span class="op">=</span><span class="dv">100</span>, n_features<span class="op">=</span><span class="dv">2</span>, n_redundant<span class="op">=</span><span class="dv">0</span>, </span>
@@ -770,7 +782,7 @@ weighted avg       1.00      1.00      1.00        30
 <section id="regularization" class="level3" data-number="5.4.6">
 <h3 data-number="5.4.6" class="anchored" data-anchor-id="regularization"><span class="header-section-number">5.4.6</span> Regularization</h3>
 <p>Logistic regression can benefit from regularization to prevent overfitting: - <strong>L1 Regularization (Lasso)</strong>: Adds absolute value of coefficients to loss function - <strong>L2 Regularization (Ridge)</strong>: Adds squared value of coefficients to loss function</p>
-<div id="16ccebce" class="cell" data-execution_count="6">
+<div id="f0b8ce5b" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example: Logistic Regression with Regularization</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Comparing different regularization strengths</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>C_values <span class="op">=</span> [<span class="fl">0.01</span>, <span class="fl">0.1</span>, <span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">100</span>]</span>
@@ -826,7 +838,7 @@ weighted avg       1.00      1.00      1.00        30
 </section>
 <section id="comparison-of-algorithms" class="level2" data-number="5.5">
 <h2 data-number="5.5" class="anchored" data-anchor-id="comparison-of-algorithms"><span class="header-section-number">5.5</span> Comparison of Algorithms</h2>
-<div id="febb3640" class="cell" data-execution_count="7">
+<div id="06815b8c" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate a dataset for comparison</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>X, y <span class="op">=</span> make_classification(n_samples<span class="op">=</span><span class="dv">1000</span>, n_features<span class="op">=</span><span class="dv">2</span>, n_redundant<span class="op">=</span><span class="dv">0</span>, </span>

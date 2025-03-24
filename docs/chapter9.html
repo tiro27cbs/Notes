@@ -249,8 +249,20 @@ window.Quarto = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./chapter11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Variants of Recurrent Neural Networks (RNNs): LSTM, GRU, BiLSTM</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Autoencoders</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./summary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -402,7 +414,7 @@ window.Quarto = {
 <p>Perceptron was one of the first models: a linear classifier, trained using a method similar to stochastic gradient descent.</p>
 <p>Limitation: Perceptrons cannot solve non-linearly separable problems (e.g., XOR), which led to a decline in popularity.</p>
 <p>📌 Analogy: Think of a perceptron like a straight knife trying to slice a circular cake with internal patterns—it can’t reach the inner parts effectively.</p>
-<div id="4709bebe" class="cell" data-execution_count="1">
+<div id="0f623b2c" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simple Perceptron Example in Python</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -446,7 +458,7 @@ window.Quarto = {
 <h3 data-number="11.2.1" class="anchored" data-anchor-id="core-components"><span class="header-section-number">11.2.1</span> Core Components</h3>
 <p><strong>Data</strong>: The foundation of learning. Inputs (features) and Outputs (labels/targets).</p>
 <p>Represented using a design matrix: rows are examples, columns are features.</p>
-<div id="853cacb5" class="cell" data-execution_count="2">
+<div id="3ce82ee6" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Design matrix representation</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -474,7 +486,7 @@ window.Quarto = {
 <li>Cross-Entropy Loss for classification.</li>
 <li>Often derived from Maximum Likelihood Estimation (MLE).</li>
 </ul>
-<div id="2c54bafb" class="cell" data-execution_count="3">
+<div id="8cbb4ba3" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> mean_squared_error, log_loss</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>y_true <span class="op">=</span> [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>]</span>
@@ -487,7 +499,7 @@ window.Quarto = {
 </div>
 <p><strong>Optimization Algorithm</strong>: Minimizes the objective function.</p>
 <p>Gradient Descent: Move in the direction opposite to the gradient.</p>
-<div id="d67243bd" class="cell" data-execution_count="4">
+<div id="4724c155" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simple Gradient Descent</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> f(x): <span class="cf">return</span> (x <span class="op">-</span> <span class="dv">3</span>) <span class="op">**</span> <span class="dv">2</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> grad_f(x): <span class="cf">return</span> <span class="dv">2</span> <span class="op">*</span> (x <span class="op">-</span> <span class="dv">3</span>)</span>
@@ -524,7 +536,7 @@ window.Quarto = {
 <li>Sum the weighted inputs and apply an activation function (like the neuron firing)</li>
 <li>Produce an output that connects to other neurons</li>
 </ol>
-<div id="00d0de1b" class="cell" data-execution_count="5">
+<div id="e717f347" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Simple artificial neuron</span></span>
@@ -546,7 +558,7 @@ window.Quarto = {
 <h3 data-number="11.4.1" class="anchored" data-anchor-id="the-concept-of-linearity"><span class="header-section-number">11.4.1</span> The Concept of Linearity</h3>
 <p>A linear function has two key properties: 1. Additivity: <span class="math inline">\(f(x + y) = f(x) + f(y)\)</span> 2. Homogeneity: <span class="math inline">\(f(αx) = αf(x)\)</span></p>
 <p>In neural networks, a linear transformation of inputs can be represented as:</p>
-<div id="2a21fea6" class="cell" data-execution_count="6">
+<div id="e9be8fc6" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> linear_layer(x, W, b):</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Linear transformation: z = Wx + b</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    z <span class="op">=</span> np.dot(W, x) <span class="op">+</span> b</span>
@@ -556,7 +568,7 @@ window.Quarto = {
 <section id="why-we-need-non-linearity" class="level3" data-number="11.4.2">
 <h3 data-number="11.4.2" class="anchored" data-anchor-id="why-we-need-non-linearity"><span class="header-section-number">11.4.2</span> Why We Need Non-Linearity</h3>
 <p>If we were to stack multiple linear layers together:</p>
-<div id="628fbe8d" class="cell" data-execution_count="7">
+<div id="599fa37d" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example of stacking linear layers</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -599,7 +611,7 @@ Output of combined layer: [4.73 9.05]</code></pre>
 <section id="non-linearity-in-neural-networks" class="level3" data-number="11.4.3">
 <h3 data-number="11.4.3" class="anchored" data-anchor-id="non-linearity-in-neural-networks"><span class="header-section-number">11.4.3</span> Non-Linearity in Neural Networks</h3>
 <p>Non-linear functions enable neural networks to learn complex patterns:</p>
-<div id="55d7517f" class="cell" data-execution_count="8">
+<div id="4d6b8f02" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> non_linear_layer(x, W, b, activation_function):</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Linear transformation</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    z <span class="op">=</span> np.dot(W, x) <span class="op">+</span> b</span>
@@ -629,7 +641,7 @@ Output of combined layer: [4.73 9.05]</code></pre>
 <section id="sigmoid-function-the-s-shaped-decision-maker" class="level3" data-number="11.6.2">
 <h3 data-number="11.6.2" class="anchored" data-anchor-id="sigmoid-function-the-s-shaped-decision-maker"><span class="header-section-number">11.6.2</span> Sigmoid Function: The S-Shaped Decision Maker</h3>
 <p>The sigmoid function maps any input to a value between 0 and 1, creating a smooth S-shaped curve:</p>
-<div id="b15cb314" class="cell" data-execution_count="9">
+<div id="5238f80d" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sigmoid(z):</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">1</span> <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> np.exp(<span class="op">-</span>z))</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -660,7 +672,7 @@ Output of combined layer: [4.73 9.05]</code></pre>
 <section id="relu-the-modern-workhorse" class="level3" data-number="11.6.3">
 <h3 data-number="11.6.3" class="anchored" data-anchor-id="relu-the-modern-workhorse"><span class="header-section-number">11.6.3</span> ReLU: The Modern Workhorse</h3>
 <p>ReLU (Rectified Linear Unit) is elegantly simple: it returns the input if positive, otherwise zero.</p>
-<div id="b50401fb" class="cell" data-execution_count="10">
+<div id="a33acabd" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -693,7 +705,7 @@ Output of combined layer: [4.73 9.05]</code></pre>
 <h3 data-number="11.6.4" class="anchored" data-anchor-id="variants-leaky-relu-elu-and-gelu"><span class="header-section-number">11.6.4</span> Variants: Leaky ReLU, ELU, and GELU</h3>
 <p>These ReLU variants address some of its limitations:</p>
 <p><strong>Leaky ReLU</strong>: Allows a small gradient when the unit is not active:</p>
-<div id="14240068" class="cell" data-execution_count="11">
+<div id="c6647f0e" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> leaky_relu(z, alpha<span class="op">=</span><span class="fl">0.01</span>):</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.maximum(alpha <span class="op">*</span> z, z)</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -717,7 +729,7 @@ Output of combined layer: [4.73 9.05]</code></pre>
 </div>
 <p><strong>Conceptual Understanding</strong>: Gives “dying” neurons a chance to recover by allowing a small gradient when inactive.</p>
 <p><strong>ELU</strong> (Exponential Linear Unit): Smoothes the transition at zero:</p>
-<div id="7fdc6245" class="cell" data-execution_count="12">
+<div id="a1cbb6ef" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -745,7 +757,7 @@ Output of combined layer: [4.73 9.05]</code></pre>
 </div>
 <p><strong>Conceptual Understanding</strong>: Combines ReLU’s benefits with a smoother transition, helping gradients flow better.</p>
 <p><strong>GELU</strong> (Gaussian Error Linear Unit): Used in many transformer models like BERT:</p>
-<div id="f4e21c8b" class="cell" data-execution_count="13">
+<div id="be908ece" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> gelu(z):</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="fl">0.5</span> <span class="op">*</span> z <span class="op">*</span> (<span class="dv">1</span> <span class="op">+</span> np.tanh(np.sqrt(<span class="dv">2</span> <span class="op">/</span> np.pi) <span class="op">*</span> (z <span class="op">+</span> <span class="fl">0.044715</span> <span class="op">*</span> z<span class="op">**</span><span class="dv">3</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -754,7 +766,7 @@ Output of combined layer: [4.73 9.05]</code></pre>
 <section id="softmax-the-probability-distributor" class="level3" data-number="11.6.5">
 <h3 data-number="11.6.5" class="anchored" data-anchor-id="softmax-the-probability-distributor"><span class="header-section-number">11.6.5</span> Softmax: The Probability Distributor</h3>
 <p>Softmax converts a vector of values into a probability distribution:</p>
-<div id="19fb785a" class="cell" data-execution_count="14">
+<div id="c5e6c81e" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> softmax(z):</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    exp_z <span class="op">=</span> np.exp(z <span class="op">-</span> np.<span class="bu">max</span>(z))</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> exp_z <span class="op">/</span> np.<span class="bu">sum</span>(exp_z)</span>
@@ -793,7 +805,7 @@ Output of combined layer: [4.73 9.05]</code></pre>
 <section id="the-mathematics-behind-learning" class="level3" data-number="11.6.7">
 <h3 data-number="11.6.7" class="anchored" data-anchor-id="the-mathematics-behind-learning"><span class="header-section-number">11.6.7</span> The Mathematics Behind Learning</h3>
 <p>Activation functions critically affect how networks learn through their derivatives:</p>
-<div id="3bc3c96a" class="cell" data-execution_count="15">
+<div id="707b2889" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Derivatives</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sigmoid_derivative(z):</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    sig <span class="op">=</span> sigmoid(z)</span>
@@ -864,7 +876,7 @@ Output of combined layer: [4.73 9.05]</code></pre>
 <section id="bias-nodes-in-neural-networks" class="level3" data-number="11.7.2">
 <h3 data-number="11.7.2" class="anchored" data-anchor-id="bias-nodes-in-neural-networks"><span class="header-section-number">11.7.2</span> Bias Nodes in Neural Networks</h3>
 <p>In neural networks, “bias” has a specific technical meaning: it’s an additional parameter added to each layer that allows the activation function to shift:</p>
-<div id="9ee6e629" class="cell" data-execution_count="16">
+<div id="6aee47a2" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example showing the effect of bias</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -898,7 +910,7 @@ With bias (b=-2): 0.11920292202211755</code></pre>
 </div>
 <p><strong>Analogy</strong>: Think of bias as the “y-intercept” in a linear equation y = mx + b. It shifts the entire activation function up or down, allowing the neuron to fire even when all inputs are zero.</p>
 <p>Let’s visualize the effect of bias on a sigmoid neuron:</p>
-<div id="1c66f278" class="cell" data-execution_count="17">
+<div id="11c51604" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sigmoid_with_bias(x, bias):</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">1</span> <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> np.exp(<span class="op">-</span>(x <span class="op">+</span> bias)))</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -925,7 +937,7 @@ With bias (b=-2): 0.11920292202211755</code></pre>
 <section id="practical-implementation-in-python" class="level3" data-number="11.7.3">
 <h3 data-number="11.7.3" class="anchored" data-anchor-id="practical-implementation-in-python"><span class="header-section-number">11.7.3</span> Practical Implementation in Python</h3>
 <p>Here’s how bias is typically implemented in a neural network layer using NumPy:</p>
-<div id="45570119" class="cell" data-execution_count="18">
+<div id="2e7f10f2" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> NeuralNetworkLayer:</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, input_size, output_size, activation_function):</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Initialize weights and biases</span></span>
@@ -962,7 +974,7 @@ With bias (b=-2): 0.11920292202211755</code></pre>
 <section id="putting-it-all-together-building-a-neural-network" class="level2" data-number="11.8">
 <h2 data-number="11.8" class="anchored" data-anchor-id="putting-it-all-together-building-a-neural-network"><span class="header-section-number">11.8</span> Putting It All Together: Building a Neural Network</h2>
 <p>Let’s build a simple neural network that demonstrates these concepts:</p>
-<div id="f8f32068" class="cell" data-execution_count="19">
+<div id="3b2806df" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> SimpleNeuralNetwork:</span>
@@ -1010,7 +1022,7 @@ With bias (b=-2): 0.11920292202211755</code></pre>
 <span id="cb27-45"><a href="#cb27-45" aria-hidden="true" tabindex="-1"></a>    predictions <span class="op">=</span> nn.predict(X)</span>
 <span id="cb27-46"><a href="#cb27-46" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Predictions:"</span>, predictions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Predictions: [0 1 1]</code></pre>
+<pre><code>Predictions: [1 1 1]</code></pre>
 </div>
 </div>
 </section>
@@ -1228,7 +1240,7 @@ Tip
 </section>
 <section id="python-implementation-of-a-perceptron" class="level3" data-number="12.2.8">
 <h3 data-number="12.2.8" class="anchored" data-anchor-id="python-implementation-of-a-perceptron"><span class="header-section-number">12.2.8</span> Python Implementation of a Perceptron</h3>
-<div id="d5400797" class="cell" data-execution_count="20">
+<div id="120249eb" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> make_classification</span>
@@ -1413,7 +1425,7 @@ Note
 </section>
 <section id="python-implementation-of-an-mlp" class="level3" data-number="13.1.7">
 <h3 data-number="13.1.7" class="anchored" data-anchor-id="python-implementation-of-an-mlp"><span class="header-section-number">13.1.7</span> Python Implementation of an MLP</h3>
-<div id="6532b362" class="cell" data-execution_count="21">
+<div id="8632cef0" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> make_moons</span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -1515,16 +1527,16 @@ Note
 <span id="cb32-99"><a href="#cb32-99" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(X_xor)):</span>
 <span id="cb32-100"><a href="#cb32-100" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>X_xor[i]<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>y_xor[i][<span class="dv">0</span>]<span class="sc">}</span><span class="ss">      | </span><span class="sc">{</span>predictions[i][<span class="dv">0</span>]<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Epoch 0, Loss: 0.2500227783485458
-Epoch 1000, Loss: 0.24992127786734827
-Epoch 2000, Loss: 0.24702640433362913
-Epoch 3000, Loss: 0.18856980075602156
-Epoch 4000, Loss: 0.1219889124707683
-Epoch 5000, Loss: 0.10246123308414246
-Epoch 6000, Loss: 0.09461950970995245
-Epoch 7000, Loss: 0.09142142344629979
-Epoch 8000, Loss: 0.09003415607180684
-Epoch 9000, Loss: 0.08937403686574308</code></pre>
+<pre><code>Epoch 0, Loss: 0.24999962442298368
+Epoch 1000, Loss: 0.24971188566120772
+Epoch 2000, Loss: 0.23777483332532515
+Epoch 3000, Loss: 0.15168088407441477
+Epoch 4000, Loss: 0.11161621767747938
+Epoch 5000, Loss: 0.09829061193572829
+Epoch 6000, Loss: 0.09297895209836055
+Epoch 7000, Loss: 0.09076555183498697
+Epoch 8000, Loss: 0.0897536158775074
+Epoch 9000, Loss: 0.08924651245978707</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <div>
@@ -1534,23 +1546,23 @@ Epoch 9000, Loss: 0.08937403686574308</code></pre>
 </div>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Epoch 0, Loss: 0.2500042558877762
-Epoch 1000, Loss: 0.24999999999817055
-Epoch 2000, Loss: 0.24999999999814265
-Epoch 3000, Loss: 0.24999999999814249
-Epoch 4000, Loss: 0.24999999999814226
-Epoch 5000, Loss: 0.2499999999981421
-Epoch 6000, Loss: 0.24999999999814182
-Epoch 7000, Loss: 0.2499999999981417
-Epoch 8000, Loss: 0.24999999999814154
-Epoch 9000, Loss: 0.24999999999814138
+<pre><code>Epoch 0, Loss: 0.25000109867177334
+Epoch 1000, Loss: 0.2500000000014559
+Epoch 2000, Loss: 0.250000000001448
+Epoch 3000, Loss: 0.2500000000014474
+Epoch 4000, Loss: 0.25000000000144673
+Epoch 5000, Loss: 0.2500000000014461
+Epoch 6000, Loss: 0.2500000000014455
+Epoch 7000, Loss: 0.25000000000144484
+Epoch 8000, Loss: 0.2500000000014443
+Epoch 9000, Loss: 0.2500000000014436
 
 XOR Problem Predictions:
 Input | Target | Prediction
 ------------------------------
 [0 0] | 0      | 0
-[0 1] | 1      | 1
-[1 0] | 1      | 0
+[0 1] | 1      | 0
+[1 0] | 1      | 1
 [1 1] | 0      | 1</code></pre>
 </div>
 </div>
@@ -1558,7 +1570,7 @@ Input | Target | Prediction
 <section id="using-mlps-with-scikit-learn" class="level3" data-number="13.1.8">
 <h3 data-number="13.1.8" class="anchored" data-anchor-id="using-mlps-with-scikit-learn"><span class="header-section-number">13.1.8</span> Using MLPs with Scikit-Learn</h3>
 <p>Scikit-learn provides a convenient implementation of MLPs through the <code>MLPClassifier</code> class:</p>
-<div id="fa6461da" class="cell" data-execution_count="22">
+<div id="89d2faca" class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.neural_network <span class="im">import</span> MLPClassifier</span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> make_moons</span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
@@ -1654,7 +1666,7 @@ Input | Target | Prediction
 <section id="python-implementation-of-feed-forward-network" class="level3" data-number="13.3.4">
 <h3 data-number="13.3.4" class="anchored" data-anchor-id="python-implementation-of-feed-forward-network"><span class="header-section-number">13.3.4</span> Python Implementation of Feed-Forward Network</h3>
 <p>Here’s a simple implementation of a feed-forward neural network using NumPy:</p>
-<div id="5a832268" class="cell" data-execution_count="23">
+<div id="002d4855" class="cell" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> FeedForwardNetwork:</span>
@@ -1685,7 +1697,7 @@ Input | Target | Prediction
 <section id="example-binary-classification-with-feed-forward-network" class="level3" data-number="13.3.5">
 <h3 data-number="13.3.5" class="anchored" data-anchor-id="example-binary-classification-with-feed-forward-network"><span class="header-section-number">13.3.5</span> Example: Binary Classification with Feed-Forward Network</h3>
 <p>Let’s use our feed-forward network to solve a simple binary classification problem:</p>
-<div id="4cc692bb" class="cell" data-execution_count="24">
+<div id="b0a00422" class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> make_moons</span>
@@ -1758,7 +1770,7 @@ Input | Target | Prediction
 <section id="implementing-backpropagation" class="level3" data-number="13.4.4">
 <h3 data-number="13.4.4" class="anchored" data-anchor-id="implementing-backpropagation"><span class="header-section-number">13.4.4</span> Implementing Backpropagation</h3>
 <p>Let’s extend our FeedForwardNetwork class to include backpropagation:</p>
-<div id="b49ea5ee" class="cell" data-execution_count="25">
+<div id="556f4555" class="cell" data-execution_count="25">
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> FeedForwardNetwork:</span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, input_size, hidden_size, output_size, learning_rate<span class="op">=</span><span class="fl">0.01</span>):</span>
 <span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Initialize weights with small random values</span></span>
@@ -1829,7 +1841,7 @@ Input | Target | Prediction
 <section id="complete-example-training-a-network-with-backpropagation" class="level3" data-number="13.4.5">
 <h3 data-number="13.4.5" class="anchored" data-anchor-id="complete-example-training-a-network-with-backpropagation"><span class="header-section-number">13.4.5</span> Complete Example: Training a Network with Backpropagation</h3>
 <p>Let’s use our implementation to train a network on a non-linear classification problem:</p>
-<div id="9d21c696" class="cell" data-execution_count="26">
+<div id="2a86423d" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> make_moons</span>
@@ -1885,25 +1897,25 @@ Input | Target | Prediction
 <span id="cb41-53"><a href="#cb41-53" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Epoch 0, Loss: 0.2500
-Epoch 100, Loss: 0.0907
-Epoch 200, Loss: 0.0250
-Epoch 300, Loss: 0.0227
-Epoch 400, Loss: 0.0221
-Epoch 500, Loss: 0.0225
-Epoch 600, Loss: 0.0223
-Epoch 700, Loss: 0.0223
+Epoch 100, Loss: 0.0948
+Epoch 200, Loss: 0.0869
+Epoch 300, Loss: 0.0253
+Epoch 400, Loss: 0.0226
+Epoch 500, Loss: 0.0221
+Epoch 600, Loss: 0.0218
+Epoch 700, Loss: 0.0224
 Epoch 800, Loss: 0.0223
 Epoch 900, Loss: 0.0223
-Epoch 1000, Loss: 0.0222
-Epoch 1100, Loss: 0.0221
-Epoch 1200, Loss: 0.0220
-Epoch 1300, Loss: 0.0219
-Epoch 1400, Loss: 0.0218
-Epoch 1500, Loss: 0.0217
-Epoch 1600, Loss: 0.0216
-Epoch 1700, Loss: 0.0215
-Epoch 1800, Loss: 0.0214
-Epoch 1900, Loss: 0.0213
+Epoch 1000, Loss: 0.0223
+Epoch 1100, Loss: 0.0222
+Epoch 1200, Loss: 0.0221
+Epoch 1300, Loss: 0.0218
+Epoch 1400, Loss: 0.0213
+Epoch 1500, Loss: 0.0208
+Epoch 1600, Loss: 0.0204
+Epoch 1700, Loss: 0.0201
+Epoch 1800, Loss: 0.0199
+Epoch 1900, Loss: 0.0197
 Final accuracy: 0.98</code></pre>
 </div>
 <div class="cell-output cell-output-display">

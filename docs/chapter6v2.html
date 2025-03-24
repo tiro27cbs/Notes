@@ -220,8 +220,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./chapter11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Variants of Recurrent Neural Networks (RNNs): LSTM, GRU, BiLSTM</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Autoencoders</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./summary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -293,7 +305,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="support-vector-machine-svm" class="level2" data-number="8.1">
 <h2 data-number="8.1" class="anchored" data-anchor-id="support-vector-machine-svm"><span class="header-section-number">8.1</span> Support Vector Machine (SVM)</h2>
 <p>Support Vector Machines (SVMs) are powerful supervised learning algorithms used for both classification and regression tasks. Their primary goal is to find the optimal hyperplane that maximizes the margin between different classes.</p>
-<div id="28ea4b66" class="cell" data-execution_count="1">
+<div id="22d7465f" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn <span class="im">import</span> svm, datasets</span>
@@ -314,7 +326,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The mathematical objective of an SVM can be expressed as: - Maximize the margin width (2/||w||) - Subject to constraints that ensure no data points fall within the margin</p>
 <p>The optimization problem becomes: - Minimize (1/2)||w||² subject to y_i(w·x_i + b) ≥ 1 for all training points (x_i, y_i)</p>
 <p>For non-linearly separable data, SVMs introduce “slack variables” (ξ) that allow some points to violate the margin: - Minimize (1/2)||w||² + C·Σξ_i subject to y_i(w·x_i + b) ≥ 1 - ξ_i and ξ_i ≥ 0</p>
-<div id="c316d163" class="cell" data-execution_count="2">
+<div id="49032eb2" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load and prepare sample data</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>iris <span class="op">=</span> datasets.load_iris()</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> iris.data[:, :<span class="dv">2</span>]  <span class="co"># Using first two features for visualization</span></span>
@@ -411,7 +423,7 @@ Testing accuracy: 1.000</code></pre>
 <section id="non-linear-classification-with-kernels" class="level3" data-number="8.1.4">
 <h3 data-number="8.1.4" class="anchored" data-anchor-id="non-linear-classification-with-kernels"><span class="header-section-number">8.1.4</span> Non-linear Classification with Kernels</h3>
 <p>When data isn’t linearly separable in the original feature space, SVMs use the <strong>kernel trick</strong> to implicitly map data into a higher-dimensional space where linear separation becomes possible:</p>
-<div id="94e85265" class="cell" data-execution_count="3">
+<div id="81e3b65e" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare different SVM kernels</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>kernels <span class="op">=</span> [<span class="st">'linear'</span>, <span class="st">'poly'</span>, <span class="st">'rbf'</span>]</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">5</span>))</span>
@@ -497,7 +509,7 @@ Testing accuracy: 1.000</code></pre>
 <section id="the-role-of-c-regularization-parameter" class="level4" data-number="8.1.5.1">
 <h4 data-number="8.1.5.1" class="anchored" data-anchor-id="the-role-of-c-regularization-parameter"><span class="header-section-number">8.1.5.1</span> The Role of C (Regularization Parameter)</h4>
 <p>The <code>C</code> parameter represents the trade-off between model complexity and training error:</p>
-<div id="892a002a" class="cell" data-execution_count="4">
+<div id="0c55b81e" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Explore the effect of C parameter</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>C_values <span class="op">=</span> [<span class="fl">0.1</span>, <span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">100</span>]</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">10</span>))</span>
@@ -601,7 +613,7 @@ Testing accuracy: 1.000</code></pre>
 </section>
 <section id="practical-example-full-iris-dataset" class="level3" data-number="8.1.7">
 <h3 data-number="8.1.7" class="anchored" data-anchor-id="practical-example-full-iris-dataset"><span class="header-section-number">8.1.7</span> Practical Example: Full Iris Dataset</h3>
-<div id="4c733cae" class="cell" data-execution_count="5">
+<div id="fc673cfd" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use all features and classes from the Iris dataset</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>iris <span class="op">=</span> datasets.load_iris()</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> iris.data</span>
@@ -654,7 +666,7 @@ weighted avg       1.00      1.00      1.00        45
 <p>Performance metrics are crucial for evaluating how well machine learning models perform. The choice of metric depends on the type of task (classification or regression) and the specific problem requirements.</p>
 <section id="classification-metrics" class="level3" data-number="8.2.1">
 <h3 data-number="8.2.1" class="anchored" data-anchor-id="classification-metrics"><span class="header-section-number">8.2.1</span> Classification Metrics</h3>
-<div id="7b9883b9" class="cell" data-execution_count="6">
+<div id="ae2de2da" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score, precision_score, recall_score, f1_score</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix, roc_curve, auc, precision_recall_curve</span>
@@ -814,7 +826,7 @@ F1 Score: 1.0000</code></pre>
 <section id="roc-curve-receiver-operating-characteristic" class="level4" data-number="8.2.2.1">
 <h4 data-number="8.2.2.1" class="anchored" data-anchor-id="roc-curve-receiver-operating-characteristic"><span class="header-section-number">8.2.2.1</span> ROC Curve (Receiver Operating Characteristic)</h4>
 <p>The ROC curve plots the True Positive Rate (TPR) against the False Positive Rate (FPR) at various classification thresholds:</p>
-<div id="412f2410" class="cell" data-execution_count="7">
+<div id="fc1ab275" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ROC Curve across different classification thresholds</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> roc_curve, auc</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
@@ -904,7 +916,7 @@ F1 Score: 1.0000</code></pre>
 </section>
 <section id="regression-metrics" class="level3" data-number="8.2.3">
 <h3 data-number="8.2.3" class="anchored" data-anchor-id="regression-metrics"><span class="header-section-number">8.2.3</span> Regression Metrics</h3>
-<div id="5e8f5085" class="cell" data-execution_count="8">
+<div id="91e183fb" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Regression metrics example</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_diabetes</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.svm <span class="im">import</span> SVR</span>

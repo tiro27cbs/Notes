@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Variants of Recurrent Neural Networks (RNNs): LSTM, GRU, BiLSTM</title>
+<title>13&nbsp; Variants of Recurrent Neural Networks (RNNs): LSTM, GRU, BiLSTM – Machine Learning and Deep Learning Notes</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -57,16 +57,51 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="chapter11_files/libs/clipboard/clipboard.min.js"></script>
-<script src="chapter11_files/libs/quarto-html/quarto.js"></script>
-<script src="chapter11_files/libs/quarto-html/popper.min.js"></script>
-<script src="chapter11_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="chapter11_files/libs/quarto-html/anchor.min.js"></script>
-<link href="chapter11_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="chapter11_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="chapter11_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="chapter11_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="chapter11_files/libs/bootstrap/bootstrap-1bc8a17f135ab3d594c857e9f48e611b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./chapter12.html" rel="next">
+<link href="./chapter10.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-8da5b4427184b79ecddefad3d342027e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -100,15 +135,186 @@ window.Quarto = {
 
 </head>
 
-<body class="fullcontent">
+<body class="nav-sidebar floating">
 
-<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapter11.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Variants of Recurrent Neural Networks (RNNs): LSTM, GRU, BiLSTM</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Machine Learning and Deep Learning Notes</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">🚀 Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Fundamentals of Machine Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Building an End-to-End Machine Learning Pipeline</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Unsupervised Learning: Clustering Techniques</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Supervised Learning: Regression and Classification</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Dimensionality Reduction Methods</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Tree-Based Models and Ensemble Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter6v2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Support Vector Machines and Model Evaluation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Outlier Detection and Recommendation Systems</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter8.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Gradient Descent: Optimization in Machine Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Neural Networks and Deep Learning Foundations</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Batch Normalization, RNN, Distributed Deep Learning and Tensorflow</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter11.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Variants of Recurrent Neural Networks (RNNs): LSTM, GRU, BiLSTM</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Autoencoders</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">13.1</span> Introduction</a></li>
+  <li><a href="#long-short-term-memory-lstm" id="toc-long-short-term-memory-lstm" class="nav-link" data-scroll-target="#long-short-term-memory-lstm"><span class="header-section-number">13.2</span> Long Short-Term Memory (LSTM)</a>
+  <ul class="collapse">
+  <li><a href="#what-is-lstm" id="toc-what-is-lstm" class="nav-link" data-scroll-target="#what-is-lstm"><span class="header-section-number">13.2.1</span> What is LSTM?</a></li>
+  <li><a href="#key-components" id="toc-key-components" class="nav-link" data-scroll-target="#key-components"><span class="header-section-number">13.2.2</span> Key Components:</a></li>
+  <li><a href="#visual-diagram" id="toc-visual-diagram" class="nav-link" data-scroll-target="#visual-diagram"><span class="header-section-number">13.2.3</span> Visual Diagram:</a></li>
+  <li><a href="#mathematical-representation" id="toc-mathematical-representation" class="nav-link" data-scroll-target="#mathematical-representation"><span class="header-section-number">13.2.4</span> Mathematical Representation:</a></li>
+  </ul></li>
+  <li><a href="#peephole-connections" id="toc-peephole-connections" class="nav-link" data-scroll-target="#peephole-connections"><span class="header-section-number">13.3</span> Peephole Connections:</a></li>
+  <li><a href="#gated-recurrent-units-gru" id="toc-gated-recurrent-units-gru" class="nav-link" data-scroll-target="#gated-recurrent-units-gru"><span class="header-section-number">13.4</span> Gated Recurrent Units (GRU)</a>
+  <ul class="collapse">
+  <li><a href="#what-is-gru" id="toc-what-is-gru" class="nav-link" data-scroll-target="#what-is-gru"><span class="header-section-number">13.4.1</span> What is GRU?</a></li>
+  <li><a href="#key-components-1" id="toc-key-components-1" class="nav-link" data-scroll-target="#key-components-1"><span class="header-section-number">13.4.2</span> Key Components:</a></li>
+  <li><a href="#visual-diagram-1" id="toc-visual-diagram-1" class="nav-link" data-scroll-target="#visual-diagram-1"><span class="header-section-number">13.4.3</span> Visual Diagram:</a></li>
+  <li><a href="#mathematical-representation-1" id="toc-mathematical-representation-1" class="nav-link" data-scroll-target="#mathematical-representation-1"><span class="header-section-number">13.4.4</span> Mathematical Representation:</a></li>
+  </ul></li>
+  <li><a href="#bidirectional-lstm-bilstm" id="toc-bidirectional-lstm-bilstm" class="nav-link" data-scroll-target="#bidirectional-lstm-bilstm"><span class="header-section-number">13.5</span> Bidirectional LSTM (BiLSTM)</a>
+  <ul class="collapse">
+  <li><a href="#what-is-bilstm" id="toc-what-is-bilstm" class="nav-link" data-scroll-target="#what-is-bilstm"><span class="header-section-number">13.5.1</span> What is BiLSTM?</a></li>
+  <li><a href="#visual-diagram-2" id="toc-visual-diagram-2" class="nav-link" data-scroll-target="#visual-diagram-2"><span class="header-section-number">13.5.2</span> Visual Diagram:</a></li>
+  <li><a href="#architecture" id="toc-architecture" class="nav-link" data-scroll-target="#architecture"><span class="header-section-number">13.5.3</span> Architecture:</a></li>
+  <li><a href="#applications" id="toc-applications" class="nav-link" data-scroll-target="#applications"><span class="header-section-number">13.5.4</span> Applications:</a></li>
+  <li><a href="#comparison-table" id="toc-comparison-table" class="nav-link" data-scroll-target="#comparison-table"><span class="header-section-number">13.5.5</span> Comparison Table:</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">13.6</span> Conclusion</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Variants of Recurrent Neural Networks (RNNs): LSTM, GRU, BiLSTM</h1>
+<h1 class="title"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Variants of Recurrent Neural Networks (RNNs): LSTM, GRU, BiLSTM</span></h1>
 </div>
 
 
@@ -125,8 +331,8 @@ window.Quarto = {
 </header>
 
 
-<section id="introduction" class="level2">
-<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<section id="introduction" class="level2" data-number="13.1">
+<h2 data-number="13.1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">13.1</span> Introduction</h2>
 <p>Recurrent Neural Networks (RNNs) are designed to work with sequential data such as time series, language, audio, and video. Unlike feedforward neural networks, RNNs maintain a “memory” of previous inputs using hidden states, allowing them to model temporal dependencies.</p>
 <p>However, traditional RNNs suffer from issues such as <strong>vanishing and exploding gradients</strong>, which makes it difficult for them to learn long-term dependencies. To solve this, several advanced architectures have been developed:</p>
 <ul>
@@ -136,23 +342,23 @@ window.Quarto = {
 </ul>
 <p>Each of these offers different trade-offs in terms of complexity, training time, and ability to capture temporal dependencies.</p>
 </section>
-<section id="long-short-term-memory-lstm" class="level2">
-<h2 class="anchored" data-anchor-id="long-short-term-memory-lstm">Long Short-Term Memory (LSTM)</h2>
-<section id="what-is-lstm" class="level3">
-<h3 class="anchored" data-anchor-id="what-is-lstm">What is LSTM?</h3>
+<section id="long-short-term-memory-lstm" class="level2" data-number="13.2">
+<h2 data-number="13.2" class="anchored" data-anchor-id="long-short-term-memory-lstm"><span class="header-section-number">13.2</span> Long Short-Term Memory (LSTM)</h2>
+<section id="what-is-lstm" class="level3" data-number="13.2.1">
+<h3 data-number="13.2.1" class="anchored" data-anchor-id="what-is-lstm"><span class="header-section-number">13.2.1</span> What is LSTM?</h3>
 <p>LSTM is a special kind of RNN capable of learning long-term dependencies. It was introduced in 1997 by Hochreiter and Schmidhuber. Unlike traditional RNNs, LSTM includes gates and a memory cell to control and maintain long-term information.</p>
 <p>Analogy:</p>
 <p>Imagine you’re reading a novel. You don’t remember every single word, but you store important details—like character relationships and major events—in your long-term memory (cell state). Other trivial details are forgotten. Your brain uses “gates” to decide what to remember and what to ignore.</p>
 </section>
-<section id="key-components" class="level3">
-<h3 class="anchored" data-anchor-id="key-components">Key Components:</h3>
+<section id="key-components" class="level3" data-number="13.2.2">
+<h3 data-number="13.2.2" class="anchored" data-anchor-id="key-components"><span class="header-section-number">13.2.2</span> Key Components:</h3>
 <p>Cell State (<span class="math inline">\(c_t\)</span>): Acts like a conveyor belt, carrying long-term information.</p>
 <p>Input Gate (<span class="math inline">\(i_t\)</span>): Controls how much new information should be added.</p>
 <p>Forget Gate (<span class="math inline">\(f_t\)</span>): Decides what information to discard.</p>
 <p>Output Gate (<span class="math inline">\(o_t\)</span>): Determines what information to pass to the next hidden state (<span class="math inline">\(h_t\)</span>).</p>
 </section>
-<section id="visual-diagram" class="level3">
-<h3 class="anchored" data-anchor-id="visual-diagram">Visual Diagram:</h3>
+<section id="visual-diagram" class="level3" data-number="13.2.3">
+<h3 data-number="13.2.3" class="anchored" data-anchor-id="visual-diagram"><span class="header-section-number">13.2.3</span> Visual Diagram:</h3>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="chapter11_lstm.png" class="img-fluid figure-img" style="width:80.0%"></p>
@@ -160,15 +366,15 @@ window.Quarto = {
 </figure>
 </div>
 </section>
-<section id="mathematical-representation" class="level3">
-<h3 class="anchored" data-anchor-id="mathematical-representation">Mathematical Representation:</h3>
+<section id="mathematical-representation" class="level3" data-number="13.2.4">
+<h3 data-number="13.2.4" class="anchored" data-anchor-id="mathematical-representation"><span class="header-section-number">13.2.4</span> Mathematical Representation:</h3>
 <p>Forget gate: <span class="math inline">\(f_t = \sigma(W_f[h_{t-1}, x_t] + b_f)\)</span></p>
 <p>Input gate: <span class="math inline">\(i_t = \sigma(W_i[h_{t-1}, x_t] + b_i)\)</span></p>
 <p>Candidate memory: <span class="math inline">\(\tilde{c}t = \tanh(W_c[h{t-1}, x_t] + b_c)\)</span></p>
 <p>Updated cell state: <span class="math inline">\(c_t = f_t * c_{t-1} + i_t * \tilde{c}_t\)</span></p>
 <p>Output gate: <span class="math inline">\(o_t = \sigma(W_o[h_{t-1}, x_t] + b_o)\)</span></p>
 <p>Hidden state: <span class="math inline">\(h_t = o_t * \tanh(c_t)\)</span></p>
-<div id="7354d6f0" class="cell" data-execution_count="1">
+<div id="79513239" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow <span class="im">import</span> keras</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras <span class="im">import</span> layers</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -201,52 +407,52 @@ Do not pass an `input_shape`/`input_dim` argument to a layer. When using Sequent
 </code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>1/4 ━━━━━━━━━━━━━━━━━━━━ 6s 2s/step - loss: 0.33154/4 ━━━━━━━━━━━━━━━━━━━━ 2s 8ms/step - loss: 0.3278
+<pre><code>1/4 ━━━━━━━━━━━━━━━━━━━━ 5s 2s/step - loss: 0.33264/4 ━━━━━━━━━━━━━━━━━━━━ 2s 9ms/step - loss: 0.3320
 Epoch 2/10
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 29ms/step - loss: 0.30394/4 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - loss: 0.3076 
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 23ms/step - loss: 0.31554/4 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - loss: 0.3187 
 Epoch 3/10
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 23ms/step - loss: 0.28474/4 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - loss: 0.2887 
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 22ms/step - loss: 0.31584/4 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - loss: 0.3110 
 Epoch 4/10
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 20ms/step - loss: 0.27424/4 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - loss: 0.2710 
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 24ms/step - loss: 0.30494/4 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - loss: 0.2984 
 Epoch 5/10
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 25ms/step - loss: 0.25474/4 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step - loss: 0.2515 
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 22ms/step - loss: 0.28144/4 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - loss: 0.2830 
 Epoch 6/10
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 23ms/step - loss: 0.23244/4 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step - loss: 0.2290 
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 22ms/step - loss: 0.27834/4 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - loss: 0.2710 
 Epoch 7/10
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 23ms/step - loss: 0.21264/4 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - loss: 0.2065 
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 22ms/step - loss: 0.25274/4 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - loss: 0.2519 
 Epoch 8/10
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.18224/4 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - loss: 0.1824 
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.23034/4 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - loss: 0.2322 
 Epoch 9/10
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 28ms/step - loss: 0.16644/4 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - loss: 0.1638 
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 22ms/step - loss: 0.21474/4 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - loss: 0.2133 
 Epoch 10/10
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 23ms/step - loss: 0.14904/4 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - loss: 0.1511 </code></pre>
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 22ms/step - loss: 0.19684/4 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - loss: 0.1932 </code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="1">
-<pre><code>&lt;keras.src.callbacks.history.History at 0x265a2bd6bd0&gt;</code></pre>
+<pre><code>&lt;keras.src.callbacks.history.History at 0x2823d017a10&gt;</code></pre>
 </div>
 </div>
 </section>
 </section>
-<section id="peephole-connections" class="level2">
-<h2 class="anchored" data-anchor-id="peephole-connections">Peephole Connections:</h2>
+<section id="peephole-connections" class="level2" data-number="13.3">
+<h2 data-number="13.3" class="anchored" data-anchor-id="peephole-connections"><span class="header-section-number">13.3</span> Peephole Connections:</h2>
 <p>In traditional LSTM, the gates only depend on the current input and previous hidden state. In models with peephole connections, the gates can also consider the cell state. This allows for more precise control over the information flow, enhancing the model’s ability to learn long-term dependencies. This improvement can lead to better performance in tasks requiring the retention of information over extended sequences. Additionally, peephole connections can help mitigate the vanishing gradient problem, making it easier for the network to learn from longer sequences.</p>
 <p>Analogy: It’s like checking your entire calendar (cell state) before deciding whether to add a new event (input gate) or remove one (forget gate).</p>
 </section>
-<section id="gated-recurrent-units-gru" class="level2">
-<h2 class="anchored" data-anchor-id="gated-recurrent-units-gru">Gated Recurrent Units (GRU)</h2>
-<section id="what-is-gru" class="level3">
-<h3 class="anchored" data-anchor-id="what-is-gru">What is GRU?</h3>
+<section id="gated-recurrent-units-gru" class="level2" data-number="13.4">
+<h2 data-number="13.4" class="anchored" data-anchor-id="gated-recurrent-units-gru"><span class="header-section-number">13.4</span> Gated Recurrent Units (GRU)</h2>
+<section id="what-is-gru" class="level3" data-number="13.4.1">
+<h3 data-number="13.4.1" class="anchored" data-anchor-id="what-is-gru"><span class="header-section-number">13.4.1</span> What is GRU?</h3>
 <p>GRU is a simplified version of LSTM introduced by Cho et al.&nbsp;in 2014. It combines the forget and input gates into a single “update gate” and merges the cell state and hidden state. This reduces the number of parameters compared to LSTM, making GRU faster to train and less prone to overfitting.</p>
 <p>Analogy: It’s like having a simplified checklist that helps you decide what to keep and what to discard from your past experiences.</p>
 </section>
-<section id="key-components-1" class="level3">
-<h3 class="anchored" data-anchor-id="key-components-1">Key Components:</h3>
+<section id="key-components-1" class="level3" data-number="13.4.2">
+<h3 data-number="13.4.2" class="anchored" data-anchor-id="key-components-1"><span class="header-section-number">13.4.2</span> Key Components:</h3>
 <p>Update Gate (<span class="math inline">\(z_t\)</span>): Controls how much of the past information to keep.</p>
 <p>Reset Gate (<span class="math inline">\(r_t\)</span>): Decides how much of the past information to forget.</p>
 <p>Candidate Activation (<span class="math inline">\(\tilde{h}_t\)</span>): New candidate hidden state.</p>
 </section>
-<section id="visual-diagram-1" class="level3">
-<h3 class="anchored" data-anchor-id="visual-diagram-1">Visual Diagram:</h3>
+<section id="visual-diagram-1" class="level3" data-number="13.4.3">
+<h3 data-number="13.4.3" class="anchored" data-anchor-id="visual-diagram-1"><span class="header-section-number">13.4.3</span> Visual Diagram:</h3>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="chapter11_gru.png" class="img-fluid figure-img" style="width:80.0%"></p>
@@ -254,13 +460,13 @@ Epoch 10/10
 </figure>
 </div>
 </section>
-<section id="mathematical-representation-1" class="level3">
-<h3 class="anchored" data-anchor-id="mathematical-representation-1">Mathematical Representation:</h3>
+<section id="mathematical-representation-1" class="level3" data-number="13.4.4">
+<h3 data-number="13.4.4" class="anchored" data-anchor-id="mathematical-representation-1"><span class="header-section-number">13.4.4</span> Mathematical Representation:</h3>
 <p>Update gate: <span class="math inline">\(z_t = \sigma(W_z[h_{t-1}, x_t])\)</span></p>
 <p>Reset gate: <span class="math inline">\(r_t = \sigma(W_r[h_{t-1}, x_t])\)</span></p>
 <p>Candidate activation: <span class="math inline">\(\tilde{h}_t = \tanh(W[h_{t-1}, r_t * x_t])\)</span></p>
 <p>Hidden state: <span class="math inline">\(h_t = (1 - z_t) * h_{t-1} + z_t * \tilde{h}_t\)</span></p>
-<div id="1c117e0b" class="cell" data-execution_count="2">
+<div id="dc61f5ab" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> keras.models.Sequential([</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># input_shape=[None, 1]: 'None' represents variable time steps, and '1' represents one feature per time step</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Ensures the output is a sequence, allowing the next layer to process it</span></span>
@@ -273,15 +479,15 @@ Epoch 10/10
 </div>
 </section>
 </section>
-<section id="bidirectional-lstm-bilstm" class="level2">
-<h2 class="anchored" data-anchor-id="bidirectional-lstm-bilstm">Bidirectional LSTM (BiLSTM)</h2>
-<section id="what-is-bilstm" class="level3">
-<h3 class="anchored" data-anchor-id="what-is-bilstm">What is BiLSTM?</h3>
+<section id="bidirectional-lstm-bilstm" class="level2" data-number="13.5">
+<h2 data-number="13.5" class="anchored" data-anchor-id="bidirectional-lstm-bilstm"><span class="header-section-number">13.5</span> Bidirectional LSTM (BiLSTM)</h2>
+<section id="what-is-bilstm" class="level3" data-number="13.5.1">
+<h3 data-number="13.5.1" class="anchored" data-anchor-id="what-is-bilstm"><span class="header-section-number">13.5.1</span> What is BiLSTM?</h3>
 <p>BiLSTM is an extension of LSTM that processes the input sequence in both forward and backward directions. This allows the model to capture information from past and future contexts simultaneously, enhancing its ability to understand the sequence bidirectionally.</p>
 <p>Analogy: It’s like reading a book from both ends to get a complete understanding of the plot and characters.</p>
 </section>
-<section id="visual-diagram-2" class="level3">
-<h3 class="anchored" data-anchor-id="visual-diagram-2">Visual Diagram:</h3>
+<section id="visual-diagram-2" class="level3" data-number="13.5.2">
+<h3 data-number="13.5.2" class="anchored" data-anchor-id="visual-diagram-2"><span class="header-section-number">13.5.2</span> Visual Diagram:</h3>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="chapter11_bilstm.png" class="img-fluid figure-img" style="width:80.0%"></p>
@@ -289,13 +495,13 @@ Epoch 10/10
 </figure>
 </div>
 </section>
-<section id="architecture" class="level3">
-<h3 class="anchored" data-anchor-id="architecture">Architecture:</h3>
+<section id="architecture" class="level3" data-number="13.5.3">
+<h3 data-number="13.5.3" class="anchored" data-anchor-id="architecture"><span class="header-section-number">13.5.3</span> Architecture:</h3>
 <ul>
 <li>Two LSTM layers: One processes the sequence from the beginning, and the other from the end.</li>
 <li>Concatenation: The outputs from both directions are combined at each time step.</li>
 </ul>
-<div id="7a5da988" class="cell" data-execution_count="3">
+<div id="0d0bdfa0" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> keras.models.Sequential([</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    layers.Bidirectional(layers.LSTM(<span class="dv">20</span>, return_sequences<span class="op">=</span><span class="va">True</span>), input_shape<span class="op">=</span>[<span class="va">None</span>, <span class="dv">1</span>]),</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    layers.Bidirectional(layers.LSTM(<span class="dv">20</span>, return_sequences<span class="op">=</span><span class="va">True</span>)),</span>
@@ -309,16 +515,16 @@ Do not pass an `input_shape`/`input_dim` argument to a layer. When using Sequent
 </div>
 </div>
 </section>
-<section id="applications" class="level3">
-<h3 class="anchored" data-anchor-id="applications">Applications:</h3>
+<section id="applications" class="level3" data-number="13.5.4">
+<h3 data-number="13.5.4" class="anchored" data-anchor-id="applications"><span class="header-section-number">13.5.4</span> Applications:</h3>
 <ul>
 <li>Speech recognition</li>
 <li>Named entity recognition</li>
 <li>Machine translation</li>
 </ul>
 </section>
-<section id="comparison-table" class="level3">
-<h3 class="anchored" data-anchor-id="comparison-table">Comparison Table:</h3>
+<section id="comparison-table" class="level3" data-number="13.5.5">
+<h3 data-number="13.5.5" class="anchored" data-anchor-id="comparison-table"><span class="header-section-number">13.5.5</span> Comparison Table:</h3>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 24%">
@@ -369,18 +575,19 @@ Do not pass an `input_shape`/`input_dim` argument to a layer. When using Sequent
 </table>
 </section>
 </section>
-<section id="conclusion" class="level2">
-<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<section id="conclusion" class="level2" data-number="13.6">
+<h2 data-number="13.6" class="anchored" data-anchor-id="conclusion"><span class="header-section-number">13.6</span> Conclusion</h2>
 <p>LSTM, GRU, and BiLSTM each have unique strengths:</p>
 <ul>
 <li>LSTM is effective for learning long-term dependencies.</li>
 <li>GRU is simpler, faster, and less prone to overfitting.</li>
 <li>BiLSTM captures bidirectional context for improved understanding.</li>
 </ul>
+
+
 </section>
 
-</main>
-<!-- /main column -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -798,6 +1005,18 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./chapter10.html" class="pagination-link" aria-label="Batch Normalization, RNN, Distributed Deep Learning and Tensorflow">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Batch Normalization, RNN, Distributed Deep Learning and Tensorflow</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./chapter12.html" class="pagination-link" aria-label="Autoencoders">
+        <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Autoencoders</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
 </div> <!-- /content -->
 
 
