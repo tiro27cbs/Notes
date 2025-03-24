@@ -1,6 +1,7 @@
 project:
   type: book
   output-dir: docs
+
 book:
   title: "Machine Learning and Deep Learning Notes"
   author: "Tim Rößling"
@@ -20,6 +21,8 @@ book:
     - chapter8.qmd
     - chapter9.qmd
     - chapter10.qmd
+    - chapter11.qmd
+    - chapter12.qmd
     - summary.qmd
     - references.qmd
 
