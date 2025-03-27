@@ -5,7 +5,7 @@ project:
 book:
   title: "Machine Learning and Deep Learning Notes"
   author: "Tim Rößling"
-  date: "18.3.2025"
+  date: "sys.date()"
   search: true
   chapters:
     - index.qmd
@@ -23,6 +23,7 @@ book:
     - chapter10.qmd
     - chapter11.qmd
     - chapter12.qmd
+    - chapter13.qmd
     - summary.qmd
     - references.qmd
 
