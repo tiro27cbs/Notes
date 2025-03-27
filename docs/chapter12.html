@@ -238,8 +238,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./chapter14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Adversarial Examples and Generative Models: A Deep Dive into Robustness and Synthetic Data Generation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Hyper-Parameter Optimization (HPO) in Machine Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./summary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -343,7 +355,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 data-number="14.2.4" class="anchored" data-anchor-id="undercomplete-autoencoders"><span class="header-section-number">14.2.4</span> Undercomplete Autoencoders</h3>
 <p>An undercomplete autoencoder is one where the dimensionality of the latent space is lower than the input space. This forces the autoencoder to learn a compressed representation of the data.</p>
 <p>PCA Analogy: If only using linear layers and MSE loss, an undercomplete autoencoder behaves like Principal Component Analysis (PCA).</p>
-<div id="c01842c5" class="cell" data-execution_count="1">
+<div id="944bd7bd" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow <span class="im">import</span> keras</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras <span class="im">import</span> layers</span>
@@ -363,48 +375,48 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>autoencoder.fit(x_train, x_train, epochs<span class="op">=</span><span class="dv">20</span>, batch_size<span class="op">=</span><span class="dv">256</span>, validation_split<span class="op">=</span><span class="fl">0.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Epoch 1/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 1s 466ms/step - loss: 0.08564/4 ━━━━━━━━━━━━━━━━━━━━ 1s 41ms/step - loss: 0.0847 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 2s 930ms/step - loss: 0.08404/4 ━━━━━━━━━━━━━━━━━━━━ 1s 92ms/step - loss: 0.0838 - val_loss: 0.0836
 Epoch 2/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08374/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0835 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 44ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 34ms/step - loss: 0.0834 - val_loss: 0.0836
 Epoch 3/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08324/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0834 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 40ms/step - loss: 0.08354/4 ━━━━━━━━━━━━━━━━━━━━ 0s 33ms/step - loss: 0.0834 - val_loss: 0.0836
 Epoch 4/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08364/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0835 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 41ms/step - loss: 0.08354/4 ━━━━━━━━━━━━━━━━━━━━ 0s 30ms/step - loss: 0.0834 - val_loss: 0.0836
 Epoch 5/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08344/4 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 0.0834 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 36ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 30ms/step - loss: 0.0834 - val_loss: 0.0836
 Epoch 6/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 20ms/step - loss: 0.08344/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0834 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 40ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 31ms/step - loss: 0.0834 - val_loss: 0.0836
 Epoch 7/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 20ms/step - loss: 0.08344/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0834 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 40ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 30ms/step - loss: 0.0834 - val_loss: 0.0836
 Epoch 8/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 23ms/step - loss: 0.08364/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0835 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 38ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 31ms/step - loss: 0.0834 - val_loss: 0.0836
 Epoch 9/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08384/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0835 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 32ms/step - loss: 0.08324/4 ━━━━━━━━━━━━━━━━━━━━ 0s 32ms/step - loss: 0.0833 - val_loss: 0.0836
 Epoch 10/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08324/4 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 0.0834 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 41ms/step - loss: 0.08364/4 ━━━━━━━━━━━━━━━━━━━━ 0s 33ms/step - loss: 0.0834 - val_loss: 0.0836
 Epoch 11/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 20ms/step - loss: 0.08344/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0834 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 41ms/step - loss: 0.08354/4 ━━━━━━━━━━━━━━━━━━━━ 0s 35ms/step - loss: 0.0834 - val_loss: 0.0836
 Epoch 12/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 20ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0834 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 42ms/step - loss: 0.08354/4 ━━━━━━━━━━━━━━━━━━━━ 0s 33ms/step - loss: 0.0834 - val_loss: 0.0836
 Epoch 13/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 23ms/step - loss: 0.08344/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0834 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 44ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 34ms/step - loss: 0.0833 - val_loss: 0.0836
 Epoch 14/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08314/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0833 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 45ms/step - loss: 0.08344/4 ━━━━━━━━━━━━━━━━━━━━ 0s 35ms/step - loss: 0.0833 - val_loss: 0.0836
 Epoch 15/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0834 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 38ms/step - loss: 0.08314/4 ━━━━━━━━━━━━━━━━━━━━ 0s 33ms/step - loss: 0.0832 - val_loss: 0.0836
 Epoch 16/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 20ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 0.0834 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 41ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 32ms/step - loss: 0.0833 - val_loss: 0.0836
 Epoch 17/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0834 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 42ms/step - loss: 0.08324/4 ━━━━━━━━━━━━━━━━━━━━ 0s 32ms/step - loss: 0.0833 - val_loss: 0.0836
 Epoch 18/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08344/4 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 0.0834 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 33ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 36ms/step - loss: 0.0833 - val_loss: 0.0836
 Epoch 19/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 20ms/step - loss: 0.08344/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0834 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 37ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 37ms/step - loss: 0.0833 - val_loss: 0.0836
 Epoch 20/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08344/4 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 0.0834 - val_loss: 0.0834</code></pre>
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 40ms/step - loss: 0.08314/4 ━━━━━━━━━━━━━━━━━━━━ 0s 41ms/step - loss: 0.0832 - val_loss: 0.0836</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="1">
-<pre><code>&lt;keras.src.callbacks.history.History at 0x20192fc9d60&gt;</code></pre>
+<pre><code>&lt;keras.src.callbacks.history.History at 0x1450cde6a80&gt;</code></pre>
 </div>
 </div>
 </section>
@@ -422,7 +434,7 @@ Epoch 20/20
 <figcaption>Stacked Autoencoder - Visual Representation</figcaption>
 </figure>
 </div>
-<div id="e270be56" class="cell" data-execution_count="2">
+<div id="ed134fa6" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow <span class="im">import</span> keras</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras <span class="im">import</span> layers</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -439,48 +451,48 @@ Epoch 20/20
 <span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>autoencoder.fit(x_train, x_train, epochs<span class="op">=</span><span class="dv">20</span>, batch_size<span class="op">=</span><span class="dv">256</span>, validation_split<span class="op">=</span><span class="fl">0.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Epoch 1/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 1s 617ms/step - loss: 0.08444/4 ━━━━━━━━━━━━━━━━━━━━ 1s 43ms/step - loss: 0.0840 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 4s 2s/step - loss: 0.08404/4 ━━━━━━━━━━━━━━━━━━━━ 2s 94ms/step - loss: 0.0837 - val_loss: 0.0836
 Epoch 2/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08374/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0835 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 42ms/step - loss: 0.08354/4 ━━━━━━━━━━━━━━━━━━━━ 0s 33ms/step - loss: 0.0834 - val_loss: 0.0836
 Epoch 3/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08354/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0835 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 49ms/step - loss: 0.08354/4 ━━━━━━━━━━━━━━━━━━━━ 0s 33ms/step - loss: 0.0834 - val_loss: 0.0836
 Epoch 4/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 22ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0834 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 50ms/step - loss: 0.08324/4 ━━━━━━━━━━━━━━━━━━━━ 0s 36ms/step - loss: 0.0833 - val_loss: 0.0836
 Epoch 5/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 23ms/step - loss: 0.08354/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0835 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 48ms/step - loss: 0.08344/4 ━━━━━━━━━━━━━━━━━━━━ 0s 37ms/step - loss: 0.0834 - val_loss: 0.0836
 Epoch 6/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 22ms/step - loss: 0.08354/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0835 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 46ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 34ms/step - loss: 0.0833 - val_loss: 0.0836
 Epoch 7/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 20ms/step - loss: 0.08354/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0834 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 37ms/step - loss: 0.08344/4 ━━━━━━━━━━━━━━━━━━━━ 0s 33ms/step - loss: 0.0833 - val_loss: 0.0837
 Epoch 8/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 22ms/step - loss: 0.08354/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0834 - val_loss: 0.0835
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 40ms/step - loss: 0.08314/4 ━━━━━━━━━━━━━━━━━━━━ 0s 33ms/step - loss: 0.0832 - val_loss: 0.0836
 Epoch 9/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08354/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0834 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 43ms/step - loss: 0.08314/4 ━━━━━━━━━━━━━━━━━━━━ 0s 34ms/step - loss: 0.0832 - val_loss: 0.0837
 Epoch 10/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0833 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 40ms/step - loss: 0.08314/4 ━━━━━━━━━━━━━━━━━━━━ 0s 30ms/step - loss: 0.0832 - val_loss: 0.0836
 Epoch 11/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 22ms/step - loss: 0.08344/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0834 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 43ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 36ms/step - loss: 0.0832 - val_loss: 0.0837
 Epoch 12/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 23ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0833 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 50ms/step - loss: 0.08344/4 ━━━━━━━━━━━━━━━━━━━━ 0s 31ms/step - loss: 0.0832 - val_loss: 0.0837
 Epoch 13/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08354/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0833 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 42ms/step - loss: 0.08314/4 ━━━━━━━━━━━━━━━━━━━━ 0s 35ms/step - loss: 0.0831 - val_loss: 0.0837
 Epoch 14/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08334/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0833 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 44ms/step - loss: 0.08314/4 ━━━━━━━━━━━━━━━━━━━━ 0s 35ms/step - loss: 0.0831 - val_loss: 0.0837
 Epoch 15/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 23ms/step - loss: 0.08324/4 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.0832 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 42ms/step - loss: 0.08294/4 ━━━━━━━━━━━━━━━━━━━━ 0s 33ms/step - loss: 0.0830 - val_loss: 0.0837
 Epoch 16/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 23ms/step - loss: 0.08304/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0831 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 40ms/step - loss: 0.08274/4 ━━━━━━━━━━━━━━━━━━━━ 0s 35ms/step - loss: 0.0829 - val_loss: 0.0836
 Epoch 17/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 20ms/step - loss: 0.08314/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0832 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 42ms/step - loss: 0.08284/4 ━━━━━━━━━━━━━━━━━━━━ 0s 35ms/step - loss: 0.0829 - val_loss: 0.0837
 Epoch 18/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08314/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0831 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 42ms/step - loss: 0.08294/4 ━━━━━━━━━━━━━━━━━━━━ 0s 36ms/step - loss: 0.0829 - val_loss: 0.0836
 Epoch 19/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.08314/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0831 - val_loss: 0.0834
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 38ms/step - loss: 0.08274/4 ━━━━━━━━━━━━━━━━━━━━ 0s 40ms/step - loss: 0.0827 - val_loss: 0.0836
 Epoch 20/20
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 23ms/step - loss: 0.08324/4 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - loss: 0.0831 - val_loss: 0.0834</code></pre>
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 44ms/step - loss: 0.08264/4 ━━━━━━━━━━━━━━━━━━━━ 0s 36ms/step - loss: 0.0826 - val_loss: 0.0836</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="2">
-<pre><code>&lt;keras.src.callbacks.history.History at 0x201958eb2c0&gt;</code></pre>
+<pre><code>&lt;keras.src.callbacks.history.History at 0x1450e93b260&gt;</code></pre>
 </div>
 </div>
 </section>

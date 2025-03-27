@@ -244,8 +244,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./chapter14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Adversarial Examples and Generative Models: A Deep Dive into Robustness and Synthetic Data Generation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Hyper-Parameter Optimization (HPO) in Machine Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./summary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -386,7 +398,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Repeat Until Convergence</strong>: Continue until the gradient approaches zero, indicating a minimum.</li>
 </ol>
 <p>The algorithm’s success hinges on the learning rate, which controls the step size in each iteration.</p>
-<div id="ee78a7ac" class="cell" data-execution_count="1">
+<div id="ecf57f68" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> make_regression</span>
@@ -492,7 +504,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>“Just right” (optimal α)</strong>: The algorithm makes steady progress, converging to the minimum efficiently.</li>
 </ol>
 <p>Learning rate scheduling techniques (discussed later) attempt to get the best of both worlds by starting with larger steps and gradually reducing them.</p>
-<div id="4ce08b12" class="cell" data-execution_count="2">
+<div id="6925efa3" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> compare_learning_rates(X, y, learning_rates<span class="op">=</span>[<span class="fl">0.001</span>, <span class="fl">0.01</span>, <span class="fl">0.1</span>, <span class="fl">0.5</span>], iterations<span class="op">=</span><span class="dv">100</span>):</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">8</span>))</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> X.shape[<span class="dv">0</span>]</span>
@@ -551,7 +563,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 data-number="10.5.3" class="anchored" data-anchor-id="feature-scaling-issues"><span class="header-section-number">10.5.3</span> 3. Feature Scaling Issues</h3>
 <p>When features have different scales, the cost function contours become elongated ellipses rather than circles. This creates a similar ravine problem, where the gradient doesn’t point directly toward the minimum.</p>
 <p>To address this issue, feature scaling techniques like standardization are essential:</p>
-<div id="c6a06fb6" class="cell" data-execution_count="3">
+<div id="2be6f46e" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Demonstrating the importance of feature scaling</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>X_multi, y_multi <span class="op">=</span> make_regression(n_samples<span class="op">=</span><span class="dv">100</span>, n_features<span class="op">=</span><span class="dv">2</span>, noise<span class="op">=</span><span class="dv">10</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -599,7 +611,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
 <span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>C:\Users\roess\AppData\Local\Temp\ipykernel_16444\433023471.py:29: RuntimeWarning:
+<pre><code>C:\Users\roess\AppData\Local\Temp\ipykernel_25056\433023471.py:29: RuntimeWarning:
 
 overflow encountered in square
 
@@ -607,7 +619,7 @@ C:\Users\roess\Documents\repos\Notes\myvenv312\Lib\site-packages\numpy\_core\fro
 
 overflow encountered in reduce
 
-C:\Users\roess\AppData\Local\Temp\ipykernel_16444\433023471.py:28: RuntimeWarning:
+C:\Users\roess\AppData\Local\Temp\ipykernel_25056\433023471.py:28: RuntimeWarning:
 
 invalid value encountered in subtract
 </code></pre>
@@ -645,7 +657,7 @@ invalid value encountered in subtract
 <li><strong>Smooth convergence</strong>: Progress is steady with minimal fluctuations</li>
 <li><strong>Computationally expensive</strong>: Especially for large datasets</li>
 </ul>
-<div id="0b3a6fb6" class="cell" data-execution_count="4">
+<div id="4d154883" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> batch_gradient_descent(X, y, learning_rate<span class="op">=</span><span class="fl">0.01</span>, iterations<span class="op">=</span><span class="dv">1000</span>):</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> X.shape[<span class="dv">0</span>]</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    n_features <span class="op">=</span> X.shape[<span class="dv">1</span>]</span>
@@ -686,7 +698,7 @@ invalid value encountered in subtract
 <li><strong>Ability to escape local minima</strong>: Randomness helps jump out of suboptimal valleys</li>
 <li><strong>Can work with streaming data</strong>: Doesn’t need the entire dataset at once</li>
 </ul>
-<div id="64c001d2" class="cell" data-execution_count="5">
+<div id="e6195870" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> stochastic_gradient_descent(X, y, learning_rate<span class="op">=</span><span class="fl">0.01</span>, epochs<span class="op">=</span><span class="dv">10</span>):</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> X.shape[<span class="dv">0</span>]</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    n_features <span class="op">=</span> X.shape[<span class="dv">1</span>]</span>
@@ -732,7 +744,7 @@ invalid value encountered in subtract
 <li><strong>Exponential decay</strong>: α = α₀ × e^(-kt)</li>
 </ol>
 <p>Where: - α₀ is the initial learning rate - t is the iteration number or epoch - k and τ are hyperparameters</p>
-<div id="e9791033" class="cell" data-execution_count="6">
+<div id="b38b4f98" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> learning_rate_schedule(initial_lr, epoch, decay_rate<span class="op">=</span><span class="fl">0.01</span>):</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> initial_lr <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> decay_rate <span class="op">*</span> epoch)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -754,7 +766,7 @@ invalid value encountered in subtract
 <li><strong>Balance of stability and speed</strong>: Smoother convergence than SGD, faster than Batch GD</li>
 <li><strong>Industry standard</strong>: Most practical implementations use this approach</li>
 </ul>
-<div id="ce338798" class="cell" data-execution_count="7">
+<div id="28a0297f" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> mini_batch_gradient_descent(X, y, batch_size<span class="op">=</span><span class="dv">32</span>, learning_rate<span class="op">=</span><span class="fl">0.01</span>, epochs<span class="op">=</span><span class="dv">10</span>):</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> X.shape[<span class="dv">0</span>]</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    n_features <span class="op">=</span> X.shape[<span class="dv">1</span>]</span>
@@ -807,7 +819,7 @@ invalid value encountered in subtract
 <section id="comparison-of-gradient-descent-variants" class="level2" data-number="11.5">
 <h2 data-number="11.5" class="anchored" data-anchor-id="comparison-of-gradient-descent-variants"><span class="header-section-number">11.5</span> Comparison of Gradient Descent Variants</h2>
 <p>Let’s compare all three approaches:</p>
-<div id="ee07e7e8" class="cell" data-execution_count="8">
+<div id="1b4ca9ce" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> compare_gd_variants(X, y):</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Prepare data</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> X.shape[<span class="dv">0</span>]</span>
@@ -927,7 +939,7 @@ invalid value encountered in subtract
 <p>L1 regularization adds a penalty proportional to the absolute value of weights, often resulting in sparse models with some coefficients set to zero (feature selection).</p>
 <p>J_L1(θ) = J(θ) + α∑|θᵢ|</p>
 <p>The gradient includes an additional term: sign(θᵢ) for each parameter.</p>
-<div id="dead98ef" class="cell" data-execution_count="9">
+<div id="dd34cdf4" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> lasso_gradient_descent(X, y, learning_rate<span class="op">=</span><span class="fl">0.01</span>, iterations<span class="op">=</span><span class="dv">1000</span>, alpha<span class="op">=</span><span class="fl">0.1</span>):</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> X.shape[<span class="dv">0</span>]</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    n_features <span class="op">=</span> X.shape[<span class="dv">1</span>]</span>
@@ -963,7 +975,7 @@ invalid value encountered in subtract
 <p>L2 regularization adds a penalty proportional to the square of weights, shrinking all coefficients but rarely setting them to exactly zero.</p>
 <p>J_L2(θ) = J(θ) + α∑θᵢ²/2</p>
 <p>The gradient includes an additional term: αθᵢ for each parameter.</p>
-<div id="ce4b5e45" class="cell" data-execution_count="10">
+<div id="19b28944" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ridge_gradient_descent(X, y, learning_rate<span class="op">=</span><span class="fl">0.01</span>, iterations<span class="op">=</span><span class="dv">1000</span>, alpha<span class="op">=</span><span class="fl">0.1</span>):</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> X.shape[<span class="dv">0</span>]</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    n_features <span class="op">=</span> X.shape[<span class="dv">1</span>]</span>
@@ -999,7 +1011,7 @@ invalid value encountered in subtract
 <p>Elastic Net combines both L1 and L2 regularization, providing a balance between the feature selection properties of L1 and the parameter shrinking of L2:</p>
 <p>J_EN(θ) = J(θ) + αρ∑|θᵢ| + α(1-ρ)∑θᵢ²/2</p>
 <p>Where ρ controls the balance between L1 and L2 penalties.</p>
-<div id="fba52e60" class="cell" data-execution_count="11">
+<div id="96bc17a4" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> elastic_net_gradient_descent(X, y, learning_rate<span class="op">=</span><span class="fl">0.01</span>, iterations<span class="op">=</span><span class="dv">1000</span>, alpha<span class="op">=</span><span class="fl">0.1</span>, l1_ratio<span class="op">=</span><span class="fl">0.5</span>):</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> X.shape[<span class="dv">0</span>]</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    n_features <span class="op">=</span> X.shape[<span class="dv">1</span>]</span>
@@ -1046,7 +1058,7 @@ invalid value encountered in subtract
 <section id="early-stopping-1" class="level2" data-number="12.4">
 <h2 data-number="12.4" class="anchored" data-anchor-id="early-stopping-1"><span class="header-section-number">12.4</span> Early Stopping</h2>
 <p>Early stopping prevents overfitting by monitoring validation error and stopping training when it starts to increase.</p>
-<div id="c06d282e" class="cell" data-execution_count="12">
+<div id="e69549eb" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> gradient_descent_with_early_stopping(X_train, y_train, X_val, y_val, learning_rate<span class="op">=</span><span class="fl">0.01</span>, max_iterations<span class="op">=</span><span class="dv">1000</span>, patience<span class="op">=</span><span class="dv">5</span>):</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    m_train <span class="op">=</span> X_train.shape[<span class="dv">0</span>]</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    n_features <span class="op">=</span> X_train.shape[<span class="dv">1</span>]</span>
@@ -1107,7 +1119,7 @@ invalid value encountered in subtract
 <section id="batch-normalization" class="level2" data-number="12.5">
 <h2 data-number="12.5" class="anchored" data-anchor-id="batch-normalization"><span class="header-section-number">12.5</span> Batch Normalization</h2>
 <p>Batch Normalization improves training by normalizing layer inputs, addressing issues like internal covariate shift and vanishing gradients.</p>
-<div id="fb0513b8" class="cell" data-execution_count="13">
+<div id="0264f516" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> batch_normalize(X, epsilon<span class="op">=</span><span class="fl">1e-8</span>):</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Simple implementation of batch normalization for a mini-batch"""</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Calculate mean and variance along the batch dimension</span></span>
@@ -1132,7 +1144,7 @@ invalid value encountered in subtract
 <h1 data-number="13"><span class="header-section-number">13</span> Implementing Gradient Descent in Popular Libraries</h1>
 <section id="using-scikit-learn" class="level2" data-number="13.1">
 <h2 data-number="13.1" class="anchored" data-anchor-id="using-scikit-learn"><span class="header-section-number">13.1</span> Using Scikit-Learn</h2>
-<div id="688a295f" class="cell" data-execution_count="14">
+<div id="86172b6b" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> SGDRegressor, SGDClassifier</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># For regression</span></span>

@@ -267,8 +267,20 @@ window.Quarto = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./chapter14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Adversarial Examples and Generative Models: A Deep Dive into Robustness and Synthetic Data Generation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Hyper-Parameter Optimization (HPO) in Machine Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./summary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -400,7 +412,7 @@ window.Quarto = {
 <li><strong>Orthogonal Boundaries</strong>: Decision boundaries are always perpendicular to feature axes</li>
 <li><strong>Staircase Effect</strong>: Complex functions are approximated using axis-parallel rectangles</li>
 </ul>
-<div id="93cfbe9a" class="cell" data-execution_count="1">
+<div id="224903b3" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_iris</span>
@@ -488,7 +500,7 @@ Testing accuracy: 1.000</code></pre>
 <section id="training-a-decision-tree" class="level3" data-number="7.1.9">
 <h3 data-number="7.1.9" class="anchored" data-anchor-id="training-a-decision-tree"><span class="header-section-number">7.1.9</span> Training a Decision Tree</h3>
 <p>The training process involves finding the best set of questions (splits) to divide the data:</p>
-<div id="188ace4b" class="cell" data-execution_count="2">
+<div id="2ec9f690" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Leaf:</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, value):</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.value <span class="op">=</span> value</span>
@@ -562,7 +574,7 @@ Testing accuracy: 1.000</code></pre>
 <h5 data-number="7.1.9.1.3" class="anchored" data-anchor-id="gini-impurity"><span class="header-section-number">7.1.9.1.3</span> Gini Impurity</h5>
 <p>Gini impurity measures the probability of incorrectly classifying a randomly chosen element if it were randomly labeled according to the class distribution in the subset:</p>
 <p><span class="math inline">\(Gini(S) = 1 - \sum_{i=1}^{c} (p_i)^2\)</span></p>
-<div id="fcaf4747" class="cell" data-execution_count="3">
+<div id="d77c7080" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_entropy(y):</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Calculate entropy of a label set"""</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    classes, counts <span class="op">=</span> np.unique(y, return_counts<span class="op">=</span><span class="va">True</span>)</span>
@@ -654,7 +666,7 @@ Gini: 0.5000</code></pre>
 <li><strong>Total Error</strong> = Bias² + Variance + Irreducible Error</li>
 </ul>
 <p>Different ensemble techniques target different components of this error: - Bagging primarily reduces variance - Boosting reduces both bias and variance</p>
-<div id="3018c225" class="cell" data-execution_count="4">
+<div id="77dbe4a0" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestClassifier, GradientBoostingClassifier</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -756,7 +768,7 @@ Gini: 0.5000</code></pre>
 </ul></li>
 <li>Predict new data by aggregating predictions from all trees</li>
 </ol>
-<div id="ce8fc911" class="cell" data-execution_count="5">
+<div id="73c94c2b" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Train a Random Forest with different parameters</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>rf <span class="op">=</span> RandomForestClassifier(</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    n_estimators<span class="op">=</span><span class="dv">100</span>,</span>
@@ -909,7 +921,7 @@ Gini: 0.5000</code></pre>
 </ul></li>
 <li>Return the final model (sum of all trees)</li>
 </ol>
-<div id="b9db6985" class="cell" data-execution_count="6">
+<div id="33ba94ec" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> GradientBoostingClassifier</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix, classification_report</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1069,7 +1081,7 @@ weighted avg       1.00      1.00      1.00        45
 </section>
 <section id="comparing-ensemble-methods" class="level2" data-number="7.5">
 <h2 data-number="7.5" class="anchored" data-anchor-id="comparing-ensemble-methods"><span class="header-section-number">7.5</span> Comparing Ensemble Methods</h2>
-<div id="423a1617" class="cell" data-execution_count="7">
+<div id="56bc5d12" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare different ensemble methods</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> AdaBoostClassifier, RandomForestClassifier, GradientBoostingClassifier</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score</span>
@@ -1194,7 +1206,7 @@ Gradient Boosting             1.0            1.0</code></pre>
 <li><strong>Interpretability vs.&nbsp;Performance</strong>: More complex ensembles usually offer better performance at the cost of interpretability</li>
 <li><strong>Computational Considerations</strong>: Training time and resource requirements vary significantly between methods</li>
 </ol>
-<div id="ff5b021a" class="cell" data-execution_count="8">
+<div id="56b9ed7b" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Final comprehensive example: train models on different datasets and compare</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_breast_cancer, load_wine</span>

@@ -1,0 +1,172 @@
+---
+title: "Adversarial Examples and Generative Models: A Deep Dive into Robustness and Synthetic Data Generation"
+author: "Tim Rößling"
+date: "March 27, 2025"
+format: 
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    code-tools: true
+---
+
+## Introduction
+
+Adversarial examples and generative models represent two pivotal concepts in modern artificial intelligence (AI). Adversarial examples reveal the vulnerabilities of machine learning (ML) models, particularly deep neural networks (DNNs), to small, often imperceptible perturbations that lead to incorrect predictions. Meanwhile, generative models, such as Generative Adversarial Networks (GANs), enable the creation of synthetic data that mimics real-world distributions, opening doors to applications like data augmentation and deepfake generation.
+
+These topics are critical because they expose both the fragility and the creative potential of AI systems. Adversarial examples highlight security risks, such as bypassing facial recognition or autonomous driving systems, while generative models raise ethical concerns, including the proliferation of deepfakes. This report explores these concepts in depth, their mechanisms, real-world implications, and future directions.
+
+---
+
+##  Adversarial Examples
+
+###  Understanding Adversarial Examples
+
+Adversarial examples are inputs to ML models that have been intentionally perturbed by small, often imperceptible changes to cause misclassification with high confidence. For instance, an image of a panda might be subtly altered to be classified as a gibbon by a DNN, despite appearing unchanged to the human eye.
+
+- **Examples**: These attacks occur across domains—computer vision (e.g., misclassifying images), natural language processing (e.g., altering text sentiment), and cybersecurity (e.g., evading malware detection).
+- **Analogy**: 
+  > 🔎 Think of an optical illusion—your brain sees something different than reality. Adversarial attacks work similarly, tricking a model into misclassification.
+
+### Generating Adversarial Examples
+
+Several methods exist to craft adversarial examples, including:
+
+- **Fast Gradient Sign Method (FGSM)**: Uses the sign of the gradient of the loss with respect to the input to create perturbations.
+- **Projected Gradient Descent (PGD)**: An iterative version of FGSM, applying multiple small perturbations.
+- **Carlini & Wagner (C&W) Attack**: Optimizes perturbations to be minimal yet effective.
+
+#### 📌 Example: FGSM Attack in Python
+
+Below is an example implementation of an FGSM attack using TensorFlow:
+
+```{python}
+import tensorflow as tf
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load a pre-trained model and image
+model = tf.keras.applications.MobileNetV2(weights='imagenet')
+image_path = 'panda.png'  # Example image
+image = tf.keras.preprocessing.image.load_img(image_path, target_size=(224, 224))
+image = tf.keras.preprocessing.image.img_to_array(image)
+image = np.expand_dims(image, axis=0)
+
+# Generate adversarial noise
+loss_object = tf.keras.losses.CategoricalCrossentropy()
+image = tf.convert_to_tensor(image)
+
+with tf.GradientTape() as tape:
+    tape.watch(image)
+    prediction = model(image)
+    loss = loss_object(tf.one_hot([281], 1000), prediction)  # Class label for 'panda'
+
+# Compute adversarial perturbation
+gradient = tape.gradient(loss, image)
+perturbation = tf.sign(gradient)
+adversarial_image = image + 0.01 * perturbation
+
+# Display results
+plt.figure(figsize=(8,4))
+plt.subplot(1,2,1)
+plt.title("Original Image")
+plt.imshow(image.numpy()[0].astype(np.uint8))
+
+plt.subplot(1,2,2)
+plt.title("Adversarial Image")
+plt.imshow(adversarial_image.numpy()[0].astype(np.uint8))
+plt.show()
+```
+
+This code perturbs an image of a panda, causing the model to misclassify it.
+
+## Attack Types in Adversarial ML
+
+### White-box vs. Black-box Attacks
+- **White-box**: The attacker has full access to the model’s architecture, weights, and training data.  
+- **Black-box**: The attacker has limited or no access, relying on queries or transferability.
+
+### Targeted vs. Untargeted Attacks
+- **Targeted**: The attacker specifies the desired misclassification (e.g., panda → gibbon).  
+- **Untargeted**: The goal is simply to cause any incorrect prediction.
+
+## Defending Against Adversarial Attacks
+Defenses aim to improve model robustness:
+
+- **Adversarial Training**: Incorporates adversarial examples into the training set to teach the model to recognize them.  
+- **Defensive Distillation**: Uses a distilled model to smooth predictions, making attacks harder.  
+- **Input Preprocessing**: Applies techniques like JPEG compression or feature squeezing to reduce perturbation effects.
+
+## Generative Models
+
+### Introduction to Generative Models
+Generative models learn to produce data resembling a training distribution, such as images or text, from random noise. Unlike discriminative models, which classify inputs, generative models create new samples.
+
+**Analogy**:  
+🎨 A discriminative model is like an art critic that decides if a painting is real or fake. A generative model is like an artist trying to create realistic paintings.
+
+### Generative Adversarial Networks (GANs)
+GANs consist of two competing neural networks:
+
+- **Generator**: Maps random noise to synthetic data (e.g., images).  
+- **Discriminator**: Evaluates whether a sample is real (from the training set) or fake (from the generator).  
+
+The two networks are trained adversially: the generator improves by trying to "fool" the discriminator, while the discriminator improves by better distinguishing real from fake.
+
+**📌 Example**: Implementing a GAN in Python  
+Here’s a simple GAN implementation using TensorFlow/Keras:
+
+```{python}
+
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, LeakyReLU, Reshape
+import numpy as np
+
+# Define Generator
+generator = Sequential([
+    Dense(128, activation="relu", input_shape=[100]),
+    LeakyReLU(alpha=0.2),
+    Dense(784, activation="sigmoid"),
+    Reshape([28, 28])
+])
+
+# Define Discriminator
+discriminator = Sequential([
+    Dense(128, activation="relu", input_shape=[28, 28]),
+    LeakyReLU(alpha=0.2),
+    Dense(1, activation="sigmoid")
+])
+
+# Compile the GAN
+gan = Sequential([generator, discriminator])
+gan.compile(loss="binary_crossentropy", optimizer="adam")
+
+```
+
+
+This code sets up a GAN to generate 28x28 images (e.g., MNIST digits).
+
+## Training a GAN
+Training involves two phases per iteration:
+
+- **Discriminator Training**: Uses real images (labeled 1) and fake images (labeled 0) to improve classification.  
+- **Generator Training**: Generates fake images, with the discriminator providing feedback (all labeled as 1).  
+
+**Challenges include**:  
+- **Mode Collapse**: The generator produces limited variety.  
+- **Vanishing Gradients**: Imbalance between generator and discriminator learning rates.
+
+## Applications of GANs
+- **Deepfake Generation**: Creating realistic fake videos or images.  
+- **Data Augmentation**: Generating synthetic data for training ML models.  
+- **Style Transfer and Super-Resolution**: Enhancing or stylizing images.
+
+## Conclusion & Future Work     
+Adversarial examples expose the brittleness of ML models, while generative models showcase their creative potential. Key takeaways include the need for robust defenses against attacks and careful consideration of GAN applications. Ethical concerns—such as misinformation from deepfakes or security risks from adversarial attacks—loom large.
+
+**Future research could focus on**:  
+- Developing more resilient models against adversarial perturbations.  
+- Mitigating GAN training instabilities like mode collapse.  
+- Addressing societal impacts of synthetic data generation.  
+
+This deep dive underscores the dual nature of AI: its power to innovate and its susceptibility to exploitation.

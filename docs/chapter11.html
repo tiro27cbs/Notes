@@ -267,8 +267,20 @@ window.Quarto = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./chapter14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Adversarial Examples and Generative Models: A Deep Dive into Robustness and Synthetic Data Generation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Hyper-Parameter Optimization (HPO) in Machine Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./summary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -380,7 +392,7 @@ window.Quarto = {
 <p>Updated cell state: <span class="math inline">\(c_t = f_t * c_{t-1} + i_t * \tilde{c}_t\)</span></p>
 <p>Output gate: <span class="math inline">\(o_t = \sigma(W_o[h_{t-1}, x_t] + b_o)\)</span></p>
 <p>Hidden state: <span class="math inline">\(h_t = o_t * \tanh(c_t)\)</span></p>
-<div id="79513239" class="cell" data-execution_count="1">
+<div id="d276d2c1" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow <span class="im">import</span> keras</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras <span class="im">import</span> layers</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -403,9 +415,6 @@ window.Quarto = {
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Train the model</span></span>
 <span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>model.fit(X_train, y_train, epochs<span class="op">=</span><span class="dv">10</span>, batch_size<span class="op">=</span><span class="dv">32</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Epoch 1/10</code></pre>
-</div>
 <div class="cell-output cell-output-stderr">
 <pre><code>C:\Users\roess\Documents\repos\Notes\myvenv312\Lib\site-packages\keras\src\layers\rnn\rnn.py:200: UserWarning:
 
@@ -413,28 +422,29 @@ Do not pass an `input_shape`/`input_dim` argument to a layer. When using Sequent
 </code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>1/4 ━━━━━━━━━━━━━━━━━━━━ 5s 2s/step - loss: 0.33264/4 ━━━━━━━━━━━━━━━━━━━━ 2s 9ms/step - loss: 0.3320
+<pre><code>Epoch 1/10
+1/4 ━━━━━━━━━━━━━━━━━━━━ 21s 7s/step - loss: 0.35524/4 ━━━━━━━━━━━━━━━━━━━━ 0s 23ms/step - loss: 0.35184/4 ━━━━━━━━━━━━━━━━━━━━ 7s 44ms/step - loss: 0.3511
 Epoch 2/10
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 23ms/step - loss: 0.31554/4 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - loss: 0.3187 
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 76ms/step - loss: 0.33984/4 ━━━━━━━━━━━━━━━━━━━━ 0s 24ms/step - loss: 0.3330
 Epoch 3/10
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 22ms/step - loss: 0.31584/4 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - loss: 0.3110 
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 69ms/step - loss: 0.30954/4 ━━━━━━━━━━━━━━━━━━━━ 0s 23ms/step - loss: 0.3112
 Epoch 4/10
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 24ms/step - loss: 0.30494/4 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - loss: 0.2984 
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 65ms/step - loss: 0.30294/4 ━━━━━━━━━━━━━━━━━━━━ 0s 23ms/step - loss: 0.2974
 Epoch 5/10
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 22ms/step - loss: 0.28144/4 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - loss: 0.2830 
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 60ms/step - loss: 0.28694/4 ━━━━━━━━━━━━━━━━━━━━ 0s 27ms/step - loss: 0.2795
 Epoch 6/10
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 22ms/step - loss: 0.27834/4 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - loss: 0.2710 
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 78ms/step - loss: 0.27014/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.2618
 Epoch 7/10
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 22ms/step - loss: 0.25274/4 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - loss: 0.2519 
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 61ms/step - loss: 0.24684/4 ━━━━━━━━━━━━━━━━━━━━ 0s 25ms/step - loss: 0.2406
 Epoch 8/10
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.23034/4 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - loss: 0.2322 
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 62ms/step - loss: 0.22214/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.2208
 Epoch 9/10
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 22ms/step - loss: 0.21474/4 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - loss: 0.2133 
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 70ms/step - loss: 0.20644/4 ━━━━━━━━━━━━━━━━━━━━ 0s 21ms/step - loss: 0.2024
 Epoch 10/10
-1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 22ms/step - loss: 0.19684/4 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - loss: 0.1932 </code></pre>
+1/4 ━━━━━━━━━━━━━━━━━━━━ 0s 58ms/step - loss: 0.18834/4 ━━━━━━━━━━━━━━━━━━━━ 0s 24ms/step - loss: 0.1869</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="1">
-<pre><code>&lt;keras.src.callbacks.history.History at 0x2823d017a10&gt;</code></pre>
+<pre><code>&lt;keras.src.callbacks.history.History at 0x1ac77867950&gt;</code></pre>
 </div>
 </div>
 </section>
@@ -472,16 +482,16 @@ Epoch 10/10
 <p>Reset gate: <span class="math inline">\(r_t = \sigma(W_r[h_{t-1}, x_t])\)</span></p>
 <p>Candidate activation: <span class="math inline">\(\tilde{h}_t = \tanh(W[h_{t-1}, r_t * x_t])\)</span></p>
 <p>Hidden state: <span class="math inline">\(h_t = (1 - z_t) * h_{t-1} + z_t * \tilde{h}_t\)</span></p>
-<div id="dc61f5ab" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> keras.models.Sequential([</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># input_shape=[None, 1]: 'None' represents variable time steps, and '1' represents one feature per time step</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Ensures the output is a sequence, allowing the next layer to process it</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    layers.GRU(<span class="dv">20</span>, return_sequences<span class="op">=</span><span class="va">True</span>, input_shape<span class="op">=</span>[<span class="va">None</span>, <span class="dv">1</span>]),</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    layers.GRU(<span class="dv">20</span>, return_sequences<span class="op">=</span><span class="va">True</span>),</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># TimeDistributed layer to apply a Dense layer to each time step.</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This ensures that the Dense layer is applied independently to each time step in the sequence.</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    layers.TimeDistributed(layers.Dense(<span class="dv">10</span>))</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="241f88a3" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> keras.models.Sequential([</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># input_shape=[None, 1]: 'None' represents variable time steps, and '1' represents one feature per time step</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Ensures the output is a sequence, allowing the next layer to process it</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    layers.GRU(<span class="dv">20</span>, return_sequences<span class="op">=</span><span class="va">True</span>, input_shape<span class="op">=</span>[<span class="va">None</span>, <span class="dv">1</span>]),</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    layers.GRU(<span class="dv">20</span>, return_sequences<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># TimeDistributed layer to apply a Dense layer to each time step.</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This ensures that the Dense layer is applied independently to each time step in the sequence.</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    layers.TimeDistributed(layers.Dense(<span class="dv">10</span>))</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
@@ -507,12 +517,12 @@ Epoch 10/10
 <li>Two LSTM layers: One processes the sequence from the beginning, and the other from the end.</li>
 <li>Concatenation: The outputs from both directions are combined at each time step.</li>
 </ul>
-<div id="0d0bdfa0" class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> keras.models.Sequential([</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    layers.Bidirectional(layers.LSTM(<span class="dv">20</span>, return_sequences<span class="op">=</span><span class="va">True</span>), input_shape<span class="op">=</span>[<span class="va">None</span>, <span class="dv">1</span>]),</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    layers.Bidirectional(layers.LSTM(<span class="dv">20</span>, return_sequences<span class="op">=</span><span class="va">True</span>)),</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    layers.TimeDistributed(layers.Dense(<span class="dv">10</span>))</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="5c17a8e1" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> keras.models.Sequential([</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    layers.Bidirectional(layers.LSTM(<span class="dv">20</span>, return_sequences<span class="op">=</span><span class="va">True</span>), input_shape<span class="op">=</span>[<span class="va">None</span>, <span class="dv">1</span>]),</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    layers.Bidirectional(layers.LSTM(<span class="dv">20</span>, return_sequences<span class="op">=</span><span class="va">True</span>)),</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    layers.TimeDistributed(layers.Dense(<span class="dv">10</span>))</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>C:\Users\roess\Documents\repos\Notes\myvenv312\Lib\site-packages\keras\src\layers\rnn\bidirectional.py:107: UserWarning:
 

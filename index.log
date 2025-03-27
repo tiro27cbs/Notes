@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.3.10)  27 MAR 2025 21:06
+This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.3.27)  27 MAR 2025 22:18
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2281,8 +2281,8 @@ Overfull \hbox (10.95105pt too wide) in paragraph at lines 7287--7288
 [166]
 
 [167]
-Overfull \hbox (18.88861pt too wide) in paragraph at lines 7386--7386
-[]\TU/lmtt/m/n/10.95 C:\Users\roess\AppData\Local\Temp\ipykernel_8832\433023471.py:29: RuntimeWarning:[] 
+Overfull \hbox (24.63736pt too wide) in paragraph at lines 7386--7386
+[]\TU/lmtt/m/n/10.95 C:\Users\roess\AppData\Local\Temp\ipykernel_17136\433023471.py:29: RuntimeWarning:[] 
  []
 
 
@@ -2291,8 +2291,8 @@ Overfull \hbox (191.35103pt too wide) in paragraph at lines 7390--7390
  []
 
 
-Overfull \hbox (18.88861pt too wide) in paragraph at lines 7394--7394
-[]\TU/lmtt/m/n/10.95 C:\Users\roess\AppData\Local\Temp\ipykernel_8832\433023471.py:28: RuntimeWarning:[] 
+Overfull \hbox (24.63736pt too wide) in paragraph at lines 7394--7394
+[]\TU/lmtt/m/n/10.95 C:\Users\roess\AppData\Local\Temp\ipykernel_17136\433023471.py:28: RuntimeWarning:[] 
  []
 
 File: chapter8_files/figure-pdf/cell-4-output-2.png Graphic file (type bmp)
@@ -2574,10 +2574,10 @@ it was not a recognized image format.
 
  
 Here is how much of TeX's memory you used:
- 40083 strings out of 475786
- 840311 string characters out of 5770645
+ 40080 strings out of 475787
+ 840114 string characters out of 5771314
  1528865 words of memory out of 5000000
- 62419 multiletter control sequences out of 15000+600000
+ 62418 multiletter control sequences out of 15000+600000
  565308 words of font info for 91 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  108i,10n,114p,10900b,964s stack positions out of 10000i,1000n,20000p,200000b,200000s

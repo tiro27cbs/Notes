@@ -267,8 +267,20 @@ window.Quarto = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./chapter14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Adversarial Examples and Generative Models: A Deep Dive into Robustness and Synthetic Data Generation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Hyper-Parameter Optimization (HPO) in Machine Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./summary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -424,7 +436,7 @@ window.Quarto = {
 <p>Let’s see how to implement BatchNorm in Python, both manually and using deep learning frameworks.</p>
 <section id="manual-implementation" class="level4" data-number="12.1.4.1">
 <h4 data-number="12.1.4.1" class="anchored" data-anchor-id="manual-implementation"><span class="header-section-number">12.1.4.1</span> Manual Implementation</h4>
-<div id="53304460" class="cell" data-execution_count="1">
+<div id="4d556ef2" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> batch_norm(x, gamma, beta, eps<span class="op">=</span><span class="fl">1e-5</span>):</span>
@@ -450,7 +462,7 @@ window.Quarto = {
 </section>
 <section id="using-pytorch" class="level4" data-number="12.1.4.2">
 <h4 data-number="12.1.4.2" class="anchored" data-anchor-id="using-pytorch"><span class="header-section-number">12.1.4.2</span> Using PyTorch</h4>
-<div id="7ce1295e" class="cell" data-execution_count="2">
+<div id="bfa9d04c" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -472,7 +484,7 @@ window.Quarto = {
 </section>
 <section id="using-tensorflowkeras" class="level4" data-number="12.1.4.3">
 <h4 data-number="12.1.4.3" class="anchored" data-anchor-id="using-tensorflowkeras"><span class="header-section-number">12.1.4.3</span> Using TensorFlow/Keras</h4>
-<div id="93ffe2a3" class="cell" data-execution_count="3">
+<div id="3449bf41" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras <span class="im">import</span> layers, models</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -491,7 +503,7 @@ window.Quarto = {
 <section id="faster-training" class="level4" data-number="12.1.5.1">
 <h4 data-number="12.1.5.1" class="anchored" data-anchor-id="faster-training"><span class="header-section-number">12.1.5.1</span> 1. Faster Training</h4>
 <p>BatchNorm allows us to use higher learning rates without the risk of divergence, leading to faster convergence. In some cases, training time can be reduced by a factor of 14x!</p>
-<div id="214933b4" class="cell" data-execution_count="4">
+<div id="80a0889c" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example showing faster convergence with BatchNorm</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -525,7 +537,7 @@ window.Quarto = {
 <section id="acts-as-a-regularizer" class="level4" data-number="12.1.5.3">
 <h4 data-number="12.1.5.3" class="anchored" data-anchor-id="acts-as-a-regularizer"><span class="header-section-number">12.1.5.3</span> 3. Acts as a Regularizer</h4>
 <p>BatchNorm has a regularizing effect, reducing the need for other regularization techniques like Dropout.</p>
-<div id="73fa8642" class="cell" data-execution_count="5">
+<div id="c853f5dc" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example comparing dropout vs BatchNorm</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ModelWithDropout(nn.Module):</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
@@ -573,7 +585,7 @@ window.Quarto = {
 <section id="batch-size-matters" class="level4" data-number="12.1.6.1">
 <h4 data-number="12.1.6.1" class="anchored" data-anchor-id="batch-size-matters"><span class="header-section-number">12.1.6.1</span> 1. Batch Size Matters</h4>
 <p>BatchNorm calculates statistics over mini-batches, so it performs less effectively with very small batch sizes (e.g., batch size of 1 or 2).</p>
-<div id="3634615d" class="cell" data-execution_count="6">
+<div id="687778cb" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.optim <span class="im">as</span> optim</span>
@@ -639,17 +651,17 @@ window.Quarto = {
 <span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> train_with_different_batch_sizes(train_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Batch Size: 16, Avg Loss: 0.6952
-Batch Size: 32, Avg Loss: 0.7155
-Batch Size: 64, Avg Loss: 0.7070
-Batch Size: 128, Avg Loss: 0.7506</code></pre>
+<pre><code>Batch Size: 16, Avg Loss: 0.6937
+Batch Size: 32, Avg Loss: 0.7063
+Batch Size: 64, Avg Loss: 0.7034
+Batch Size: 128, Avg Loss: 0.7113</code></pre>
 </div>
 </div>
 </section>
 <section id="inference-mode-behavior" class="level4" data-number="12.1.6.2">
 <h4 data-number="12.1.6.2" class="anchored" data-anchor-id="inference-mode-behavior"><span class="header-section-number">12.1.6.2</span> 2. Inference Mode Behavior</h4>
 <p>During training, BatchNorm uses mini-batch statistics. During inference, it uses running estimates of the mean and variance computed during training.</p>
-<div id="7ca5249a" class="cell" data-execution_count="7">
+<div id="46bba2aa" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.utils.data <span class="im">import</span> DataLoader, TensorDataset</span>
@@ -704,21 +716,21 @@ Batch Size: 128, Avg Loss: 0.7506</code></pre>
 <span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Running Mean (fixed): </span><span class="sc">{</span>model<span class="sc">.</span>bn<span class="sc">.</span>running_mean[:<span class="dv">3</span>]<span class="sc">}</span><span class="ss">..."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Training mode - BatchNorm uses batch statistics:
-Epoch 1, Running Mean: tensor([-0.0359,  0.1227, -0.0348])...
-Epoch 2, Running Mean: tensor([-0.0138,  0.2262, -0.0813])...
+Epoch 1, Running Mean: tensor([-0.0253,  0.0141, -0.1094])...
+Epoch 2, Running Mean: tensor([-0.0027,  0.0094, -0.1983])...
 
 Inference mode - BatchNorm uses running statistics:
-Output for test data (first 3): tensor([[-0.0312,  0.2660],
-        [ 0.0624,  0.1333],
-        [ 0.2250,  0.1833]])
-Running Mean (fixed): tensor([-0.0138,  0.2262, -0.0813])...</code></pre>
+Output for test data (first 3): tensor([[-0.0189,  0.2858],
+        [ 0.4232,  0.0345],
+        [ 0.2112,  0.1430]])
+Running Mean (fixed): tensor([-0.0027,  0.0094, -0.1983])...</code></pre>
 </div>
 </div>
 </section>
 <section id="challenges-with-rnns" class="level4" data-number="12.1.6.3">
 <h4 data-number="12.1.6.3" class="anchored" data-anchor-id="challenges-with-rnns"><span class="header-section-number">12.1.6.3</span> 3. Challenges with RNNs</h4>
 <p>BatchNorm is tricky to use in Recurrent Neural Networks (RNNs) because of the recurrent structure and variable sequence lengths.</p>
-<div id="ad039d6b" class="cell" data-execution_count="8">
+<div id="d82ea706" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Alternative to BatchNorm for RNNs: Layer Normalization</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> RNNWithLayerNorm(nn.Module):</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, input_size, hidden_size):</span>
@@ -735,7 +747,7 @@ Running Mean (fixed): tensor([-0.0138,  0.2262, -0.0813])...</code></pre>
 <section id="gradient-clipping-for-rnns" class="level4" data-number="12.1.6.4">
 <h4 data-number="12.1.6.4" class="anchored" data-anchor-id="gradient-clipping-for-rnns"><span class="header-section-number">12.1.6.4</span> 4. Gradient Clipping for RNNs</h4>
 <p>As mentioned in the input, Gradient Clipping is often used with RNNs to mitigate the exploding gradients problem. BatchNorm doesn’t help much with this.</p>
-<div id="3a1dfe4f" class="cell" data-execution_count="9">
+<div id="bdd5c707" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gradient clipping example</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> SimpleNet()</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> torch.optim.Adam(model.parameters(), lr<span class="op">=</span><span class="fl">0.001</span>)</span>
@@ -767,7 +779,7 @@ Running Mean (fixed): tensor([-0.0138,  0.2262, -0.0813])...</code></pre>
 <h3 data-number="12.1.7" class="anchored" data-anchor-id="practical-examples"><span class="header-section-number">12.1.7</span> Practical Examples</h3>
 <section id="example-1-mnist-classification-with-and-without-batchnorm" class="level4" data-number="12.1.7.1">
 <h4 data-number="12.1.7.1" class="anchored" data-anchor-id="example-1-mnist-classification-with-and-without-batchnorm"><span class="header-section-number">12.1.7.1</span> Example 1: MNIST Classification with and without BatchNorm</h4>
-<div id="82e7f769" class="cell" data-execution_count="10">
+<div id="3af946fa" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.optim <span class="im">as</span> optim</span>
@@ -849,19 +861,19 @@ Running Mean (fixed): tensor([-0.0138,  0.2262, -0.0813])...</code></pre>
 <span id="cb12-79"><a href="#cb12-79" aria-hidden="true" tabindex="-1"></a>train_model(model_with_bn, trainloader)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Training model without BatchNorm:
-Epoch 1, Loss: 0.411
-Epoch 2, Loss: 0.164
-Epoch 3, Loss: 0.119
-Epoch 4, Loss: 0.092
+Epoch 1, Loss: 0.406
+Epoch 2, Loss: 0.165
+Epoch 3, Loss: 0.114
+Epoch 4, Loss: 0.091
 Epoch 5, Loss: 0.075
 Finished Training
 
 Training model with BatchNorm:
-Epoch 1, Loss: 0.217
-Epoch 2, Loss: 0.088
-Epoch 3, Loss: 0.062
+Epoch 1, Loss: 0.216
+Epoch 2, Loss: 0.084
+Epoch 3, Loss: 0.061
 Epoch 4, Loss: 0.044
-Epoch 5, Loss: 0.035
+Epoch 5, Loss: 0.033
 Finished Training</code></pre>
 </div>
 </div>
@@ -869,7 +881,7 @@ Finished Training</code></pre>
 </section>
 <section id="example-2-visual-comparison-of-training-stability" class="level3" data-number="12.1.8">
 <h3 data-number="12.1.8" class="anchored" data-anchor-id="example-2-visual-comparison-of-training-stability"><span class="header-section-number">12.1.8</span> Example 2: Visual Comparison of Training Stability</h3>
-<div id="4b8bfd68" class="cell" data-execution_count="11">
+<div id="f9ab6045" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span>
@@ -1025,7 +1037,7 @@ x_5 → RNN → h_5 → y_5</code></pre>
 <section id="one-to-many-an-input-to-a-sequence-of-outputs" class="level4" data-number="12.2.5.1">
 <h4 data-number="12.2.5.1" class="anchored" data-anchor-id="one-to-many-an-input-to-a-sequence-of-outputs"><span class="header-section-number">12.2.5.1</span> One-to-Many: An Input to a Sequence of Outputs</h4>
 <p>Example: Image Captioning - Input: A single image - Output: A sequence of words describing the image - The network must generate an entire sentence based on a single static input</p>
-<div id="514e47ee" class="cell" data-execution_count="12">
+<div id="386fb8e2" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pseudocode for image captioning RNN</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> image_captioning_rnn(image):</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Extract features from image using CNN</span></span>
@@ -1050,7 +1062,7 @@ x_5 → RNN → h_5 → y_5</code></pre>
 <section id="many-to-one-a-sequence-of-inputs-to-an-output" class="level4" data-number="12.2.5.2">
 <h4 data-number="12.2.5.2" class="anchored" data-anchor-id="many-to-one-a-sequence-of-inputs-to-an-output"><span class="header-section-number">12.2.5.2</span> Many-to-One: A Sequence of Inputs to an Output</h4>
 <p>Example: Sentiment Analysis - Input: A sequence of words (a review or comment) - Output: A single classification (positive/negative sentiment) - The network must process the entire sequence before making a decision</p>
-<div id="97f888d4" class="cell" data-execution_count="13">
+<div id="3825658c" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pseudocode for sentiment analysis RNN</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sentiment_analysis_rnn(text_sequence):</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Initialize hidden state</span></span>
@@ -1069,7 +1081,7 @@ x_5 → RNN → h_5 → y_5</code></pre>
 <section id="many-to-many-synced-synchronized-sequence-input-to-output" class="level4" data-number="12.2.5.3">
 <h4 data-number="12.2.5.3" class="anchored" data-anchor-id="many-to-many-synced-synchronized-sequence-input-to-output"><span class="header-section-number">12.2.5.3</span> Many-to-Many (Synced): Synchronized Sequence Input to Output</h4>
 <p>Example: Video Classification (frame by frame) - Input: A sequence of video frames - Output: A label for each corresponding frame - The network processes each input and immediately produces the corresponding output</p>
-<div id="c4ea4ec0" class="cell" data-execution_count="14">
+<div id="d357b347" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pseudocode for video frame classification</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> video_frame_classification(video_frames):</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Initialize hidden state</span></span>
@@ -1089,7 +1101,7 @@ x_5 → RNN → h_5 → y_5</code></pre>
 <section id="many-to-many-encoder-decoder-sequence-to-sequence-architecture" class="level4" data-number="12.2.5.4">
 <h4 data-number="12.2.5.4" class="anchored" data-anchor-id="many-to-many-encoder-decoder-sequence-to-sequence-architecture"><span class="header-section-number">12.2.5.4</span> Many-to-Many (Encoder-Decoder): Sequence-to-Sequence Architecture</h4>
 <p>Example: Machine Translation - Input: A sequence of words in one language - Output: A sequence of words in another language - The network first encodes the entire input sequence, then generates the output sequence</p>
-<div id="8fb54453" class="cell" data-execution_count="15">
+<div id="afa7e8d7" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pseudocode for sequence-to-sequence translation</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> translate_sequence_to_sequence(source_sentence):</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Encoder phase</span></span>
@@ -1119,7 +1131,7 @@ x_5 → RNN → h_5 → y_5</code></pre>
 <h4 data-number="12.2.6.1" class="anchored" data-anchor-id="backpropagation-through-time-bptt"><span class="header-section-number">12.2.6.1</span> Backpropagation Through Time (BPTT)</h4>
 <p>Standard backpropagation cannot work directly with recurrent structures due to their cyclic nature. Instead, RNNs are trained using Backpropagation Through Time (BPTT).</p>
 <p>BPTT works by: 1. Unrolling the recurrent neuron across time instants 2. Applying backpropagation to the unrolled neurons at each time step, as if it were a very deep feedforward network 3. Accumulating gradients across time steps 4. Updating the weights based on these accumulated gradients</p>
-<div id="2331192f" class="cell" data-execution_count="16">
+<div id="540c7e15" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pseudocode for BPTT</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> backpropagation_through_time(sequence, true_outputs, model):</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Forward pass</span></span>
@@ -1168,7 +1180,7 @@ x_5 → RNN → h_5 → y_5</code></pre>
 <h5 data-number="12.2.6.2.2" class="anchored" data-anchor-id="solutions-to-gradient-problems"><span class="header-section-number">12.2.6.2.2</span> Solutions to Gradient Problems</h5>
 <ol type="1">
 <li><p><strong>Gradient Clipping</strong>: Limits the magnitude of gradients during training to prevent explosion</p>
-<div id="77ad7e77" class="cell" data-execution_count="17">
+<div id="4b357967" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a> <span class="co"># Define a simple model</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a> model <span class="op">=</span> tf.keras.Sequential([</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>     tf.keras.layers.Input(shape<span class="op">=</span>(<span class="dv">5</span>,)),  <span class="co"># 5 features, preferred over input_shape</span></span>
@@ -1205,8 +1217,8 @@ x_5 → RNN → h_5 → y_5</code></pre>
 <span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a>     <span class="bu">print</span>(<span class="ss">f"Epoch </span><span class="sc">{</span>epoch<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">, Loss: </span><span class="sc">{</span>loss<span class="sc">.</span>numpy()<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Epoch 1, Loss: 0.5033
-Epoch 2, Loss: 0.5011</code></pre>
+<pre><code>Epoch 1, Loss: 1.0326
+Epoch 2, Loss: 1.0192</code></pre>
 </div>
 </div></li>
 <li><p><strong>Batch Normalization</strong>: Stabilizes the distribution of inputs to each layer</p>
@@ -1227,7 +1239,7 @@ Epoch 2, Loss: 0.5011</code></pre>
 <section id="simple-rnn-implementation-in-tensorflowkeras" class="level4" data-number="12.2.7.1">
 <h4 data-number="12.2.7.1" class="anchored" data-anchor-id="simple-rnn-implementation-in-tensorflowkeras"><span class="header-section-number">12.2.7.1</span> Simple RNN Implementation in TensorFlow/Keras</h4>
 <p>Here’s how to implement a basic RNN using TensorFlow’s built-in <code>SimpleRNN</code> layer:</p>
-<div id="2485501d" class="cell" data-execution_count="18">
+<div id="93767735" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.models <span class="im">import</span> Sequential</span>
@@ -1265,7 +1277,7 @@ Epoch 2, Loss: 0.5011</code></pre>
 </section>
 <section id="a-more-complex-rnn-example-text-generation" class="level4" data-number="12.2.7.2">
 <h4 data-number="12.2.7.2" class="anchored" data-anchor-id="a-more-complex-rnn-example-text-generation"><span class="header-section-number">12.2.7.2</span> A More Complex RNN Example: Text Generation</h4>
-<div id="a9b05d71" class="cell" data-execution_count="19">
+<div id="5b759b25" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.models <span class="im">import</span> Sequential</span>
@@ -1419,7 +1431,7 @@ Epoch 2, Loss: 0.5011</code></pre>
 <li><strong>Caffe</strong>: Berkeley Vision and Learning Center’s framework focused on expressiveness, speed, and modularity</li>
 <li><strong>Microsoft Cognitive Toolkit (CNTK)</strong>: Microsoft’s open-source toolkit optimized for performance</li>
 </ul>
-<div id="67745da8" class="cell" data-execution_count="20">
+<div id="220afe67" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># TensorFlow/Keras example</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow <span class="im">import</span> keras</span>
@@ -1436,7 +1448,7 @@ Epoch 2, Loss: 0.5011</code></pre>
 <span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>              loss<span class="op">=</span><span class="st">'sparse_categorical_crossentropy'</span>,</span>
 <span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>              metrics<span class="op">=</span>[<span class="st">'accuracy'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="2125fbbc" class="cell" data-execution_count="21">
+<div id="1079e9af" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># PyTorch example</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
@@ -1801,7 +1813,7 @@ Note
 <li>Low-level APIs for advanced research and development</li>
 </ul>
 <p><strong>Analogy</strong>: Think of TensorFlow as a sophisticated construction kit for building AI systems. Like LEGO blocks that snap together to create complex structures, TensorFlow provides building blocks (operations) that connect together to form computational graphs that power machine learning models.</p>
-<div id="90c7d5c3" class="cell" data-execution_count="22">
+<div id="bf589511" class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simple TensorFlow example</span></span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
 <span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a></span>

@@ -15,19 +15,29 @@ Convolutional Neural Networks (CNNs) are a specialized class of deep neural netw
 
 CNNs are at the heart of most modern image recognition systems. Traditional machine learning techniques and simple neural networks often struggle when it comes to working with large, high-dimensional images. This is because the input data (e.g., pixels in an image) is vast, and feeding this directly into a fully connected neural network would require an enormous number of parameters, making the process computationally expensive and inefficient.
 
-CNNs overcome these challenges by employing a unique structure that: - Reduces the number of parameters. - Allows the network to focus on local features of an image. - Retains important spatial relationships.
+CNNs overcome these challenges by employing a unique structure that: 
+- Reduces the number of parameters. 
+- Allows the network to focus on local features of an image. 
+- Retains important spatial relationships.
 
-This structure makes CNNs ideal for tasks like: - **Image Classification**: Assigning a label to an image (e.g., classifying an image of a dog as "dog"). - **Object Detection**: Identifying and localizing objects within an image. - **Semantic Segmentation**: Classifying each pixel of an image into a predefined category (e.g., background, road, car).
+This structure makes CNNs ideal for tasks like: 
+- **Image Classification**: Assigning a label to an image (e.g., classifying an image of a dog as "dog"). 
+- **Object Detection**: Identifying and localizing objects within an image. 
+- **Semantic Segmentation**: Classifying each pixel of an image into a predefined category (e.g., background, road, car).
 
 #### A Brief History and Emergence from the Visual Cortex
 
-CNNs are inspired by the human visual cortex. In the brain, the primary visual cortex processes images in a hierarchical fashion: - **Simple cells** detect low-level features such as edges. - **Complex cells** combine those low-level features to recognize more complex patterns like shapes and objects.
+CNNs are inspired by the human visual cortex. In the brain, the primary visual cortex processes images in a hierarchical fashion: 
+- **Simple cells** detect low-level features such as edges. 
+- **Complex cells** combine those low-level features to recognize more complex patterns like shapes and objects.
 
 The architecture of CNNs mimics this biological approach, using multiple layers to progressively extract higher-level features from an image. This idea was introduced in the 1980s by Yann LeCun and his collaborators, who developed **LeNet**, one of the earliest CNN architectures, which was used for handwritten digit recognition. CNNs gained popularity in the 2010s with the advent of powerful GPUs, large datasets, and advances in deep learning techniques.
 
 #### Why Traditional Neural Networks Struggle with Large Image Recognition
 
-Traditional neural networks (fully connected networks) struggle with large images because they require each neuron to be connected to every pixel in the image. For example: - Consider an image of size 100x100 pixels. This image has 10,000 individual pixels. - If the neural network has just 1,000 neurons in the first hidden layer, it would require **10 million connections** for just the first layer.
+Traditional neural networks (fully connected networks) struggle with large images because they require each neuron to be connected to every pixel in the image. For example: 
+- Consider an image of size 100x100 pixels. This image has 10,000 individual pixels. 
+- If the neural network has just 1,000 neurons in the first hidden layer, it would require **10 million connections** for just the first layer.
 
 This is not only computationally expensive but also prone to overfitting, as the network may memorize the entire image rather than learning generalized features. CNNs address these issues by leveraging their unique architecture, which focuses on local patterns and reduces the number of parameters significantly.
 
