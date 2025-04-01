@@ -1,0 +1,149 @@
+---
+title: "Explainable Artificial Intelligence (XAI): Concepts and Challenges"
+author: "Tim Rößling"
+
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    self-contained: true
+---
+
+## Overview
+
+This lecture introduces **Explainable Artificial Intelligence (XAI)**, addressing the growing need for transparency in AI systems. Topics include:
+
+- The need for XAI.
+- Definitions and distinctions (e.g., explainability vs. interpretability).
+- Advantages, considerations, and challenges.
+- Applications and development context.
+
+---
+
+## Need for XAI
+
+### Why XAI Matters
+
+- **Limitation of ML**: Traditional models often fail to explain their decisions, reducing their effectiveness for human users.
+- **Goals**:
+  - Produce explainable models while maintaining high prediction accuracy.
+  - Enable humans to understand, trust, and manage AI systems.
+- **Context**: Rising ethical concerns around AI necessitate transparency.
+
+
+
+---
+
+## What is XAI?
+
+### Definition
+
+- **Purpose**: XAI answers stakeholder questions about AI decision-making processes.
+- **Processes**: A set of methods to make ML algorithm results comprehensible and trustworthy.
+- **Key Benefits**:
+  - Promotes user trust, model auditability, and productive AI use.
+  - Mitigates compliance, legal, security, and reputational risks.
+- **Requirements**:
+  - Fairness.
+  - Model explainability.
+  - Accountability.
+
+
+
+### Regular AI vs. XAI
+
+- **Regular AI**: Outputs results via ML algorithms, but the decision process is often opaque, even to system architects.
+- **XAI**: Implements techniques to trace and explain each decision.
+- **Issues with Regular AI**:
+  - Hard to verify accuracy.
+  - Loss of control, accountability, and auditability.
+- **XAI Components**:
+  - Prediction accuracy.
+  - Traceability (narrowed scope of rules/features).
+  - Decision understanding (building human trust).
+- **Applications**: Healthcare (e.g., diagnostics), Finance (e.g., fraud detection).
+
+
+
+---
+
+## Explainability vs. Interpretability
+
+- **Explainability**: How the AI arrives at a result (focus on process).
+- **Interpretability**: Success rate of humans predicting AI outputs (focus on outcome).
+- **Lack of Consensus**: Definitions of these terms vary across the field.
+
+### XAI vs. Responsible AI
+
+- **XAI**: Analyzes results post-computation to explain decisions.
+- **Responsible AI**: Plans algorithms pre-computation to ensure ethical behavior.
+- **Synergy**: Combining both improves overall AI systems.
+
+---
+
+## Advantages of XAI
+
+- **Trust and Confidence**: Operationalizes AI for practical use.
+- **Optimization**: Enhances model performance through transparency.
+- **Risk Management**: Addresses regulatory, compliance, and other requirements.
+
+
+
+---
+
+## Considerations for XAI
+
+- **Fairness and Debiasing**: Ensures equitable outcomes.
+- **Model Drift Mitigation**: Alerts when models deviate from intended behavior.
+- **Model Risk Management**: Quantifies and mitigates risks; explains persistent deviations.
+- **Lifecycle Automation**: Integrates model building, running, and management with explainable dependencies.
+- **Deployment Challenge**: Risk of oversimplifying or misrepresenting complex systems.
+
+
+
+---
+
+## XAI Challenges
+
+- **Complexity**: Balancing explanation with model accuracy.
+- **Oversimplification Risk**: Simplified explanations may misrepresent intricate systems.
+- **Terminology**: Lack of standardized definitions for explainability and interpretability.
+- **Development**: Requires integrating XAI into existing AI workflows.
+
+![XAI Challenges](xai_1.png)
+
+---
+
+## XAI Users and Development Timeline
+
+- **Users**: Developers, regulators, end-users in domains like healthcare and finance.
+- **Timeline**: Evolving field, with significant momentum from initiatives like DARPA’s XAI program (ongoing since 2017).
+
+![XAI Development Timeline](xai_2.png)
+
+---
+
+## Python Example (Optional)
+
+While XAI focuses on concepts rather than direct implementation, libraries like `SHAP` or `LIME` can explain model predictions. Below is a placeholder for a simple example:
+
+```python
+import shap
+import sklearn
+from sklearn.ensemble import RandomForestClassifier
+import numpy as np
+
+# Sample data and model
+X = np.random.rand(100, 4)
+y = np.random.randint(0, 2, 100)
+model = RandomForestClassifier().fit(X, y)
+
+# SHAP explainer
+explainer = shap.TreeExplainer(model)
+shap_values = explainer.shap_values(X)
+
+# Plot explanation
+shap.summary_plot(shap_values, X)
+
+```

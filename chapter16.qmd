@@ -1,0 +1,169 @@
+---
+title: "Federated Learning and Transfer Learning"
+author: "Tim RÖßling"
+
+
+
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    self-contained: true
+---
+
+## Overview
+
+This lecture covers advanced concepts in Machine Learning and Deep Learning, including:
+
+- **Federated Learning**: Collaborative training without sharing private data.
+- **Transfer Learning**: Adapting pre-trained models for new tasks.
+- **Reinforcement Learning**: Learning through rewards and actions (briefly introduced).
+- **Explainable Artificial Intelligence**: Understanding AI decisions (briefly introduced).
+
+---
+
+## Federated Learning (FL)
+
+### What is Federated Learning?
+
+- **Introduced by Google in 2016**: A decentralized approach to train AI models.
+- **Key Idea**: Process data at its source (e.g., user devices) without centralizing sensitive data.
+- **Benefits**:
+  - Protects user privacy by avoiding raw data sharing.
+  - Enables collaborative training across distributed devices.
+- **Financial Application**: Banks can aggregate customer data to improve credit scores or fraud detection without compromising privacy.
+
+### How Does FL Work?
+
+1. **Model Distribution**: A central server shares a pre-trained model with remote devices.
+2. **Local Training**: Each device trains the model on its private data.
+3. **Update Sharing**: Devices summarize and encrypt model updates (e.g., gradients) and send them to the server.
+4. **Aggregation**: The server decrypts, averages updates, and integrates them into the global model.
+5. **Iteration**: Steps repeat until the model is fully trained.
+
+
+
+### Workflow Diagram
+![Federated Learning Workflow](workflow.png)
+
+### Approach of FL
+
+- **Privacy Guarantee**: Devices exchange model gradients, not raw data.
+- **Process**:
+  1. Local training on each device.
+  2. Upload local model updates to the server.
+  3. Server aggregates updates into a new global model.
+  4. Distribute the updated model back to devices.
+
+
+
+### Training Process
+
+1. **Horizontal Learning**: Trains on similar datasets across devices.
+2. **Vertical Learning**: Combines complementary data (e.g., movie and book reviews to predict music preferences).
+3. **Transfer Learning**: Adapts a pre-trained model to a new task (e.g., car detection to cat detection).
+
+
+
+### Centralized-Server Approach
+
+- **Addresses Privacy Challenges**: Avoids pooling sensitive data, unlike traditional ML.
+
+
+
+---
+
+## Transfer Learning (TL)
+
+### What is Transfer Learning?
+
+- **Definition**: Fine-tuning a pre-trained model for a new, related task.
+- **Example**: A model trained to identify dogs can be retrained to identify cats with a smaller dataset.
+- **Advantages**:
+  - Reduces training time and cost.
+  - Widely used in NLP and image processing.
+- **Application**: Critical for adopting generative AI across industries.
+
+
+
+### TL Strategies
+
+1. **Transductive Transfer Learning**:
+   - Transfers knowledge from a specific source to a related target domain.
+   - **Advantage**: Works with little/no labeled target data.
+   - **Example**: Sentiment analysis model from product reviews adapted for movie reviews.
+
+2. **Inductive Transfer Learning**:
+   - Same domain, different tasks.
+   - **Advantage**: Faster training with pre-trained familiarity.
+   - **Example**: NLP model pre-trained on text, fine-tuned for sentiment analysis.
+
+3. **Unsupervised Transfer Learning**:
+   - Uses unlabeled data in source and target domains.
+   - **Example**: Identifying motorcycle types from unlabeled vehicle images.
+
+
+
+### TL Steps
+
+1. **Select Pre-trained Model**: Choose a model with prior knowledge (e.g., ImageNet for images).
+2. **Configure Model**:
+   - **Freeze Layers**: Preserve source knowledge by locking pre-trained layers.
+   - **Adjust Weights**: Start with random weights and refine during training.
+   - **Modify Layers**: Remove the last layer and add new layers for the target task.
+3. **Train on Target Domain**: Fine-tune with target data.
+
+
+
+### Python Example: Transfer Learning with TensorFlow
+
+```python
+import tensorflow as tf
+from tensorflow.keras.applications import VGG16
+from tensorflow.keras import layers, models
+
+# Load pre-trained VGG16 model (without top layer)
+base_model = VGG16(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
+
+# Freeze pre-trained layers
+base_model.trainable = False
+
+# Add custom layers for new task
+model = models.Sequential([
+    base_model,
+    layers.Flatten(),
+    layers.Dense(256, activation='relu'),
+    layers.Dense(1, activation='sigmoid')  # Binary classification (e.g., cats vs. dogs)
+])
+
+# Compile the model
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+
+# Summary
+model.summary()
+
+```
+
+## Privacy-Accuracy Trade-off
+
+- **Issue**: Attackers may attempt to steal user data or hijack an AI model.
+- **Challenge in FL**: When a data host exchanges their working model with the central server, it improves the model but leaves the data used for training vulnerable to inference attacks.
+- **Reason for Exchange**: Each exchange enhances the model but increases the risk of privacy breaches.
+- **Key Concern**: The more rounds of information exchanged, the easier it becomes to infer sensitive information.
+- **Current Trend**: Research focuses on minimizing and neutralizing privacy threats to ensure secure federated learning.
+
+## Other Challenges in Federated Learning
+
+1. **High Network Bandwidth**: Communication between devices and the central server can be resource-intensive.
+2. **Transparency**: Ensuring that training data remains private while maintaining:
+    - Testing accuracy.
+    - Fairness in predictions.
+    - Mitigation of potential biases in the model's output.
+3. **Accountability**: Logging and auditing each stage of the training pipeline to ensure traceability.
+4. **Data Control**:
+    - **Key Questions**:
+      - What data are used to train the model?
+      - How can data be deleted when a host leaves the federation?
+    - **Rule**: If data are deleted, all parties are obligated to retrain the model from scratch to ensure compliance.
+5. **Trust Issues**: Establishing trust among participants in the federation to prevent malicious behavior or data misuse.

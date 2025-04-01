@@ -1,0 +1,198 @@
+---
+title: "Reinforcement Learning: Concepts and Applications"
+author: "Tim Rößling"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    self-contained: true
+---
+
+## Overview
+
+This lecture explores **Reinforcement Learning (RL)**, a dynamic approach to machine learning where agents learn through interaction with an environment. Key topics include:
+
+- Definition and principles of RL.
+- RL workflow and implementation types.
+- Real-world examples (e.g., car parking, AlphaZero).
+- Challenges and limitations.
+
+---
+
+## Reinforcement Learning (RL)
+
+### What is Reinforcement Learning?
+
+- **Not a New Concept**: RL has roots in earlier research, but recent advances in deep learning (DL) and computing power have revitalized it.
+- **Core Idea**: An agent learns to perform tasks through trial-and-error interactions with a dynamic environment.
+- **Key Features**:
+  - No static dataset required.
+  - Learns from experiences collected during interactions.
+  - Operates without human supervision, guided by rewards or punishments.
+- **Relation to DL**: RL and DL are complementary, not exclusive—deep RL uses neural networks for complex tasks.
+
+
+
+### Goal of RL
+
+- **Objective**: Maximize the total cumulative reward for the agent.
+- **Process**: The agent solves problems through its own actions, receiving feedback from the environment.
+- **Advantages**:
+  - No need for data collection, preprocessing, or labeling prior to training.
+  - Can autonomously learn behaviors with the right incentives (positive rewards or negative punishments).
+
+
+
+### Deep Reinforcement Learning
+
+- **Complex Problems**: Deep RL integrates deep neural networks (DNNs) with RL to encode sophisticated behaviors.
+- **Applications**:
+  - **Automated Driving**: Decisions based on camera inputs 
+  - **Robotics**: Pick-and-place tasks 
+  - **NLP**: Text summarization, question answering, and machine translation.
+
+---
+
+## RL Workflow
+
+### Environment
+
+- **Definition**: The space where the agent operates, including all external dynamics.
+- **Options**:
+  - Model simulation (virtual environment).
+  - Real physical system (e.g., a robot or vehicle).
+- **Role**: Acts as the interface between the agent and its surroundings.
+
+### Reward Definition
+
+- **Purpose**: Measures the agent’s performance against goals.
+- **Calculation**: Derived from environmental feedback.
+- **Reward Shaping**: Iterative process to refine the reward signal—critical but challenging to perfect.
+
+
+
+### Create Agent
+
+- **Components**:
+  - **Policy**: Decision-making strategy (e.g., neural networks or lookup tables).
+  - **Training Algorithm**: Optimizes the policy.
+- **Neural Networks**: Preferred for large state/action spaces and complex problems.
+
+### Training
+
+- **Steps**:
+  1. Set training options (e.g., stopping criteria).
+  2. Train the agent to tune its policy.
+  3. Validate the trained policy.
+- **Iteration**: Adjust reward signals or policy architecture if needed.
+- **Sample Inefficiency**: Training can take minutes to days, depending on complexity.
+
+
+
+### Deployment
+
+- **Policy**: Becomes a standalone decision-making system.
+- **Convergence Issues**: If the policy doesn’t optimize within a reasonable time, adjust:
+  - Training settings.
+  - Algorithm configuration.
+  - Policy representation.
+  - Reward signal definition.
+
+
+
+---
+
+## RL Implementation
+
+### Types of RL
+
+1. **Policy-Based RL**:
+   - Uses a policy or deterministic strategy to maximize cumulative reward.
+2. **Value-Based RL**:
+   - Maximizes an arbitrary value function (e.g., Q-learning).
+3. **Model-Based RL**:
+   - Creates a virtual model of the environment; the agent learns within these constraints.
+- **Data**: Accumulated via trial-and-error, not provided as input.
+- **Test Bed**: Classic Atari games are widely used to benchmark RL algorithms.
+
+
+
+#### Python Example: Q-Learning for a Simple Environment
+
+```python
+import numpy as np
+
+# Initialize Q-table (5 states, 2 actions: left, right)
+q_table = np.zeros((5, 2))
+learning_rate = 0.1
+discount_factor = 0.95
+episodes = 1000
+
+# Training loop
+for episode in range(episodes):
+    state = 0  # Start state
+    done = False
+    while not done:
+        action = np.argmax(q_table[state])  # Choose best action
+        next_state = state + 1 if action == 1 else max(0, state - 1)
+        reward = 1 if next_state == 4 else 0  # Goal at state 4
+        done = next_state == 4
+        
+        # Q-update
+        q_table[state, action] = q_table[state, action] + learning_rate * (
+            reward + discount_factor * np.max(q_table[next_state]) - q_table[state, action]
+        )
+        state = next_state
+
+print("Trained Q-table:\n", q_table)
+
+```
+
+## RL Examples
+
+### Example 1: Car Parking
+
+- **Goal**: Teach a vehicle (agent) to park in a designated spot.
+- **Environment**: Includes vehicle dynamics, nearby vehicles, weather, etc.
+- **Training**:
+  - Uses sensor data (cameras, GPS, LIDAR) to generate actions (steering, braking, acceleration).
+  - Trial-and-error process tunes the policy.
+- **Reward Signal**: Evaluates trial success and guides learning.
+- **Reference**: MathWorks: Reinforcement Learning
+
+### Example 2: AlphaZero (2017)
+
+- **Achievement**: Mastered chess, shogi, and Go from scratch.
+- **How It Works**:
+  - An untrained neural network plays millions of games against itself.
+  - Starts with random moves, then learns from wins, losses, and draws.
+  - Adjusts neural network parameters to favor advantageous moves.
+- **Training Time**:
+  - Chess: ~9 hours.
+  - Shogi: ~12 hours.
+  - Go: ~13 days.
+
+---
+
+## Issues in RL
+
+### Data Collection Rate
+- Limited by environment dynamics; high-latency environments slow learning.
+
+### Optimal Policy Discovery
+- Difficult for agents to find the best strategy in complex settings.
+
+### Lack of Interpretability
+- Opaque decision-making reduces trust between agents and observers.
+
+---
+
+## Conclusion
+
+Reinforcement Learning is a powerful paradigm for autonomous learning through trial and error. 
+
+- **Applications**: Spans robotics, gaming, and NLP, enhanced by deep learning.
+- **Challenges**: Sample inefficiency, interpretability, and environment constraints remain hurdles.
+
+RL continues to evolve, driven by advances in algorithms and computational resources.
